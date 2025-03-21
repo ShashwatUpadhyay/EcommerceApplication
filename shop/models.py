@@ -9,13 +9,19 @@ class ProductCategory(BaseModel):
     def __str__(self):
         return str(self.name) 
     
+class ProductSubCategory(BaseModel):
+    name = models.CharField(max_length=50)
+    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='sub_category')
+
+    def __str__(self):
+        return str(self.name) 
 
 class Product(BaseModel):
     title = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
-    price = models.PositiveIntegerField()
+    price = models.FloatField()
     stock = models.PositiveIntegerField(default=0)
     images = models.ImageField(upload_to='media/product_images', null=True, blank=True)
     

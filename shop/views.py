@@ -3,8 +3,9 @@ from . import models
 # Create your views here.
 
 def shop(request):
+    category = models.ProductCategory.objects.all()
     products = models.Product.objects.all()
-    return render(request , 'shop.html',{'products':products})
+    return render(request , 'shop.html',{'products':products, 'categories': category})
 
 def product_page(request, slug):
     try:
