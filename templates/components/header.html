@@ -7,8 +7,8 @@
 			
 			<!-- Desktop Nav Links -->
 			<div class="hidden md:flex space-x-6">
-				<a href="#" class="text-gray-600 hover:text-gray-900">Home</a>
-				<a href="#" class="text-gray-600 hover:text-gray-900">Shop</a>
+				<a href="{% url "shop" %}" class="text-gray-600 hover:text-gray-900">Home</a>
+				<a href="{% url "shop" %}" class="text-gray-600 hover:text-gray-900">Shop</a>
 				<a href="#" class="text-gray-600 hover:text-gray-900">Categories</a>
 				<a href="#" class="text-gray-600 hover:text-gray-900">About</a>
 				<a href="#" class="text-gray-600 hover:text-gray-900">Contact</a>
@@ -50,8 +50,8 @@
 
 		<!-- Mobile Menu -->
 		<div id="mobile-menu" class="hidden md:hidden flex flex-col space-y-2 py-4 bg-gray-100">
-			<a href="#" class="block px-4 py-2 text-gray-600 hover:text-gray-900">Home</a>
-			<a href="#" class="block px-4 py-2 text-gray-600 hover:text-gray-900">Shop</a>
+			<a href="{% url "home" %}" class="block px-4 py-2 text-gray-600 hover:text-gray-900">Home</a>
+			<a href="{% url "shop" %}" class="block px-4 py-2 text-gray-600 hover:text-gray-900">Shop</a>
 			<a href="#" class="block px-4 py-2 text-gray-600 hover:text-gray-900">Categories</a>
 			<a href="#" class="block px-4 py-2 text-gray-600 hover:text-gray-900">About</a>
 			<a href="#" class="block px-4 py-2 text-gray-600 hover:text-gray-900">Contact</a>
