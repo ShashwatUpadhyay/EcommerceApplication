@@ -1,47 +1,209 @@
 
 {% extends "index.html" %}
-{% block title %}Ecommerce Home page{% endblock title %}Ecommerce Home page
+{% block title %}Ecommerce Home page{% endblock title %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-10">
-    <h2 class="text-3xl font-bold text-gray-900 dark:text-white text-center mb-6">Our Products</h2>
-    <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {% for product in products %}
-            <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                <a href="#">
-                    <img class="p-8 rounded-t-lg" src="{{product.latest_image.img.url }}" alt="{{product.title}}" />
-                </a>
-                <div class="px-5 pb-5">
-                    <a href="#">
-                        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{product.title}} {{product.latest_image.url }}</h5>
-                    </a>
-                    <div class="flex items-center mt-2.5 mb-5">
-                        <div class="flex items-center space-x-1 rtl:space-x-reverse">
-                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                            </svg>
-                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                            </svg>
-                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                            </svg>
-                            <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                            </svg>
-                            <svg class="w-4 h-4 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                            </svg>
-                        </div>
-                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-sm dark:bg-blue-200 dark:text-blue-800 ms-3">5.0</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-3xl font-bold text-gray-900 dark:text-white">₹{{product.price}}</span>
-                        <a href="#" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
-                    </div>
+
+<div class="bg-orange-300 py-6 text-center">
+    <h1 class="text-xl font-bold">Maxima&reg; Aluminum Profile</h1>
+    <h2 class="text-lg">Maxima&reg; Stepper Motor & Drive | Maxima&reg; Actuator | Maxima&reg; Conveyor</h2>
+</div>
+
+<div class="container mx-auto p-10">
+    <!-- Product Features -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-4 shadow rounded">
+            <h3 class="font-bold text-lg">Product</h3>
+            <ul class="mt-2">
+                <li class="flex items-center space-x-2"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 50 50">
+                    <path d="M 11 4 C 7.1 4 4 7.1 4 11 L 4 39 C 4 42.9 7.1 46 11 46 L 39 46 C 42.9 46 46 42.9 46 39 L 46 14.900391 L 44 17.300781 L 44 39 C 44 41.8 41.8 44 39 44 L 11 44 C 8.2 44 6 41.8 6 39 L 6 11 C 6 8.2 8.2 6 11 6 L 37.199219 6 L 38.900391 4 L 11 4 z M 43.236328 7.7539062 L 23.914062 30.554688 L 15.78125 22.96875 L 14.417969 24.431641 L 24.083984 33.447266 L 44.763672 9.046875 L 43.236328 7.7539062 z"></path>
+                    </svg><span>1000+ Industrial Components</span></li>
+                <li class="flex items-center space-x-2"><span>&#x2714;</span> <span>Reliable Products</span></li>
+                <li class="flex items-center space-x-2"><span>&#x1F4C5;</span> <span>25+ Years Experience</span></li>
+            </ul>
+        </div>
+        <div class="bg-white p-4 shadow rounded">
+            <h3 class="font-bold text-lg">Advantage +</h3>
+            <ul class="mt-2">
+                <li class="flex items-center space-x-2"><span>&#x23F3;</span> <span>Fast Despatch</span></li>
+                <li class="flex items-center space-x-2"><span>&#x1F512;</span> <span>Secure Payment</span></li>
+                <li class="flex items-center space-x-2"><span>&#x1F4E6;</span> <span>Easy to Place Orders</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="mt-6 bg-white p-4 shadow rounded">
+        <h3 class="font-bold text-lg mb-2">FAQs</h3>
+        <div class="space-y-2">
+            <div x-data="{ open: false }"  class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open"  class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+                    <span class="font-semibold">Returning Customers</span>
+                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
+                </button>
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
+                    If you have bought previously on our website prior to Oct 23rd 2020, please note that you have to make your account again. 
+                    This is because we have moved to a new robust & integrated platform.
                 </div>
             </div>
-        {% endfor %}
+
+
+            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+                    <span class="font-semibold">New Customers</span>
+                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
+                </button>
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
+                    Precision Bearing House is a 25-year-old company with HQ in New Delhi & branches in Chennai and Ahmedabad. We are the manufacturer, importer & exporter of Industrial Components used in Industrial Automation.
+                </div>
+            </div>
+            
+            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+                    <span class="font-semibold">If you are a Reseller/Trader</span>
+                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
+                </button>
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white text-red-500">
+                    Sorry, we don't sell to Resellers/ Traders/ Shopkeepers. We sell directly to end users and machine manufacturers.
+                </div>
+            </div>
+            
+            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+                    <span class="font-semibold">Payment Options</span>
+                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
+                </button>
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
+                    On check-out, you have two options to choose from: <b>Bank Transfer</b> & <b>PayU</b>. <br>
+                    <b>PayU</b>: If you want to pay by Debit/Credit Card, please choose PayU. We accept Visa, Mastercard, Amex, Rupay, Diner & Wallets like PhonePe, PayZapp, and ITZ Cash. <br>
+                    <b>Bank Transfer</b>: You need to make an NEFT/IMPS from your bank. The order will be processed only after receipt of payment.
+                </div>
+            </div>
+            
+            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+                    <span class="font-semibold">Shipping</span>
+                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
+                </button>
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
+                    All orders received by 3 PM are shipped the same day. We usually ship via Bluedart, DTDC, and Trackon. Shipping charges apply for surface mode. Contact us for air mode shipping costs.
+                </div>
+            </div>
+            
+            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+                    <span class="font-semibold">International Customers</span>
+                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
+                </button>
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
+                    Please email your inquiry to <b>sm@pbh.in</b>, and we will send you a sales quote with bank details.
+                </div>
+            </div>
+            
+
+
+
+
+
+
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+        <!-- Product Card -->
+        <div class="bg-white p-4 shadow rounded">
+            <img src="https://via.placeholder.com/150" alt="Product" class="w-full h-32 object-cover">
+            <h4 class="font-bold mt-2">Maxima Actuator</h4>
+            <p class="text-sm text-gray-600">High load carrying capacity</p>
+        </div>
+        <div class="bg-white p-4 shadow rounded">
+            <img src="https://via.placeholder.com/150" alt="Product" class="w-full h-32 object-cover">
+            <h4 class="font-bold mt-2">Linear Guide</h4>
+            <p class="text-sm text-gray-600">Smooth linear motion</p>
+        </div>
+        <div class="bg-white p-4 shadow rounded">
+            <img src="https://via.placeholder.com/150" alt="Product" class="w-full h-32 object-cover">
+            <h4 class="font-bold mt-2">Ball Screw</h4>
+            <p class="text-sm text-gray-600">High-speed performance</p>
+        </div>
+        <div class="bg-white p-4 shadow rounded">
+            <img src="https://via.placeholder.com/150" alt="Product" class="w-full h-32 object-cover">
+            <h4 class="font-bold mt-2">Maxima Coupling</h4>
+            <p class="text-sm text-gray-600">Precision engineering</p>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="max-w-5xl mx-auto">
+    <h2 class="text-2xl font-bold text-center mb-6">Product Categories</h2>
+
+    <!-- 3x3 Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Category Card 1 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Maxima Actuator</h3>
+            <p class="text-gray-600 text-sm text-center">High precision and efficiency.</p>
+        </div>
+
+        <!-- Category Card 2 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Linear Guide</h3>
+            <p class="text-gray-600 text-sm text-center">Smooth linear motion solutions.</p>
+        </div>
+
+        <!-- Category Card 3 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Ball Screw</h3>
+            <p class="text-gray-600 text-sm text-center">High load capacity & accuracy.</p>
+        </div>
+
+        <!-- Category Card 4 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Stepper Motor</h3>
+            <p class="text-gray-600 text-sm text-center">Reliable stepper motors for precision.</p>
+        </div>
+
+        <!-- Category Card 5 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Belt Conveyor</h3>
+            <p class="text-gray-600 text-sm text-center">Durable and efficient conveyors.</p>
+        </div>
+
+        <!-- Category Card 6 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Coupling</h3>
+            <p class="text-gray-600 text-sm text-center">High torque transmission coupling.</p>
+        </div>
+
+        <!-- Category Card 7 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Ground Shaft</h3>
+            <p class="text-gray-600 text-sm text-center">Precision ground shafts available.</p>
+        </div>
+
+        <!-- Category Card 8 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Linear Bearing</h3>
+            <p class="text-gray-600 text-sm text-center">Smooth and efficient motion control.</p>
+        </div>
+
+        <!-- Category Card 9 -->
+        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+            <h3 class="text-lg font-semibold">Motion Controller</h3>
+            <p class="text-gray-600 text-sm text-center"> lorem100 Advanced motion control solutions.</p>
+        </div>
     </div>
 </div>
 

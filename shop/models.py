@@ -1,5 +1,6 @@
 from django.db import models
 from base.base_model import BaseModel
+from django.utils.text import slugify
 
 # Create your models here.
 class ProductCategory(BaseModel):
@@ -11,12 +12,20 @@ class ProductCategory(BaseModel):
 
 class Product(BaseModel):
     title = models.CharField(max_length=100)
+    slug = models.CharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
-    price = models.IntegerField()
+    price = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField(default=0)
+    images = models.ImageField(upload_to='media/product_images', null=True, blank=True)
     
     def latest_image(self):
         return self.image.last()
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Product, self).save(*args, **kwargs)
 
 
 
