@@ -20,10 +20,11 @@ class Product(BaseModel):
     title = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='products')
+    subcategory = models.ForeignKey(ProductSubCategory, on_delete=models.CASCADE, related_name='products')
     description = models.TextField()
     price = models.FloatField()
     stock = models.PositiveIntegerField(default=0)
-    images = models.ImageField(upload_to='media/product_images', null=True, blank=True)
+    
     
     def latest_image(self):
         return self.image.last()
