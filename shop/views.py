@@ -29,7 +29,7 @@ def shop(request):
             products = models.Product.objects.all().order_by('title')
             print(sort)
         elif sort == 'new':
-            products = models.Product.objects.all().order_by('created_at')
+            products = models.Product.objects.all().order_by('-created_at')
             print(sort)
             
         elif sort == 'lh':

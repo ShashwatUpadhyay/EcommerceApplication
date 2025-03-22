@@ -32,20 +32,26 @@
                     <summary class="cursor-pointer font-medium text-gray-700 flex  float-center">
                         
                         <input type="radio" id="category" name="category" value="{{ category.slug }}" onchange="document.getElementById('filterForm').submit();"
-                        {% if request.GET.category == category.name|stringformat:"s" %}checked{% endif %} placeholder="{{ category.name }}"> 
+                        {% if request.GET.category == category.slug|stringformat:"s" %}checked{% endif %} placeholder="{{ category.name }}"> 
                         <span class="float-left ml-3">{{ category.name }}</span>
+                        {% if category.sub_category %}
                         <span class="transition-transform duration-200 group-open:rotate-180">▼</span>
+                        {% endif %}
                     </summary>
+                    {% if category.sub_category %}
+                      
                     <div class="mt-2 space-y-2 pl-4">
                         {% for sub in category.sub_category.all %}
                         <label class="flex items-center cursor-pointer">
                             <input id="category" type="radio" name="category" value="{{ sub.slug }}" class="mr-2 text-blue-500 focus:ring-2"
                                 onchange="document.getElementById('filterForm').submit();"
-                                {% if request.GET.category == sub.name|stringformat:"s" %}checked{% endif %}>
+                                {% if request.GET.category == sub.slug|stringformat:"s" %}checked{% endif %}>
                             <span class="text-gray-700 hover:text-blue-500 transition">{{ sub.name }}</span>
                         </label>
                         {% endfor %}
                     </div>
+                    {% endif %}
+
                 </details>
                 {% endfor %}
             </form>
@@ -78,16 +84,18 @@
             <!-- Product Card -->
             {% if products %}
             {% for product in products %}
-            <a href="{% url 'product' product.slug %}" class="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
+            <div class="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
+            <a href="{% url 'product' product.slug %}" >
                 <img src="{{ product.latest_image.img.url }}" alt="{{ product.title }}"
                     class="w-full h-48 object-cover rounded-lg">
                 <h3 class="text-lg font-medium mt-2 text-gray-800">{{ product.title }}</h3>
                 <p class=" font-small mt-2 text-gray-800">{{ product.category.name }}</p>
                 <p class="text-gray-600">₹{{ product.price }}</p>
-                <button class="mt-2 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+            </a>
+                <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
                     Add to Cart
                 </button>
-            </a>
+            </div>
             {% endfor %}
             {% else %}
             {% if messages %}

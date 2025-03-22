@@ -1,6 +1,7 @@
 from django.db import models
 from base.base_model import BaseModel
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 # Create your models here.
 class ProductCategory(BaseModel):
@@ -37,6 +38,8 @@ class Product(BaseModel):
     price = models.FloatField()
     stock = models.PositiveIntegerField(default=0)
     
+    def __str__(self):
+        return str(self.title) 
     
     def latest_image(self):
         return self.image.last()
@@ -54,3 +57,5 @@ class ProductImage(BaseModel):
     
     class Meta:
         get_latest_by = "created_at"
+        
+        
