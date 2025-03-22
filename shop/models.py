@@ -14,13 +14,13 @@ class ProductSubCategory(BaseModel):
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='sub_category')
 
     def __str__(self):
-        return str(self.name) 
+        return f'{str(self.name)}'
 
 class Product(BaseModel):
     title = models.CharField(max_length=100)
     slug = models.CharField(max_length=100, null=True, blank=True)
-    category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='products')
-    subcategory = models.ForeignKey(ProductSubCategory, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL,null=True, related_name='products')
+    subcategory = models.ForeignKey(ProductSubCategory, on_delete=models.SET_NULL,null=True,blank=True)
     description = models.TextField()
     price = models.FloatField()
     stock = models.PositiveIntegerField(default=0)
