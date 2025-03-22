@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse , redirect
 from . import models
 from django.contrib import messages
 from django.db.models import Q
-
+from orders.models import Cart, CartItem
 # Create your views here.
 
 def shop(request):
@@ -24,7 +24,7 @@ def shop(request):
     except models.ProductCategory.DoesNotExist:
         category_obj = None
     
-    if category_name == 'all':
+    if category_name == 'all' or category_name == '':
         if sort == 'az':
             products = models.Product.objects.all().order_by('title')
             print(sort)
@@ -85,8 +85,17 @@ def shop(request):
 def product_page(request, slug):
     try:
         product = models.Product.objects.get(slug=slug)
+        cart = Cart.objects.get(customer=request.user.extra)
+        cart_item = CartItem.objects.filter(cart=cart, product = product)
     except Exception as e:
         print(e)
-        return HttpResponse("Product NOt Found!")
-    return render(request, 'product.html', {'product':product})
+    item_count=None
+    exist = False
+    if cart_item.exists():
+        exist = True
+    if cart_item:
+        item_count = cart_item[0].quantity
+    else:
+        item_count = 0
+    return render(request, 'product.html', {'product':product, 'item_count': item_count, 'exist':exist })
     

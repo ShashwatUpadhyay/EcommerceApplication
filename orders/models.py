@@ -9,6 +9,23 @@ class Cart(BaseModel):
     customer  = models.ForeignKey(UserExtra, on_delete=models.CASCADE, related_name='cart')
     is_paid = models.BooleanField(default=False)
     
+    @property
+    def items(self):
+        return self.cartitems.all().count()
+    
+    @property
+    def total_price(self):
+        items = sum(item.product.price * item.quantity for item in self.cartitems.all())
+        return items
+    
+    @property
+    def tax(self):
+        return (self.total_price/100)* 18
+    
+    @property
+    def final_price(self):
+        return self.total_price + self.tax
+    
     def __str__(self):
         return self.customer.full_name 
     

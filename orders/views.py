@@ -5,6 +5,7 @@ from . import models
 from shop.models import Product
 from django.contrib import messages
 # Create your views here.
+
 def order(request):
     return HttpResponse(request, "This order home page")
 
@@ -23,3 +24,60 @@ def addToCart(request):
         print(e)
         messages.error(request, "Invalid Product ID")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='login')
+def removeFromCart(request):
+    customer = request.user
+    product_id = request.GET.get('product_id')
+    try:
+        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, is_paid = False)
+        cart_item = models.CartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_id))
+        
+        if cart_item.exists():
+            cart_item = cart_item[0]
+            cart_item.quantity -= 1
+            
+            if cart_item.quantity <= 0:
+                cart_item.delete()
+            else:
+                cart_item.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+@login_required(login_url='login')
+def removeItem(request):
+    customer = request.user
+    product_id = request.GET.get('product_id')
+    try:
+        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, is_paid = False)
+        cart_item = models.CartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_id))
+        
+        if cart_item.exists():
+            cart_item = cart_item[0]
+            cart_item.delete()
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+ 
+@login_required(login_url='login')   
+def cart(request):
+    customer = request.user
+    product_id = request.GET.get('product_id')
+    cart_item=None
+    
+    try:
+        cart = models.Cart.objects.get(customer = customer.extra, is_paid = False)
+        cart_item = models.CartItem.objects.filter(cart = cart)
+        total_price = cart.total_price
+        tax = cart.tax
+        final_price = cart.final_price
+    except Exception as e:
+        print(e)
+    return render(request , 'cart.html',{'cart_items':cart_item,'total_price':total_price,'tax':tax,'final_price':final_price})
+

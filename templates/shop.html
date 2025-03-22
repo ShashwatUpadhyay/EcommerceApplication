@@ -29,13 +29,13 @@
 
                 {% for category in categories %}
                 <details class="mb-4 group">
-                    <summary class="cursor-pointer font-medium text-gray-700 flex  float-center">
+                    <summary class="cursor-pointer justify font-medium text-gray-700 flex  float-center">
                         
                         <input type="radio" id="category" name="category" value="{{ category.slug }}" onchange="document.getElementById('filterForm').submit();"
                         {% if request.GET.category == category.slug|stringformat:"s" %}checked{% endif %} placeholder="{{ category.name }}"> 
                         <span class="float-left ml-3">{{ category.name }}</span>
                         {% if category.sub_category %}
-                        <span class="transition-transform duration-200 group-open:rotate-180">▼</span>
+                        <span class="ml-[10px] transition-transform duration-200 group-open:rotate-180  ">▼</span>
                         {% endif %}
                     </summary>
                     {% if category.sub_category %}
@@ -92,9 +92,17 @@
                 <p class=" font-small mt-2 text-gray-800">{{ product.category.name }}</p>
                 <p class="text-gray-600">₹{{ product.price }}</p>
             </a>
-                <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+            {% if product in request.user.extra.cart.cartitems.all %}
+                <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full flex bg-blue-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    <svg height='24' class='mx-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#000000" stroke-width="1.5"></path> <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#000000" stroke-width="1.5"></path> </g></svg>
+                    delete
+                </button>
+                {% else %}
+                <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full flex bg-blue-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    <svg height='24' class='mx-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#000000" stroke-width="1.5"></path> <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#000000" stroke-width="1.5"></path> </g></svg>
                     Add to Cart
                 </button>
+            {% endif %}
             </div>
             {% endfor %}
             {% else %}
