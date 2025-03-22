@@ -3,4 +3,9 @@ from shop.models import Product
 # Create your views here.
  
 def home(request):
-    return render(request,'home.html')
+    products = Product.objects.all()
+    cat = Product.objects.all().values('category__name').distinct()
+    context = {
+        'products':products
+    }
+    return render(request,'home.html',context)
