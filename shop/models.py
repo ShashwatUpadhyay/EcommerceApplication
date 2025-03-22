@@ -5,16 +5,27 @@ from django.utils.text import slugify
 # Create your models here.
 class ProductCategory(BaseModel):
     name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50, null=True, blank=True)
     
     def __str__(self):
         return str(self.name) 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(ProductCategory, self).save(*args, **kwargs)
     
 class ProductSubCategory(BaseModel):
     name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='sub_category')
 
     def __str__(self):
         return f'{str(self.name)}'
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(ProductSubCategory, self).save(*args, **kwargs)
 
 class Product(BaseModel):
     title = models.CharField(max_length=100)

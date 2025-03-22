@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponse , redirect
 from . import models
 from django.contrib import messages
+from django.db.models import Q
+
 # Create your views here.
 
 def shop(request):
@@ -10,37 +12,72 @@ def shop(request):
     category_name = request.GET.get('category')
     sort = request.GET.get('sort')
     
-    if category_name == 'all':
-        return render(request , 'shop.html',{'products':products, 'categories': category})
-
     category_obj = None
+    sub_category_obj = None
     try:
-        category_obj = models.ProductSubCategory.objects.get(name=category_name)
-        products = models.Product.objects.filter(subcategory = category_obj)
+        sub_category_obj = models.ProductSubCategory.objects.get(slug=category_name)
+    except models.ProductSubCategory.DoesNotExist:
+        sub_category_obj = None
+
+    try:
+        category_obj = models.ProductCategory.objects.get(slug=category_name)
+    except models.ProductCategory.DoesNotExist:
+        category_obj = None
+    
+    if category_name == 'all':
         if sort == 'az':
-            products = models.Product.objects.filter(subcategory = category_obj).order_by('title')
+            products = models.Product.objects.all().order_by('title')
             print(sort)
         elif sort == 'new':
-            products = models.Product.objects.filter(subcategory = category_obj).order_by('created_at')
+            products = models.Product.objects.all().order_by('created_at')
             print(sort)
             
         elif sort == 'lh':
-            products = models.Product.objects.filter(subcategory = category_obj).order_by('price')
+            products = models.Product.objects.all().order_by('price')
             print(sort)
             
         elif sort == 'hl':
-            products = models.Product.objects.filter(subcategory = category_obj).order_by('-price')
+            products = models.Product.objects.all().order_by('-price')
+            print(sort)
+        return render(request , 'shop.html',{'products':products, 'categories': category})
+
+    if category_name:
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj))
+    else:
+        products = models.Product.objects.all()
+    if sort == 'az':
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('title')
+        print(sort)
+    elif sort == 'new':
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('created_at')
+        print(sort)
+        
+    elif sort == 'lh':
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('price')
+        print(sort)
+        
+    elif sort == 'hl':
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('-price')
+        print(sort)
+
+    try:    
+        if sort == 'az':
+            products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('title')
+            print(sort)
+        elif sort == 'new':
+            products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('created_at')
             print(sort)
             
-        return render(request , 'shop.html',{'products':products, 'categories': category})
+        elif sort == 'lh':
+            products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('price')
+            print(sort)
             
-    except:
-        pass
-    try:
-        category_obj = models.ProductCategory.objects.get(name=category_name)
-        products = models.Product.objects.filter(category = category_obj)
-        return render(request , 'shop.html',{'products':products, 'categories': category})
-    except:
+        elif sort == 'hl':
+            products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('-price')
+            print(sort)
+        # return render(request , 'shop.html',{'products':products, 'categories': category})
+    except Exception as e:
+        print(e)
         messages.error(request , "Product Not Found")
     
     return render(request , 'shop.html',{'products':products, 'categories': category})

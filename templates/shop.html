@@ -17,6 +17,7 @@
 
             <!-- Category Dropdown -->
             <form id="filterForm" method="GET" action="{% url 'shop' %}">
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
                 <details class="mb-4">
                     <summary class="cursor-pointer font-medium text-gray-700 flex float-center">
                         <input type="radio" id="category" name="category" value="all" onchange="document.getElementById('filterForm').submit();"
@@ -30,7 +31,7 @@
                 <details class="mb-4 group">
                     <summary class="cursor-pointer font-medium text-gray-700 flex  float-center">
                         
-                        <input type="radio" id="category" name="category" value="{{ category.name }}" onchange="document.getElementById('filterForm').submit();"
+                        <input type="radio" id="category" name="category" value="{{ category.slug }}" onchange="document.getElementById('filterForm').submit();"
                         {% if request.GET.category == category.name|stringformat:"s" %}checked{% endif %} placeholder="{{ category.name }}"> 
                         <span class="float-left ml-3">{{ category.name }}</span>
                         <span class="transition-transform duration-200 group-open:rotate-180">▼</span>
@@ -38,7 +39,7 @@
                     <div class="mt-2 space-y-2 pl-4">
                         {% for sub in category.sub_category.all %}
                         <label class="flex items-center cursor-pointer">
-                            <input id="category" type="radio" name="category" value="{{ sub.name }}" class="mr-2 text-blue-500 focus:ring-2"
+                            <input id="category" type="radio" name="category" value="{{ sub.slug }}" class="mr-2 text-blue-500 focus:ring-2"
                                 onchange="document.getElementById('filterForm').submit();"
                                 {% if request.GET.category == sub.name|stringformat:"s" %}checked{% endif %}>
                             <span class="text-gray-700 hover:text-blue-500 transition">{{ sub.name }}</span>
@@ -56,20 +57,15 @@
 
         <!-- Products Section -->
         <div>
-            {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                <li{% if message.tags %} class="{% if message.tags == 'error' %}text-red-500{% endif %} {% if message.tags == 'success' %}text-green-500{% endif %}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+            
         <div class="flex mb-2 relative flex w-full max-w-xxs flex-row gap-1 text-on-surface dark:text-on-surface-dark">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50"> 
                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
             <input type="search"  class="w-full rounded-radius border border-outline bg-surface-alt py-2 pl-10 pr-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="search" placeholder="Search" aria-label="search"/>
             <form class="max-w-sm mx-auto" id="sortForm" method="get">
-                <select id="countries" name="sort" onselect="" onchange="document.getElementById('sortForm').submit();" class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+                <select id="countries" name="sort" onchange="document.getElementById('sortForm').submit();" class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                   <option disabled {% if not request.GET.sort %}selected{% endif %}>Sort By</option>
                   <option {% if request.GET.sort == 'new'|stringformat:"s" %}selected{% endif %} value="new">Newest Arrivals</option>
                   <option {% if request.GET.sort == 'az'|stringformat:"s" %}selected{% endif %} value="az">Name (A - Z)</option>
@@ -80,7 +76,7 @@
         </div>
         <section class="md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Product Card -->
-            
+            {% if products %}
             {% for product in products %}
             <a href="{% url 'product' product.slug %}" class="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
                 <img src="{{ product.latest_image.img.url }}" alt="{{ product.title }}"
@@ -93,6 +89,16 @@
                 </button>
             </a>
             {% endfor %}
+            {% else %}
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{% if message.tags == 'error' %}text-red-500{% endif %} {% if message.tags == 'success' %}text-green-500{% endif %}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endif %}
+
         </section>
     </div>
     </div>
