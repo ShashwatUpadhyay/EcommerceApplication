@@ -1,0 +1,8 @@
+db.sqlite3
+media/
+pycache/
+*.log
+*.pot
+*.pyc
+*.pyo
+.vscode/
