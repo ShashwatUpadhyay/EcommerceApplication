@@ -1,9 +1,10 @@
-from django.shortcuts import render , HttpResponse
+from django.shortcuts import render , HttpResponse, redirect
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from . import models
 from shop.models import Product
 from django.contrib import messages
+from account.models import Address
 # Create your views here.
 
 def order(request):
@@ -81,3 +82,41 @@ def cart(request):
         print(e)
     return render(request , 'cart.html',{'cart_items':cart_item,'total_price':total_price,'tax':tax,'final_price':final_price})
 
+@login_required(login_url='login')   
+def shipping(request):
+    ads = Address.objects.filter(user=request.user)
+    if request.method == 'POST':
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        country = request.POST.get('country')
+        state = request.POST.get('state')
+        city = request.POST.get('city')
+        address = request.POST.get('address')
+        zipcode = request.POST.get('zipcode')
+        phone = request.POST.get('phone')
+        print(country,
+            state,
+            city,
+            address,
+            zipcode,
+            full_name,
+            email,
+            phone
+            )
+        ads = Address.objects.create(user = request.user,
+                                     state = state,
+                                    city = city,
+                                    address = address,
+                                    pip_code = zipcode,
+                                    full_name = full_name,
+                                    email = email,
+                                    phone = phone
+                                     )
+        return redirect('')
+    return render(request, 'shipping.html',{'ads':ads})
+
+
+
+@login_required(login_url='login')   
+def payment(request):
+    return render(request , 'payment.html')

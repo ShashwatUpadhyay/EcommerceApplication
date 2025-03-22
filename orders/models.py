@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from account.models import UserExtra
 from base.base_model import BaseModel
 from shop.models import Product 
+from account.models import Address
 
 # Create your models here.
 class Cart(BaseModel):
@@ -33,3 +34,7 @@ class CartItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cartitems')
     product = models.ForeignKey(Product, null=True,on_delete=models.SET_NULL)
     quantity = models.IntegerField(default=0)
+    
+class Order(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING)

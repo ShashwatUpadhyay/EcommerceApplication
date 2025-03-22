@@ -20,9 +20,12 @@ class UserExtra(BaseModel):
 
 class Address(BaseModel):
     user = models.ForeignKey(User , on_delete=models.CASCADE, related_name='address')
+    full_name = models.CharField(max_length=50, null=True,blank=True)
+    email = models.CharField(max_length=50, null=True,blank=True)
+    phone = models.CharField(max_length=50, null=True,blank=True)
     country = models.CharField(max_length=20, null=True,blank=True)
     state = models.CharField(max_length=30, null=True,blank=True)
     city = models.CharField(max_length=50, null=True,blank=True)
-    area = models.CharField(max_length=50, null=True,blank=True)
-    landmark = models.CharField(max_length=50, null=True,blank=True)
+    address = models.CharField(max_length=50, null=True,blank=True)
     pin_code = models.CharField(max_length=20, null=True,blank=True)
+    selected = models.BooleanField(default=True)

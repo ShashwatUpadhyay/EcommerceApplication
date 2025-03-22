@@ -4,6 +4,25 @@
 {% load custom_filters %}
 <section class="bg-white py-8 antialiased dark:bg-white md:py-16">
     <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+      <nav class="text-2xl font-medium text-black dark:text-black mb-8" aria-label="breadcrumb">
+        <ol class="flex flex-wrap items-center gap-1">
+          <li class="flex items-center gap-1">
+            <a href="{% url 'cart' %}" class="hover:text-black font-bold dark:hover:text-black">Cart</a>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" stroke-width="2" stroke="currentColor" class="size-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </li>
+          <li class="flex items-center gap-1">
+            <a  class="hover:text-black dark:hover:text-black">Shipping</a>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" stroke-width="2" stroke="currentColor" class="size-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </li>
+          <li class="flex items-center text-black gap-1  dark:text-black" aria-current="page">Payment</li>
+        </ol>
+      </nav>
+
+    
       <h2 class="text-xl font-semibold text-gray-900 dark:text-black sm:text-2xl">Shopping Cart</h2>
   
       <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
@@ -33,12 +52,15 @@
                     </button>
                   </div>
                   <div class="text-end md:order-4 md:w-32">
-                    <p class="text-base font-bold text-gray-900 dark:text-black">₹{{ cart_item.product.price|multiply:cart_item.quantity|floatformat:2 }} </p>
-                  </div>
+                    {% comment %} <p class="text-base font-bold text-gray-900 dark:text-black"> ₹{{ cart_item.product.price|floatformat:2 }} </p> {% endcomment %}
+                    <p class="text-base font-bold text-gray-900 dark:text-black"> ₹{{ cart_item.product.price|multiply:cart_item.quantity|floatformat:2 }} </p>
+  
+                </div>
                 </div>
   
                 <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
                   <a href="{% url 'product' cart_item.product.slug %}" class="text-base font-medium text-gray-900 hover:underline dark:text-black">{{cart_item.product.title}}</a>
+                    <p class="">{{cart_item.product.price|floatformat:2}}</p>
                     <p class="text-base font-medium text-gray-900 hover:underline dark:text-black">{{cart_item.product.category.title}}</p>
                   <div class="flex items-center gap-4">
   
@@ -194,7 +216,7 @@
               </dl>
             </div>
   
-            <a href="#" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed to Checkout</a>
+            <a href="{% url 'shipping' %}" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed to Checkout</a>
   
             <div class="flex items-center justify-center gap-2">
               <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>

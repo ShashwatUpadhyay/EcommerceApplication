@@ -85,17 +85,24 @@ def shop(request):
 def product_page(request, slug):
     try:
         product = models.Product.objects.get(slug=slug)
-        cart = Cart.objects.get(customer=request.user.extra)
-        cart_item = CartItem.objects.filter(cart=cart, product = product)
+        cart = None
+        cart_item = None
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(customer=request.user.extra)
+            cart_item = CartItem.objects.filter(cart=cart, product = product)
     except Exception as e:
         print(e)
     item_count=None
     exist = False
-    if cart_item.exists():
-        exist = True
-    if cart_item:
-        item_count = cart_item[0].quantity
+    if request.user.is_authenticated:
+        if cart_item.exists():
+            exist = True
+        if cart_item:
+            item_count = cart_item[0].quantity
+        else:
+            item_count = 0
     else:
+        exist = False
         item_count = 0
     return render(request, 'product.html', {'product':product, 'item_count': item_count, 'exist':exist })
     
