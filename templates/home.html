@@ -1,33 +1,61 @@
-
 {% extends "index.html" %}
 {% block title %}Ecommerce Home page{% endblock title %}
 
 {% block content %}
 
-<div class="bg-orange-300 py-6 text-center">
-    <h1 class="text-xl font-bold">Maxima&reg; Aluminum Profile</h1>
-    <h2 class="text-lg">Maxima&reg; Stepper Motor & Drive | Maxima&reg; Actuator | Maxima&reg; Conveyor</h2>
+<div class="bg-orange-300 py-4 sm:py-6 text-center">
+    <h1 class="text-lg sm:text-xl font-bold">Maxima&reg; Aluminum Profile</h1>
+    <h2 class="text-sm sm:text-lg">Maxima&reg; Stepper Motor & Drive | Maxima&reg; Actuator | Maxima&reg; Conveyor</h2>
 </div>
 
-<div class="container mx-auto p-10">
+<div class="container mx-auto p-4 sm:p-10">
     <!-- Product Features -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         <div class="bg-white p-4 shadow rounded">
             <h3 class="font-bold text-lg">Product</h3>
-            <ul class="mt-2">
-                <li class="flex items-center space-x-2 text-2xl"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 50 50">
-                    <path d="M 11 4 C 7.1 4 4 7.1 4 11 L 4 39 C 4 42.9 7.1 46 11 46 L 39 46 C 42.9 46 46 42.9 46 39 L 46 14.900391 L 44 17.300781 L 44 39 C 44 41.8 41.8 44 39 44 L 11 44 C 8.2 44 6 41.8 6 39 L 6 11 C 6 8.2 8.2 6 11 6 L 37.199219 6 L 38.900391 4 L 11 4 z M 43.236328 7.7539062 L 23.914062 30.554688 L 15.78125 22.96875 L 14.417969 24.431641 L 24.083984 33.447266 L 44.763672 9.046875 L 43.236328 7.7539062 z"></path>
-                    </svg><span>1000+ Industrial Components</span></li>
-                <li class="flex items-center space-x-2 text-2xl"><svg viewBox="0 0 192 192" width="50" height="50" xmlns="http://www.w3.org/2000/svg" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="12" d="M95.958 22C121.031 42.867 149.785 42 158 42c-1.797 118.676-15 95-62.042 128C49 137 35.798 160.676 34 42c8.13 0 36.883.867 61.958-20Z"></path></g></svg><span>Reliable Products</span></li>
-                <li class="flex items-center space-x-2 text-2xl"><svg fill="#000000" viewBox="0 0 1024 1024" width="50" height="50" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M960 95.888l-256.224.001V32.113c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76h-256v-63.76c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76H64c-35.344 0-64 28.656-64 64v800c0 35.343 28.656 64 64 64h896c35.344 0 64-28.657 64-64v-800c0-35.329-28.656-63.985-64-63.985zm0 863.985H64v-800h255.776v32.24c0 17.679 14.32 32 32 32s32-14.321 32-32v-32.224h256v32.24c0 17.68 14.32 32 32 32s32-14.32 32-32v-32.24H960v799.984zM736 511.888h64c17.664 0 32-14.336 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32zm0 255.984h64c17.664 0 32-14.32 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.696 14.336 32 32 32zm-192-128h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32zm0-255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm-256 0h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm0 255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32z"></path></g></svg><span>25+ Years Experience</span></li>
+            <ul class="mt-2 space-y-2">
+                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50">
+                        <path d="M 11 4 C 7.1 4 4 7.1 4 11 L 4 39 C 4 42.9 7.1 46 11 46 L 39 46 C 42.9 46 46 42.9 46 39 L 46 14.900391 L 44 17.300781 L 44 39 C 44 41.8 41.8 44 39 44 L 11 44 C 8.2 44 6 41.8 6 39 L 6 11 C 6 8.2 8.2 6 11 6 L 37.199219 6 L 38.900391 4 L 11 4 z M 43.236328 7.7539062 L 23.914062 30.554688 L 15.78125 22.96875 L 14.417969 24.431641 L 24.083984 33.447266 L 44.763672 9.046875 L 43.236328 7.7539062 z"></path>
+                    </svg>
+                    <span>1000+ Industrial Components</span>
+                </li>
+                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
+                    <svg viewBox="0 0 192 192" width="30" height="30" xmlns="http://www.w3.org/2000/svg" fill="none">
+                        <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="12" d="M95.958 22C121.031 42.867 149.785 42 158 42c-1.797 118.676-15 95-62.042 128C49 137 35.798 160.676 34 42c8.13 0 36.883.867 61.958-20Z"></path>
+                    </svg>
+                    <span>Reliable Products</span>
+                </li>
+                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
+                    <svg fill="#000000" viewBox="0 0 1024 1024" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M960 95.888l-256.224.001V32.113c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76h-256v-63.76c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76H64c-35.344 0-64 28.656-64 64v800c0 35.343 28.656 64 64 64h896c35.344 0 64-28.657 64-64v-800c0-35.329-28.656-63.985-64-63.985zm0 863.985H64v-800h255.776v32.24c0 17.679 14.32 32 32 32s32-14.321 32-32v-32.224h256v32.24c0 17.68 14.32 32 32 32s32-14.32 32-32v-32.24H960v799.984zM736 511.888h64c17.664 0 32-14.336 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32zm0 255.984h64c17.664 0 32-14.32 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.696 14.336 32 32 32zm-192-128h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32zm0-255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm-256 0h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm0 255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32z"></path>
+                    </svg>
+                    <span>25+ Years Experience</span>
+                </li>
             </ul>
         </div>
         <div class="bg-white p-4 shadow rounded">
             <h3 class="font-bold text-lg">Advantage +</h3>
-            <ul class="mt-2">
-                <li class="flex items-center space-x-2 text-2xl"><svg fill="#000000"  width="50" height="50" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1072.588 960c0 167.266 96.226 245.308 189.29 320.64 116.555 94.532 247.793 200.922 261.346 526.419H396.07c13.553-325.497 144.79-431.887 261.345-526.419 93.064-75.332 189.29-153.374 189.29-320.64s-96.226-245.308-189.29-320.64C540.86 544.828 409.623 438.438 396.07 112.941h1127.153c-13.553 325.497-144.791 431.887-261.346 526.419-93.064 75.332-189.29 153.374-189.29 320.64m260.443-232.998c135.529-109.891 304.263-246.663 304.263-670.531V0H282v56.47c0 423.869 168.734 560.64 304.264 670.532 88.771 72.057 147.5 119.605 147.5 232.998 0 113.393-58.729 160.941-147.5 232.998C450.734 1302.889 282 1439.66 282 1863.529V1920h1355.294v-56.47c0-423.869-168.734-560.64-304.263-670.532-88.772-72.057-147.502-119.605-147.502-232.998 0-113.393 58.73-160.941 147.502-232.998M933.84 1274.665l-169.638 137.676c-74.315 60.197-138.353 112.037-172.687 225.317h736.264c-34.334-113.28-98.372-165.12-172.687-225.317l-169.638-137.676c-15.021-12.197-36.593-12.197-51.614 0" fill-rule="evenodd"></path> </g></svg><span>Fast Despatch</span></li>
-                <li class="flex items-center space-x-2 text-2xl"><svg fill="#000000" viewBox="0 0 24 24" width="50" height="50" id="secure" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><polyline id="secondary" points="9 11 11 13 15 9" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline><path id="primary" d="M12,21l.88-.38a11,11,0,0,0,6.63-9.26l.43-5.52a1,1,0,0,0-.76-1L12,3,4.82,4.8a1,1,0,0,0-.76,1l.43,5.52a11,11,0,0,0,6.63,9.26Z" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path></g></svg><span>Secure Payment</span></li>
-                <li class="flex items-center space-x-2 text-2xl"><svg viewBox="0 0 24 24" width="50" height="50" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C11.3953 1.25 10.8384 1.40029 10.2288 1.65242C9.64008 1.89588 8.95633 2.25471 8.1049 2.70153L6.03739 3.78651C4.99242 4.33487 4.15616 4.77371 3.51047 5.20491C2.84154 5.65164 2.32632 6.12201 1.95112 6.75918C1.57718 7.39421 1.40896 8.08184 1.32829 8.90072C1.24999 9.69558 1.24999 10.6731 1.25 11.9026V12.0974C1.24999 13.3268 1.24999 14.3044 1.32829 15.0993C1.40896 15.9182 1.57718 16.6058 1.95112 17.2408C2.32632 17.878 2.84154 18.3484 3.51047 18.7951C4.15616 19.2263 4.99241 19.6651 6.03737 20.2135L8.10481 21.2984C8.95628 21.7453 9.64006 22.1041 10.2288 22.3476C10.8384 22.5997 11.3953 22.75 12 22.75C12.6047 22.75 13.1616 22.5997 13.7712 22.3476C14.3599 22.1041 15.0437 21.7453 15.8951 21.2985L17.9626 20.2135C19.0076 19.6651 19.8438 19.2263 20.4895 18.7951C21.1585 18.3484 21.6737 17.878 22.0489 17.2408C22.4228 16.6058 22.591 15.9182 22.6717 15.0993C22.75 14.3044 22.75 13.3269 22.75 12.0975V11.9025C22.75 10.6731 22.75 9.69557 22.6717 8.90072C22.591 8.08184 22.4228 7.39421 22.0489 6.75918C21.6737 6.12201 21.1585 5.65164 20.4895 5.20491C19.8438 4.77371 19.0076 4.33487 17.9626 3.7865L15.8951 2.70154C15.0437 2.25472 14.3599 1.89589 13.7712 1.65242C13.1616 1.40029 12.6047 1.25 12 1.25ZM8.7708 4.04608C9.66052 3.57917 10.284 3.2528 10.802 3.03856C11.3062 2.83004 11.6605 2.75 12 2.75C12.3395 2.75 12.6938 2.83004 13.198 3.03856C13.716 3.2528 14.3395 3.57917 15.2292 4.04608L17.2292 5.09563C18.3189 5.66748 19.0845 6.07032 19.6565 6.45232C19.9387 6.64078 20.1604 6.81578 20.3395 6.99174L17.0088 8.65708L8.50895 4.18349L8.7708 4.04608ZM6.94466 5.00439L6.7708 5.09563C5.68111 5.66747 4.91553 6.07032 4.34352 6.45232C4.06131 6.64078 3.83956 6.81578 3.66054 6.99174L12 11.1615L15.3572 9.48289L7.15069 5.16369C7.07096 5.12173 7.00191 5.06743 6.94466 5.00439ZM2.93768 8.30737C2.88718 8.52125 2.84901 8.76413 2.82106 9.04778C2.75084 9.7606 2.75 10.6644 2.75 11.9415V12.0585C2.75 13.3356 2.75084 14.2394 2.82106 14.9522C2.88974 15.6494 3.02022 16.1002 3.24367 16.4797C3.46587 16.857 3.78727 17.1762 4.34352 17.5477C4.91553 17.9297 5.68111 18.3325 6.7708 18.9044L8.7708 19.9539C9.66052 20.4208 10.284 20.7472 10.802 20.9614C10.9656 21.0291 11.1134 21.0832 11.25 21.1255V12.4635L2.93768 8.30737ZM12.75 21.1255C12.8866 21.0832 13.0344 21.0291 13.198 20.9614C13.716 20.7472 14.3395 20.4208 15.2292 19.9539L17.2292 18.9044C18.3189 18.3325 19.0845 17.9297 19.6565 17.5477C20.2127 17.1762 20.5341 16.857 20.7563 16.4797C20.9798 16.1002 21.1103 15.6494 21.1789 14.9522C21.2492 14.2394 21.25 13.3356 21.25 12.0585V11.9415C21.25 10.6644 21.2492 9.7606 21.1789 9.04778C21.151 8.76412 21.1128 8.52125 21.0623 8.30736L17.75 9.96352V13C17.75 13.4142 17.4142 13.75 17 13.75C16.5858 13.75 16.25 13.4142 16.25 13V10.7135L12.75 12.4635V21.1255Z" fill="#000000"></path> </g></svg><span>Easy to Place Orders</span></li>
+            <ul class="mt-2 space-y-2">
+                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
+                    <svg fill="#000000" width="30" height="30" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1072.588 960c0 167.266 96.226 245.308 189.29 320.64 116.555 94.532 247.793 200.922 261.346 526.419H396.07c13.553-325.497 144.79-431.887 261.345-526.419 93.064-75.332 189.29-153.374 189.29-320.64s-96.226-245.308-189.29-320.64C540.86 544.828 409.623 438.438 396.07 112.941h1127.153c-13.553 325.497-144.791 431.887-261.346 526.419-93.064 75.332-189.29 153.374-189.29 320.64m260.443-232.998c135.529-109.891 304.263-246.663 304.263-670.531V0H282v56.47c0 423.869 168.734 560.64 304.264 670.532 88.771 72.057 147.5 119.605 147.5 232.998 0 113.393-58.729 160.941-147.5 232.998C450.734 1302.889 282 1439.66 282 1863.529V1920h1355.294v-56.47c0-423.869-168.734-560.64-304.263-670.532-88.772-72.057-147.502-119.605-147.502-232.998 0-113.393 58.73-160.941 147.502-232.998M933.84 1274.665l-169.638 137.676c-74.315 60.197-138.353 112.037-172.687 225.317h736.264c-34.334-113.28-98.372-165.12-172.687-225.317l-169.638-137.676c-15.021-12.197-36.593-12.197-51.614 0" fill-rule="evenodd"></path>
+                    </svg>
+                    <span>Fast Despatch</span>
+                </li>
+                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
+                    <svg fill="#000000" viewBox="0 0 24 24" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+                        <polyline id="secondary" points="9 11 11 13 15 9" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline>
+                        <path id="primary" d="M12,21l.88-.38a11,11,0,0,0,6.63-9.26l.43-5.52a1,1,0,0,0-.76-1L12,3,4.82,4.8a1,1,0,0,0-.76,1l.43,5.52a11,11,0,0,0,6.63,9.26Z" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
+                    </svg>
+                    <span>Secure Payment</span>
+                </li>
+                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
+                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C11.3953 1.25 10.8384 1.40029 10.2288 1.65242C9.64008 1.89588 8.95633 2.25471 8.1049 2.70153L6.03739 3.78651C4.99242 4.33487 4.15616 4.77371 3.51047 5.20491C2.84154 5.65164 2.32632 6.12201 1.95112 6.75918C1.57718 7.39421 1.40896 8.08184 1.32829 8.90072C1.24999 9.69558 1.24999 10.6731 1.25 11.9026V12.0974C1.24999 13.3268 1.24999 14.3044 1.32829 15.0993C1.40896 15.9182 1.57718 16.6058 1.95112 17.2408C2.32632 17.878 2.84154 18.3484 3.51047 18.7951C4.15616 19.2263 4.99241 19.6651 6.03737 20.2135L8.10481 21.2984C8.95628 21.7453 9.64006 22.1041 10.2288 22.3476C10.8384 22.5997 11.3953 22.75 12 22.75C12.6047 22.75 13.1616 22.5997 13.7712 22.3476C14.3599 22.1041 15.0437 21.7453 15.8951 21.2985L17.9626 20.2135C19.0076 19.6651 19.8438 19.2263 20.4895 18.7951C21.1585 18.3484 21.6737 17.878 22.0489 17.2408C22.4228 16.6058 22.591 15.9182 22.6717 15.0993C22.75 14.3044 22.75 13.3269 22.75 12.0975V11.9025C22.75 10.6731 22.75 9.69557 22.6717 8.90072C22.591 8.08184 22.4228 7.39421 22.0489 6.75918C21.6737 6.12201 21.1585 5.65164 20.4895 5.20491C19.8438 4.77371 19.0076 4.33487 17.9626 3.7865L15.8951 2.70154C15.0437 2.25472 14.3599 1.89589 13.7712 1.65242C13.1616 1.40029 12.6047 1.25 12 1.25ZM8.7708 4.04608C9.66052 3.57917 10.284 3.2528 10.802 3.03856C11.3062 2.83004 11.6605 2.75 12 2.75C12.3395 2.75 12.6938 2.83004 13.198 3.03856C13.716 3.2528 14.3395 3.57917 15.2292 4.04608L17.2292 5.09563C18.3189 5.66748 19.0845 6.07032 19.6565 6.45232C19.9387 6.64078 20.1604 6.81578 20.3395 6.99174L17.0088 8.65708L8.50895 4.18349L8.7708 4.04608ZM6.94466 5.00439L6.7708 5.09563C5.68111 5.66747 4.91553 6.07032 4.34352 6.45232C4.06131 6.64078 3.83956 6.81578 3.66054 6.99174L12 11.1615L15.3572 9.48289L7.15069 5.16369C7.07096 5.12173 7.00191 5.06743 6.94466 5.00439ZM2.93768 8.30737C2.88718 8.52125 2.84901 8.76413 2.82106 9.04778C2.75084 9.7606 2.75 10.6644 2.75 11.9415V12.0585C2.75 13.3356 2.75084 14.2394 2.82106 14.9522C2.88974 15.6494 3.02022 16.1002 3.24367 16.4797C3.46587 16.857 3.78727 17.1762 4.34352 17.5477C4.91553 17.9297 5.68111 18.3325 6.7708 18.9044L8.7708 19.9539C9.66052 20.4208 10.284 20.7472 10.802 20.9614C10.9656 21.0291 11.1134 21.0832 11.25 21.1255V12.4635L2.93768 8.30737ZM12.75 21.1255C12.8866 21.0832 13.0344 21.0291 13.198 20.9614C13.716 20.7472 14.3395 20.4208 15.2292 19.9539L17.2292 18.9044C18.3189 18.3325 19.0845 17.9297 19.6565 17.5477C20.2127 17.1762 20.5341 16.857 20.7563 16.4797C20.9798 16.1002 21.1103 15.6494 21.1789 14.9522C21.2492 14.2394 21.25 13.3356 21.25 12.0585V11.9415C21.25 10.6644 21.2492 9.7606 21.1789 9.04778C21.151 8.76412 21.1128 8.52125 21.0623 8.30736L17.75 9.96352V13C17.75 13.4142 17.4142 13.75 17 13.75C16.5858 13.75 16.25 13.4142 16.25 13V10.7135L12.75 12.4635V21.1255Z" fill="#000000"></path>
+                    </svg>
+                    <span>Easy to Place Orders</span>
+                </li>
             </ul>
         </div>
     </div>
@@ -36,8 +64,8 @@
     <div class="mt-6 bg-white p-4 shadow rounded">
         <h3 class="font-bold text-lg mb-2">FAQs</h3>
         <div class="space-y-2">
-            <div x-data="{ open: false }"  class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open"  class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
+            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
+                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
                     <span class="font-semibold">Returning Customers</span>
                     <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
                 </button>
@@ -54,73 +82,78 @@
                     <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
                 </button>
                 <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    Precision Bearing House is a 25-year-old company with HQ in New Delhi & branches in Chennai and Ahmedabad. We are the manufacturer, importer & exporter of Industrial Components used in Industrial Automation.
+                    Precision Bearing House is  a 25 year old company with HQ in New Delhi & branches in Chennai and Ahmedabad.  We are the manufacturer, importer & exporter of Industrial Components used in Industrial Automation
                 </div>
             </div>
-            
+
+
             <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
                 <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">If you are a Reseller/Trader</span>
+                    <span class="font-semibold">If you are a reseller/trader</span>
                     <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
                 </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white text-red-500">
-                    Sorry, we don't sell to Resellers/ Traders/ Shopkeepers. We sell directly to end users and machine manufacturers.
+                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white text-red">
+                    Sorry we don't sell to Resellers/ Traders/ Shopkeeprs. We sell directly to end users, machine manufacturers.
                 </div>
             </div>
-            
+
+
             <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
                 <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">Payment Options</span>
+                    <span class="font-semibold">Payment options</span>
                     <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
                 </button>
                 <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    On check-out, you have two options to choose from: <b>Bank Transfer</b> & <b>PayU</b>. <br>
-                    <b>PayU</b>: If you want to pay by Debit/Credit Card, please choose PayU. We accept Visa, Mastercard, Amex, Rupay, Diner & Wallets like PhonePe, PayZapp, and ITZ Cash. <br>
-                    <b>Bank Transfer</b>: You need to make an NEFT/IMPS from your bank. The order will be processed only after receipt of payment.
+                    On check-out you have two option to choose between: Bank Transfer & PayU    <br>
+      <b> PayU  :</b>   If you want to pay by Debit/Credit Card please choose PayU. PayU is India’s leading Payment Gateway for online payments.     We accept all major Credit / Debit Cards like Visa, Mastercard, Amex, Rupay, Diner & Wallets like  PhonePe, PayZapp, ITZ Cash.   <br>
+     <b>Bank Transfer :</b>     In Bank Transfer option, you have to make an NEFT/IMPS from your bank. Order  in this case will executed only on receipt of payment 
                 </div>
             </div>
-            
+
+
             <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
                 <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
                     <span class="font-semibold">Shipping</span>
                     <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
                 </button>
                 <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    All orders received by 3 PM are shipped the same day. We usually ship via Bluedart, DTDC, and Trackon. Shipping charges apply for surface mode. Contact us for air mode shipping costs.
+                    All orders received by 3PM are shipped same day.  We normally ship by Bluedart, DTDC, Trackon. All shipping charges are for surface mode only. Contact us  for shipping cost if you need it by Air mode. 
                 </div>
             </div>
-            
+
+
             <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
                 <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">International Customers</span>
+                    <span class="font-semibold">Internationals Customers</span>
                     <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
                 </button>
                 <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    Please email your inquiry to <b>sm@pbh.in</b>, and we will send you a sales quote with bank details.
+                    Please email your enquiry to sm@pbh.in , we will email you sales quote with bank details
                 </div>
             </div>
+            <!-- Repeat for other FAQ items -->
         </div>
     </div>
 </div>
 
-    <!-- Product Grid -->
-    <div x-data="{ currentIndex: 0, interval: null }" 
+<!-- Product Grid -->
+<div x-data="{ currentIndex: 0, interval: null }" 
      x-init="interval = setInterval(() => { currentIndex = (currentIndex + 1) % 2 }, 3000)" 
-     class="relative w-full overflow-hidden p-10">
+     class="relative w-full overflow-hidden p-4 sm:p-10">
 
     <!-- Slider Container -->
-    <div class="flex transition-transform duration-500 ease-in-out p-10" 
+    <div class="flex transition-transform duration-500 ease-in-out" 
          :style="'transform: translateX(-' + (currentIndex * 100) + '%)'">
         
         <!-- Slide 1 -->
         <div class="flex min-w-full justify-between space-x-4">
             {% for product in products %}
-            <div class="relative w-1/4 p-4 bg-white shadow rounded">
+            <div class="relative w-1/2 sm:w-1/4 p-2 sm:p-4 bg-white shadow rounded">
                 <a href="{% url 'product' product.slug %}">
-                <img src="{{product.latest_image.img.url}}" alt="{{product.title}}" class="w-full h-32 object-cover rounded-5">
-                <h4 class="font-bold mt-2">{{product.title}}</h4>
-                <p class="text-sm text-gray-600 mb-5">{{product.description}}</p>
-                <p class="absolute bottom-1 text-xl text-gray-600"><b>Rs {{product.price}}</b></p>
+                    <img src="{{product.latest_image.img.url}}" alt="{{product.title}}" class="w-full h-32 object-cover rounded">
+                    <h4 class="font-bold mt-2 text-sm sm:text-lg">{{product.title}}</h4>
+                    <p class="text-sm text-gray-600 mb-5">{{product.description}}</p>
+                    <p class="absolute bottom-1 text-sm sm:text-xl text-gray-600"><b>Rs {{product.price}}</b></p>
                 </a>
             </div>
             {% endfor %}
@@ -138,31 +171,24 @@
     </button>
 </div>
 
-
-
-
-<div class="max-w-5xl mx-auto pb-5">
+<!-- Product Categories -->
+<div class="max-w-5xl mx-auto pb-5 px-4 sm:px-6">
     <h2 class="text-2xl font-bold text-center mb-6">Product Categories</h2>
-
-    <!-- 3x3 Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         {% for category in catogery %}
-        <div class="bg-white p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
-            <img src="https://via.placeholder.com/80" alt="Icon" class="w-16 h-16 mb-3">
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
+            <img src="https://via.placeholder.com/80" alt="Icon" class="w-12 h-12 sm:w-16 sm:h-16 mb-3">
             <h3 class="text-lg font-semibold">{{category.name}}</h3>
             <p class="text-gray-600 text-sm text-center">High precision and efficiency.</p>
         </div>
         {% endfor %}
-
-       
     </div>
 </div>
 
 {% endblock content %}
 
 {% block script_body %}
-
 <script>
-    coonsolle.log('Hello from Home page');
+    console.log('Hello from Home page');
 </script>
 {% endblock script_body %}
