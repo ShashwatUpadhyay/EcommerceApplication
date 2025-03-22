@@ -136,50 +136,65 @@
     </div>
 </div>
 
-<!-- Product Grid -->
-<div x-data="{ currentIndex: 0, interval: null }" 
-     x-init="interval = setInterval(() => { currentIndex = (currentIndex + 1) % 2 }, 3000)" 
-     class="relative w-full overflow-hidden p-4 sm:p-10">
 
-    <!-- Slider Container -->
-    <div class="flex transition-transform duration-500 ease-in-out" 
-         :style="'transform: translateX(-' + (currentIndex * 100) + '%)'">
-        
-        <!-- Slide 1 -->
-        <div class="flex min-w-full justify-between space-x-4">
-            {% for product in products %}
-            <div class="relative w-1/2 sm:w-1/4 p-2 sm:p-4 bg-white shadow rounded">
-                <a href="{% url 'product' product.slug %}">
-                    <img src="{{product.latest_image.img.url}}" alt="{{product.title}}" class="w-full h-32 object-cover rounded">
-                    <h4 class="font-bold mt-2 text-sm sm:text-lg">{{product.title}}</h4>
-                    <p class="text-sm text-gray-600 mb-5">{{product.description}}</p>
-                    <p class="absolute bottom-1 text-sm sm:text-xl text-gray-600"><b>Rs {{product.price}}</b></p>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+<div x-data="{ 
+    currentIndex: 0, 
+    totalSlides: {{ slides|length }}, 
+    interval: null 
+}" 
+ x-init="interval = setInterval(() => { 
+    currentIndex = (currentIndex + 1) % totalSlides 
+ }, 3000)" 
+ class="relative w-full overflow-hidden p-4 sm:p-10">
 
-    <!-- Navigation Buttons -->
-    <button @click="currentIndex = (currentIndex - 1 + 2) % 2" 
-            class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-l">
-        &#10094;
-    </button>
-    <button @click="currentIndex = (currentIndex + 1) % 2" 
-            class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-r">
-        &#10095;
-    </button>
+<!-- Slider Container -->
+<div class="flex transition-transform duration-500 ease-in-out" 
+     :style="'transform: translateX(-' + (currentIndex * 100) + '%)'">
+    
+     {% for slide in slides %}
+     <div class="flex min-w-full justify-between space-x-4">
+         {% for product in slide %}
+         <div class="relative w-1/2 sm:w-1/4 p-2 sm:p-4 bg-white shadow rounded-lg">
+             <a href="{% url 'product' product.slug %}" class="block">
+                 <div class="w-full h-32 sm:h-32 overflow-hidden rounded-md">
+                     <img src="{{ product.latest_image.img.url }}" alt="{{ product.title }}" class="w-full h-full object-contain">
+                 </div>
+                 <h4 class="font-bold mt-2 text-sm sm:text-lg text-gray-900">{{ product.title }}</h4>
+                 <p class="text-xs sm:text-sm text-gray-600 mb-5 line-clamp-2">{{ product.description }}</p>
+                 <p class="absolute bottom-2 text-sm sm:text-lg text-gray-700 font-semibold">Rs {{ product.price }}</p>
+             </a>
+         </div>
+         {% endfor %}
+     </div>
+     {% endfor %}
 </div>
 
+<!-- Navigation Buttons -->
+<button @click="currentIndex = (currentIndex - 1 + totalSlides) % totalSlides" 
+        class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-l">
+    &#10094;
+</button>
+<button @click="currentIndex = (currentIndex + 1) % totalSlides" 
+        class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-r">
+    &#10095;
+</button>
+</div>
+
+
 <!-- Product Categories -->
-<div class="max-w-5xl mx-auto pb-5 px-4 sm:px-6">
-    <h2 class="text-2xl font-bold text-center mb-6">Product Categories</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+<div class="max-w-5xl mx-auto pb-10 px-4 sm:px-6">
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Product Categories</h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for category in catogery %}
-        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md flex flex-col items-center hover:shadow-lg transition">
-            <img src="https://via.placeholder.com/80" alt="Icon" class="w-12 h-12 sm:w-16 sm:h-16 mb-3">
-            <h3 class="text-lg font-semibold">{{category.name}}</h3>
-            <p class="text-gray-600 text-sm text-center">High precision and efficiency.</p>
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center">
+            <a href="/shop/?sort=&category={{ category.slug }}" class="w-full flex flex-col items-center">
+                <div class="w-full h-44 overflow-hidden rounded-lg">
+                    <img src="{{ category.img.url }}" alt="{{ category.name }}" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-semibold mt-4 text-gray-900">{{ category.name }}</h3>
+                
+            </a>
         </div>
         {% endfor %}
     </div>
