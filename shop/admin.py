@@ -6,7 +6,7 @@ class ProductImageAdmin(admin.StackedInline):
     model = ProductImage
     
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'price','category__name']
+    list_display = ['title', 'price','category']
     list_filter = ['category__name']
     inlines = [ProductImageAdmin]
 
