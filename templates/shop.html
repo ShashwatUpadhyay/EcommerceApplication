@@ -1,5 +1,18 @@
 {% extends "index.html" %}
 {% block title %}Ecommerce Home page{% endblock title %}
+{% block stylesheet %}
+#search-results {
+    position: absolute;
+    top: 100%; /* Position right below input */
+    left: 0;
+    z-index: 50; /* Ensure it appears above other elements */
+    background-color: white;
+    max-height: 200px; /* Prevent overflow */
+    overflow-y: auto; /* Enable scrolling if too many results */
+    display: none; /* Initially hidden */
+}
+
+{% endblock stylesheet %}
 
 {% block content %}
 
@@ -11,13 +24,32 @@
         <aside class="h-full sticky top-2 left-0 md:w-1/4 bg-white p-4 rounded-lg shadow-md transition-all duration-300 transform md:translate-x-0"
             id="sidebar">
             <h2 class="text-lg font-semibold mb-4 flex justify-between items-center">
+                Sort    
+                <button class="md:hidden text-gray-600" onclick="toggleSidebar()">✖</button>
+            </h2>
+
+            <form class="max-w-full ml-auto mb-3" id="sortForm" method="get">
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+                <input type="hidden" name="s" value="{{ request.GET.s }}">
+                <select id="countries" name="sort" onchange="document.getElementById('sortForm').submit();" class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <option disabled {% if not request.GET.sort %}selected{% endif %}>Sort By</option>
+                  <option {% if request.GET.sort == 'new'|stringformat:"s" %}selected{% endif %} value="new">Newest Arrivals</option>
+                  <option {% if request.GET.sort == 'az'|stringformat:"s" %}selected{% endif %} value="az">Name (A - Z)</option>
+                  <option {% if request.GET.sort == 'lh'|stringformat:"s" %}selected{% endif %} value="lh">Price - Low to High</option>
+                  <option {% if request.GET.sort == 'hl'|stringformat:"s" %}selected{% endif %} value="hl">Price - High to Low</option>
+                </select>
+              </form>              
+            <h2 class="text-lg font-semibold mb-4 flex justify-between items-center">
                 Category    
                 <button class="md:hidden text-gray-600" onclick="toggleSidebar()">✖</button>
             </h2>
 
             <!-- Category Dropdown -->
+
             <form id="filterForm" method="GET" action="{% url 'shop' %}">
                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                <input type="hidden" name="s" value="{{ request.GET.s }}">
+
                 <details class="mb-4">
                     <summary class="cursor-pointer font-medium text-gray-700 flex float-center">
                         <input type="radio" id="category" name="category" value="all" onchange="document.getElementById('filterForm').submit();"
@@ -66,21 +98,137 @@
         <!-- Products Section -->
         <div>
             
-        <div class="flex mb-2 relative flex w-full max-w-xxs flex-row gap-1 text-on-surface dark:text-on-surface-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50"> 
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-            <input type="search"  class="w-full rounded-radius border border-outline bg-surface-alt py-2 pl-10 pr-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="search" placeholder="Search" aria-label="search"/>
-            <form class="max-w-sm mx-auto" id="sortForm" method="get">
+        <div class="flex z-100  relative w-full flex-row text-on-surface dark:text-on-surface-dark">
+            <form class="flex mb-2 w-full" id="search" method="get">
                 <input type="hidden" name="category" value="{{ request.GET.category }}">
-                <select id="countries" name="sort" onchange="document.getElementById('sortForm').submit();" class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                  <option disabled {% if not request.GET.sort %}selected{% endif %}>Sort By</option>
-                  <option {% if request.GET.sort == 'new'|stringformat:"s" %}selected{% endif %} value="new">Newest Arrivals</option>
-                  <option {% if request.GET.sort == 'az'|stringformat:"s" %}selected{% endif %} value="az">Name (A - Z)</option>
-                  <option {% if request.GET.sort == 'lh'|stringformat:"s" %}selected{% endif %} value="lh">Price - Low to High</option>
-                  <option {% if request.GET.sort == 'hl'|stringformat:"s" %}selected{% endif %} value="hl">Price - High to Low</option>
-                </select>
-              </form>              
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                
+                <div class="relative w-full">
+                    <input type="text" name="s" id="search-input" class="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:ring focus:ring-blue-300 focus:outline-none" placeholder="Search...">
+                    <span class="absolute left-3 top-2 text-gray-400">
+                        <svg height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.9604 11.4802C19.9604 13.8094 19.0227 15.9176 17.5019 17.4512C16.9332 18.0247 16.2834 18.5173 15.5716 18.9102C14.3594 19.5793 12.9658 19.9604 11.4802 19.9604C6.79672 19.9604 3 16.1637 3 11.4802C3 6.79672 6.79672 3 11.4802 3C16.1637 3 19.9604 6.79672 19.9604 11.4802Z" stroke="#333333" stroke-width="2"></path>
+                            <path d="M18.1553 18.1553L21.8871 21.8871" stroke="#333333" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                    </span>
+                </div>
+            
+                <!-- Dropdown for search results -->
+            </form>
+            <ul id="search-results" class="absolute bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden"></ul>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const searchInput = document.getElementById("search-input");
+                    const resultsDropdown = document.getElementById("search-results");
+                
+                    searchInput.addEventListener("keyup", function () {
+                        let query = searchInput.value.trim();
+                
+                        if (query.length > 1) {
+                            fetch(`/shop/search/?s=${query}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    resultsDropdown.innerHTML = ""; // Clear previous results
+                                    resultsDropdown.style.display = "block"; // Show dropdown
+                
+                                    if (data.categories.length > 0) {
+                                        data.categories.forEach(item => {
+                                            let listItem = document.createElement("li");
+                                            listItem.classList.add("p-2", "hover:bg-gray-100", "cursor-pointer", "flex", "items-center");
+                                            let listImg = document.createElement("img");
+                                            listImg.src = `/media/${item.img}`;
+                                            console.log(listImg.src)
+                                            listImg.alt = item.name;
+                                            listImg.classList.add("w-10", "h-10", "rounded", "mr-3"); // Add styling (adjust as needed)
+                                            let listText = document.createElement("span");
+                                            listText.textContent = item.name + '  (category)';
+                                            listItem.appendChild(listImg);
+                                            listItem.appendChild(listText);
+                                            listItem.onclick = function () {
+                                                searchInput.value = item.slug;
+                                                resultsDropdown.style.display = "none";
+                                                window.location.href=`/shop/?category=${item.slug}`
+                                            };
+                                            resultsDropdown.appendChild(listItem);
+                                        });
+                                    } 
+                                    if (data.subcategories.length > 0) {
+                                        data.subcategories.forEach(item => {
+                                            let listItem = document.createElement("li");
+                                            listItem.classList.add("p-2", "hover:bg-gray-100", "cursor-pointer", "flex", "items-center");
+                                            let listImg = document.createElement("img");
+                                            listImg.src = 'https://plus.unsplash.com/premium_vector-1725881520027-886fd2125e64?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+                                            console.log(listImg.src)
+                                            listImg.alt = item.name;
+                                            listImg.classList.add("w-10", "h-10", "rounded", "mr-3"); // Add styling (adjust as needed)
+                                            let listText = document.createElement("span");
+                                            listText.textContent = item.name + '  (sub category)';
+                                            listItem.appendChild(listImg);
+                                            listItem.appendChild(listText);
+                                            listItem.onclick = function () {
+                                                searchInput.value = item.slug;
+                                                resultsDropdown.style.display = "none";
+                                                window.location.href=`/shop/?category=${item.slug}`
+                                            };
+                                            resultsDropdown.appendChild(listItem);
+                                        });
+                                    } 
+                                    if (data.products.length > 0) {
+                                        data.products.forEach(item => {
+                                            let listItem = document.createElement("li");
+                                            listItem.classList.add("p-2", "hover:bg-gray-100", "cursor-pointer", "flex", "items-center");
+                                            
+                                            function fetchImage(uid) {
+                                                fetch(`/shop/image/${uid}/`)  
+                                                    .then(response => response.json())  // Convert response to JSON
+                                                    .then(data => {
+                                                        if (data.image_url) {
+                                                            document.getElementById(`product-image-${uid}`).src = data.image_url;  // Set image src
+                                                        } else {
+                                                            console.error("No image found");
+                                                        }
+                                                    })
+                                                    .catch(error => console.error("Error fetching image:", error));
+                                            }
+                                            let listImg = document.createElement("img");
+                                            listImg.src = fetchImage(item.image);
+                                            listImg.alt = item.title;
+                                            listImg.id = `product-image-${item.image}`;
+                                            listImg.classList.add("w-10", "h-10", "rounded", "mr-3"); // Add styling (adjust as needed)
+                                            let listText = document.createElement("span");
+                                            listText.textContent = item.title;
+                                            listItem.appendChild(listImg);
+                                            listItem.appendChild(listText);
+                                            listItem.onclick = function () {
+                                                searchInput.value = item.slug;
+                                                resultsDropdown.style.display = "none";
+                                                window.location.href=`/shop/${item.slug}` // Submit form
+                                            };
+                                            resultsDropdown.appendChild(listItem);
+                                        });
+                                    }
+                                    {% comment %} else {
+                                        let noResults = document.createElement("li");
+                                        noResults.classList.add("p-2", "text-gray-500");
+                                        noResults.textContent = "No results found";
+                                        resultsDropdown.appendChild(noResults);
+                                    } {% endcomment %}
+                                })
+                                .catch(error => console.error("Error fetching results:", error));
+                        } else {
+                            resultsDropdown.style.display = "none"; // Hide dropdown if query is short
+                        }
+                    });
+                
+                    // Hide dropdown when clicking outside
+                    document.addEventListener("click", function (event) {
+                        if (!searchInput.contains(event.target) && !resultsDropdown.contains(event.target)) {
+                            resultsDropdown.style.display = "none";
+                        }
+                    });
+                });
+                </script>
+                
         </div>
         <section class="md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Product Card -->

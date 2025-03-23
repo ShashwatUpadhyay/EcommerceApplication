@@ -1,8 +1,11 @@
 from django.shortcuts import render, HttpResponse , redirect
+from django.http import JsonResponse
 from . import models
 from django.contrib import messages
 from django.db.models import Q
 from orders.models import Cart, CartItem
+from shop.models import ProductImage
+
 # Create your views here.
 
 def shop(request):
@@ -82,11 +85,31 @@ def shop(request):
     
     return render(request , 'shop.html',{'products':products, 'categories': category})
 
+def search_suggestions(request):
+    query = request.GET.get('s', '')
+    print(query)
+    if query:
+        products = models.Product.objects.filter(Q(title__icontains=query))[:5]  # Get top 5 results
+        category = models.ProductCategory.objects.filter(Q(name__icontains=query))[:5]  # Get top 5 results
+        subcategory = models.ProductSubCategory.objects.filter(Q(name__icontains=query))[:5]  # Get top 5 results
+        results = list(products.values('title', 'slug','price','uid','image'))  # Convert to JSON serializable format
+        categories = list(category.values('name', 'slug','uid','img'))  # Convert to JSON serializable format
+        subcategories = list(subcategory.values('name', 'slug','uid'))  # Convert to JSON serializable format
+        return JsonResponse({'products': results,'categories':categories,'subcategories':subcategories}) 
+    return JsonResponse({'results': [],'categories':[],'subcategories':[]}) 
+
+def get_img(request, uid):
+    image = ProductImage.objects.get(uid=uid)
+    return JsonResponse({'image_url': image.img.url})
+
+
+
 def product_page(request, slug):
+    cart = None
+    product = None
+    cart_item = CartItem.objects.all()
     try:
         product = models.Product.objects.get(slug=slug)
-        cart = None
-        cart_item = None
         if request.user.is_authenticated:
             cart = Cart.objects.get(customer=request.user.extra)
             cart_item = CartItem.objects.filter(cart=cart, product = product)
