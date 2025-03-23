@@ -9,11 +9,12 @@ def home(request):
     categories = ProductCategory.objects.all()
     products = [category.products.first() for category in categories if category.products.exists()]
     
-    slides = [products[i:i+4] for i in range(0, len(products), 4)]
+    slides = [products[i:i+2] for i in range(0, len(products), 2)]  
     cat = ProductCategory.objects.all().distinct()
+    
     context = {
-        'products':products,
-        'catogery':cat,
+        'products': products,
+        'catogery': cat,
         'slides': slides
     }
-    return render(request,'home.html',context)
+    return render(request, 'home.html', context)
