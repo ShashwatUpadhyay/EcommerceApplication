@@ -38,7 +38,7 @@ def removeFromCart(request):
             cart_item = cart_item[0]
             cart_item.quantity -= 1
             
-            if cart_item.quantity <= 0:
+            if cart_item.quantity <= cart_item.product.min_order_quanitity-1:
                 cart_item.delete()
             else:
                 cart_item.save()

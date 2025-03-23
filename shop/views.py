@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import Q
 from orders.models import Cart, CartItem
 from shop.models import ProductImage
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -14,6 +15,7 @@ def shop(request):
     
     category_name = request.GET.get('category')
     sort = request.GET.get('sort')
+    s = request.GET.get('s')
     
     category_obj = None
     sub_category_obj = None
@@ -27,74 +29,69 @@ def shop(request):
     except models.ProductCategory.DoesNotExist:
         category_obj = None
     
-    if category_name == 'all' or category_name == '':
+    if s:
+        products = models.Product.objects.filter(Q(title__icontains = s)|Q(category__name__icontains = s)|Q(subcategory__name__icontains = s))
+        p = Paginator(products,6)
+        page = request.GET.get('page')
+        products = p.get_page(page)
+        return render(request , 'shop.html',{'products':products, 'categories': category})
+
+    if category_name == 'all' or category_name == '' or not category_name:
         if sort == 'az':
             products = models.Product.objects.all().order_by('title')
-            print(sort)
         elif sort == 'new':
             products = models.Product.objects.all().order_by('-created_at')
-            print(sort)
-            
         elif sort == 'lh':
             products = models.Product.objects.all().order_by('price')
-            print(sort)
-            
         elif sort == 'hl':
             products = models.Product.objects.all().order_by('-price')
-            print(sort)
+        
+        p = Paginator(products,6)
+        page = request.GET.get('page')
+        products = p.get_page(page)
         return render(request , 'shop.html',{'products':products, 'categories': category})
 
     if category_name:
         products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj))
     else:
         products = models.Product.objects.all()
+        
     if sort == 'az':
         products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('title')
-        print(sort)
     elif sort == 'new':
-        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('created_at')
-        print(sort)
-        
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('created_at')        
     elif sort == 'lh':
-        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('price')
-        print(sort)
-        
+        products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('price')  
     elif sort == 'hl':
         products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('-price')
-        print(sort)
-
     try:    
         if sort == 'az':
             products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('title')
-            print(sort)
         elif sort == 'new':
             products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('created_at')
-            print(sort)
-            
         elif sort == 'lh':
             products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('price')
-            print(sort)
-            
         elif sort == 'hl':
             products = models.Product.objects.filter(Q(category = category_obj)|Q(subcategory = sub_category_obj)).order_by('-price')
-            print(sort)
-        # return render(request , 'shop.html',{'products':products, 'categories': category})
     except Exception as e:
         print(e)
         messages.error(request , "Product Not Found")
+    
+    p = Paginator(products,6)
+    page = request.GET.get('page')
+    products = p.get_page(page)
     
     return render(request , 'shop.html',{'products':products, 'categories': category})
 
 def search_suggestions(request):
     query = request.GET.get('s', '')
-    print(query)
     if query:
-        products = models.Product.objects.filter(Q(title__icontains=query))[:5]  # Get top 5 results
-        category = models.ProductCategory.objects.filter(Q(name__icontains=query))[:5]  # Get top 5 results
-        subcategory = models.ProductSubCategory.objects.filter(Q(name__icontains=query))[:5]  # Get top 5 results
-        results = list(products.values('title', 'slug','price','uid','image'))  # Convert to JSON serializable format
-        categories = list(category.values('name', 'slug','uid','img'))  # Convert to JSON serializable format
-        subcategories = list(subcategory.values('name', 'slug','uid'))  # Convert to JSON serializable format
+        products = models.Product.objects.filter(Q(title__icontains=query)|Q(category__name__icontains=query)|Q(subcategory__name__icontains=query))[:5]  
+        category = models.ProductCategory.objects.filter(Q(name__icontains=query))[:5]  
+        subcategory = models.ProductSubCategory.objects.filter(Q(name__icontains=query)|Q(category__name__icontains=query))[:5]  
+        results = list(products.values('title', 'slug','price','uid','image'))  
+        categories = list(category.values('name', 'slug','uid','img'))  
+        subcategories = list(subcategory.values('name', 'slug','uid'))  
         return JsonResponse({'products': results,'categories':categories,'subcategories':subcategories}) 
     return JsonResponse({'results': [],'categories':[],'subcategories':[]}) 
 

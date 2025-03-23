@@ -29,8 +29,12 @@
             </h2>
 
             <form class="max-w-full ml-auto mb-3" id="sortForm" method="get">
+                {% if request.GET.category %}
                 <input type="hidden" name="category" value="{{ request.GET.category }}">
+                {% endif %}
+                {% if request.GET.s %}
                 <input type="hidden" name="s" value="{{ request.GET.s }}">
+                {% endif %}
                 <select id="countries" name="sort" onchange="document.getElementById('sortForm').submit();" class="bg-gray-50 w-full border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500">
                   <option disabled {% if not request.GET.sort %}selected{% endif %}>Sort By</option>
                   <option {% if request.GET.sort == 'new'|stringformat:"s" %}selected{% endif %} value="new">Newest Arrivals</option>
@@ -47,8 +51,12 @@
             <!-- Category Dropdown -->
 
             <form id="filterForm" method="GET" action="{% url 'shop' %}">
+                {% if request.GET.sort %}
                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                {% endif %}
+                {% if request.GET.s %}
                 <input type="hidden" name="s" value="{{ request.GET.s }}">
+                {% endif %}
 
                 <details class="mb-4">
                     <summary class="cursor-pointer font-medium text-gray-700 flex float-center">
@@ -99,22 +107,34 @@
         <div>
             
         <div class="flex z-100  relative w-full flex-row text-on-surface dark:text-on-surface-dark">
-            <form class="flex mb-2 w-full" id="search" method="get">
-                <input type="hidden" name="category" value="{{ request.GET.category }}">
+            <form class="flex items-center mb-2 w-full border border-gray-300 rounded-md overflow-hidden" id="search" method="get">
+        {% if request.GET.sort %}
                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-                
-                <div class="relative w-full">
-                    <input type="text" name="s" id="search-input" class="w-full border border-gray-300 rounded-md pl-10 pr-4 py-2 focus:ring focus:ring-blue-300 focus:outline-none" placeholder="Search...">
+                {% endif %}
+                <div class="relative flex-grow">
+                    <input type="text" name="s" id="search-input"
+                        class="w-full pl-10 pr-4 py-2 focus:ring focus:ring-blue-300 focus:outline-none"
+                        placeholder="Search...">
                     <span class="absolute left-3 top-2 text-gray-400">
                         <svg height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19.9604 11.4802C19.9604 13.8094 19.0227 15.9176 17.5019 17.4512C16.9332 18.0247 16.2834 18.5173 15.5716 18.9102C14.3594 19.5793 12.9658 19.9604 11.4802 19.9604C6.79672 19.9604 3 16.1637 3 11.4802C3 6.79672 6.79672 3 11.4802 3C16.1637 3 19.9604 6.79672 19.9604 11.4802Z" stroke="#333333" stroke-width="2"></path>
+                            <path d="M19.9604 11.4802C19.9604 13.8094 19.0227 15.9176 17.5019 17.4512C16.9332 18.0247 16.2834 18.5173 15.5716 18.9102C14.3594 19.5793 12.9658 19.9604 11.4802 19.9604C6.79672 19.9604 3 16.1637 3 11.4802C3 6.79672 6.79672 3 11.4802 3C16.1637 3 19.9604 6.79672 19.9604 11.4802Z"
+                                stroke="#333333" stroke-width="2"></path>
                             <path d="M18.1553 18.1553L21.8871 21.8871" stroke="#333333" stroke-width="2" stroke-linecap="round"></path>
                         </svg>
                     </span>
                 </div>
             
-                <!-- Dropdown for search results -->
+                <!-- Search Button -->
+                <button type="submit"
+                    class="px-4 py-2 bg-blue-500 text-white hover:bg-blue-600 transition duration-200 focus:ring focus:ring-blue-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-4.35-4.35m1.4-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"></path>
+                    </svg>
+                </button>
             </form>
+            
             <ul id="search-results" class="absolute bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden"></ul>
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
@@ -130,7 +150,42 @@
                                 .then(data => {
                                     resultsDropdown.innerHTML = ""; // Clear previous results
                                     resultsDropdown.style.display = "block"; // Show dropdown
-                
+                                    
+                                    if (data.products.length > 0) {
+                                        data.products.forEach(item => {
+                                            let listItem = document.createElement("li");
+                                            listItem.classList.add("p-2", "hover:bg-gray-100", "cursor-pointer", "flex", "items-center");
+                                            
+                                            function fetchImage(uid) {
+                                                fetch(`/shop/image/${uid}/`)  
+                                                    .then(response => response.json())  // Convert response to JSON
+                                                    .then(data => {
+                                                        if (data.image_url) {
+                                                            document.getElementById(`product-image-${uid}`).src = data.image_url;  // Set image src
+                                                        } else {
+                                                            console.error("No image found");
+                                                        }
+                                                    })
+                                                    .catch(error => console.error("Error fetching image:", error));
+                                            }
+                                            let listImg = document.createElement("img");
+                                            listImg.src = fetchImage(item.image);
+                                            listImg.alt = item.title;
+                                            listImg.id = `product-image-${item.image}`;
+                                            listImg.classList.add("w-10", "h-10", "rounded", "mr-3"); // Add styling (adjust as needed)
+                                            let listText = document.createElement("span");
+                                            listText.textContent = item.title;
+                                            listItem.appendChild(listImg);
+                                            listItem.appendChild(listText);
+                                            listItem.onclick = function () {
+                                                searchInput.value = item.title;
+                                                resultsDropdown.style.display = "none";
+                                                document.getElementById("search").submit()
+                                                {% comment %} window.location.href=`/shop/${item.slug}/` // Submit form {% endcomment %}
+                                            };
+                                            resultsDropdown.appendChild(listItem);
+                                        });
+                                    }
                                     if (data.categories.length > 0) {
                                         data.categories.forEach(item => {
                                             let listItem = document.createElement("li");
@@ -173,46 +228,8 @@
                                             resultsDropdown.appendChild(listItem);
                                         });
                                     } 
-                                    if (data.products.length > 0) {
-                                        data.products.forEach(item => {
-                                            let listItem = document.createElement("li");
-                                            listItem.classList.add("p-2", "hover:bg-gray-100", "cursor-pointer", "flex", "items-center");
-                                            
-                                            function fetchImage(uid) {
-                                                fetch(`/shop/image/${uid}/`)  
-                                                    .then(response => response.json())  // Convert response to JSON
-                                                    .then(data => {
-                                                        if (data.image_url) {
-                                                            document.getElementById(`product-image-${uid}`).src = data.image_url;  // Set image src
-                                                        } else {
-                                                            console.error("No image found");
-                                                        }
-                                                    })
-                                                    .catch(error => console.error("Error fetching image:", error));
-                                            }
-                                            let listImg = document.createElement("img");
-                                            listImg.src = fetchImage(item.image);
-                                            listImg.alt = item.title;
-                                            listImg.id = `product-image-${item.image}`;
-                                            listImg.classList.add("w-10", "h-10", "rounded", "mr-3"); // Add styling (adjust as needed)
-                                            let listText = document.createElement("span");
-                                            listText.textContent = item.title;
-                                            listItem.appendChild(listImg);
-                                            listItem.appendChild(listText);
-                                            listItem.onclick = function () {
-                                                searchInput.value = item.slug;
-                                                resultsDropdown.style.display = "none";
-                                                window.location.href=`/shop/${item.slug}` // Submit form
-                                            };
-                                            resultsDropdown.appendChild(listItem);
-                                        });
-                                    }
-                                    {% comment %} else {
-                                        let noResults = document.createElement("li");
-                                        noResults.classList.add("p-2", "text-gray-500");
-                                        noResults.textContent = "No results found";
-                                        resultsDropdown.appendChild(noResults);
-                                    } {% endcomment %}
+                                    
+                                
                                 })
                                 .catch(error => console.error("Error fetching results:", error));
                         } else {
@@ -266,9 +283,73 @@
             {% endif %}
 
         </section>
+        
     </div>
+    
     </div>
-
+    {% if products %}
+<!-- ====== Pagination Section Start -->
+<div class="bg-gray-100 py-10 text-center dark:bg-dark">
+    <div>
+      <ul
+        class="mx-auto flex w-full max-w-[415px] items-center justify-between"
+      >
+        <li>
+            {% if products.has_previous %}
+          <a
+          href='?page={{products.previous_page_number}}{% if request.GET.sort %}&sort={{request.GET.sort}}{% endif %}{% if request.GET.s %}&s={{request.GET.s}}{% endif %}{% if request.GET.category %}&category={{request.GET.category}}{% endif %}'
+            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 py-2 text-base font-medium text-dark hover:bg-gray-2 dark:text-black dark:hover:bg-white/5"
+          >
+            <span>
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 17 17"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.325 14.825C11.175 14.825 11.025 14.775 10.925 14.65L5.27495 8.90002C5.04995 8.67502 5.04995 8.32503 5.27495 8.10002L10.925 2.35002C11.15 2.12502 11.5 2.12502 11.725 2.35002C11.95 2.57502 11.95 2.92502 11.725 3.15002L6.47495 8.50003L11.75 13.85C11.975 14.075 11.975 14.425 11.75 14.65C11.6 14.75 11.475 14.825 11.325 14.825Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            <span class="max-sm:hidden"> Previous </span>
+          </a>
+          {% endif %}
+        </li>
+        <p class="text-base font-medium text-dark dark:text-dark">
+          Page {{products.number}} to {{products.paginator.num_pages}}
+        </p>
+        <li>
+            {% if products.has_next %}
+          <a
+          href='?page={{products.next_page_number}}{% if request.GET.sort %}&sort={{request.GET.sort}}{% endif %}{% if request.GET.s %}&s={{request.GET.s}}{% endif %}{% if request.GET.category %}&category={{request.GET.category}}{% endif %}'
+            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 py-2 text-base font-medium text-dark hover:bg-gray-2 dark:text-dark dark:hover:bg-white/5"
+          >
+            <span class="max-sm:hidden"> Next </span>
+            <span>
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 17 17"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5.67495 14.825C5.52495 14.825 5.39995 14.775 5.27495 14.675C5.04995 14.45 5.04995 14.1 5.27495 13.875L10.525 8.50003L5.27495 3.15002C5.04995 2.92502 5.04995 2.57502 5.27495 2.35002C5.49995 2.12502 5.84995 2.12502 6.07495 2.35002L11.725 8.10002C11.95 8.32503 11.95 8.67502 11.725 8.90002L6.07495 14.65C5.97495 14.75 5.82495 14.825 5.67495 14.825Z"
+                  fill="currentCOlor"
+                />
+              </svg>
+            </span>
+          </a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- ====== Pagination Section End -->
+  {% endif %}
 </div>
 
 <!-- JavaScript for Sidebar Toggle -->
