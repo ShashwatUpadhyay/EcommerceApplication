@@ -103,16 +103,9 @@ def shipping(request):
             email,
             phone
             )
-        ads = Address.objects.create(user = request.user,
-                                     state = state,
-                                    city = city,
-                                    address = address,
-                                    pin_code = zipcode,
-                                    full_name = full_name,
-                                    email = email,
-                                    phone = phone
-                                     )
-        return redirect('')
+
+        ads = Address.objects.create(user = request.user,country=country,state = state,city = city,address = address,pin_code = zipcode,full_name = full_name,email = email,phone = phone)
+        return redirect('payment')
     return render(request, 'shipping.html',{'ads':ads})
 
 
