@@ -2,7 +2,7 @@ from django.db import models
 from base.base_model import BaseModel
 from django.utils.text import slugify
 from django.contrib.auth.models import User
-
+from django.apps import apps
 # Create your models here.
 class ProductCategory(BaseModel):
     name = models.CharField(max_length=50)
@@ -44,6 +44,11 @@ class Product(BaseModel):
     
     def latest_image(self):
         return self.image.last()
+
+    @property
+    def in_cart(self, user):
+        Cart = apps.get_model('orders', 'Cart')  
+        return user.extra in Cart.objects.filter(customer=user.extra, is_paid=False, cartitems__product=self)
     
     def save(self, *args, **kwargs):
         if not self.slug:

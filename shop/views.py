@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 def shop(request):
     category = models.ProductCategory.objects.all()
     products = models.Product.objects.all()
-    
+    # print(request.user.extra in Cart.objects.filter(customer=request.user.extra, is_paid=False, cartitems__product__in=products))
     category_name = request.GET.get('category')
     sort = request.GET.get('sort')
     s = request.GET.get('s')
