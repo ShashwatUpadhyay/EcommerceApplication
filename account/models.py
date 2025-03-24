@@ -6,6 +6,8 @@ class UserExtra(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='extra')
     verified = models.BooleanField(default=False)
     
+    
+    
     def __str__(self):
         return self.user.get_full_name() if self.user.get_full_name() else self.user.username
   

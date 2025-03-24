@@ -69,3 +69,5 @@ def login_page(request):
 def logoutpage(request):
     logout(request)
     return redirect('login')
+
+

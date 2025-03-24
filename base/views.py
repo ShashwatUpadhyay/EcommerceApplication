@@ -30,4 +30,3 @@ def profile(request):
         'user':user
     }
     return render(request,'profile.html',context)
-
