@@ -3,9 +3,14 @@ from orders.models import Cart
 def cart_item_count(request):
     if request.user.is_authenticated:
         try:
-            customer = request.user.extra
-            cart =  Cart.objects.get(customer=customer) 
-            count = cart.cartitems.count() 
+            customer = None
+            cart = None
+            count = 0
+            if not request.user.is_superuser:
+                customer = request.user.extra
+            if customer:
+                cart =  Cart.objects.get(customer=customer) 
+                count = cart.cartitems.count() 
         except Cart.DoesNotExist:
             count = 0
     else:

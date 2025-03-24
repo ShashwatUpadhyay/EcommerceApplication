@@ -60,7 +60,7 @@
   
                 <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
                   <a href="{% url 'product' cart_item.product.slug %}" class="text-base font-medium text-gray-900 hover:underline dark:text-black">{{cart_item.product.title}}</a>
-                    <p class="">{{cart_item.product.price|floatformat:2}}</p>
+                    <p class="">₹{{cart_item.product.price|floatformat:2}}</p>
                     <p class="text-base font-medium text-gray-900 hover:underline dark:text-black">{{cart_item.product.category.title}}</p>
                   <div class="flex items-center gap-4">
   

@@ -4,6 +4,8 @@ from account.models import UserExtra
 from base.base_model import BaseModel
 from shop.models import Product 
 from account.models import Address
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 # Create your models here.
 class Cart(BaseModel):
@@ -38,3 +40,10 @@ class CartItem(BaseModel):
 class Order(BaseModel):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     address = models.ForeignKey(Address , on_delete=models.DO_NOTHING)
+    
+    
+@receiver(post_save, sender=CartItem)
+def resultAnounced(sender, instance, created, **kwargs):
+    if created:
+        instance.quantity = instance.product.min_order_quanitity-1
+        instance.save()
