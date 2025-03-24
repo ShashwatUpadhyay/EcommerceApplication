@@ -77,6 +77,10 @@
                   <input type="text" value='{{address.pin_code}}' name="zipcode" id="postal-code" autocomplete="postal-code" class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 </div>
               </div>
+              <div class="flex items-center gap-x-3">
+                <input id="push-email" name="selected" {% if address.selected %}checked{% endif %}  type="checkbox" class="relative size-4 appearance-none rounded-full border border-gray-900 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-900 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden">
+                <label for="push-email" class="block text-sm/6 font-medium text-gray-900">Set as Default address</label>
+              </div>
             </div>
           </div>
       

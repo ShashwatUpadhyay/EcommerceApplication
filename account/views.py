@@ -78,6 +78,8 @@ def logoutpage(request):
 def address_edit(request, uid):
     address = models.Address.objects.get(uid=uid)
     if request.method == 'POST':
+        if request.POST.get('selected'):
+            models.Address.objects.filter(user=request.user).update(selected=False)
         address.email = request.POST.get('email')
         address.full_name = request.POST.get('full_name')
         address.address = request.POST.get('address')
@@ -86,6 +88,9 @@ def address_edit(request, uid):
         address.state = request.POST.get('state')
         address.pin_code = request.POST.get('zipcode')
         address.phone = request.POST.get('phone')
+        address.selected = True if request.POST.get('selected') else False
+        print(request.POST.get('selected'))
+        
         address.save()
         return redirect('profile')
     return render(request, 'address_edit.html', {'address':address})
@@ -100,7 +105,10 @@ def add_address(request):
         state = request.POST.get('state')
         pin_code = request.POST.get('zipcode')
         phone = request.POST.get('phone')
-        models.Address.objects.create(user=request.user, email=email, full_name=full_name, address=address, country=country, city=city, state=state, pin_code=pin_code, phone=phone)
+        selected = request.POST.get('selected')
+        if selected:
+            models.Address.objects.filter(user=request.user).update(selected=False)
+        models.Address.objects.create(user=request.user, email=email, full_name=full_name, address=address, country=country, city=city, state=state, pin_code=pin_code, phone=phone, selected=  True if selected else False)
         messages.success(request, 'Address added successfully.')
         return redirect('profile')
     return render(request, 'add_address.html')
