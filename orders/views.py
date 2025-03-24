@@ -5,6 +5,11 @@ from . import models
 from shop.models import Product
 from django.contrib import messages
 from account.models import Address
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+import json
+
 # Create your views here.
 
 def order(request):
@@ -94,10 +99,33 @@ def shipping(request):
         address = request.POST.get('address')
         zipcode = request.POST.get('zipcode')
         phone = request.POST.get('phone')
-        ads = Address.objects.create(user = request.user,country=country,state = state,city = city,address = address,pin_code = zipcode,full_name = full_name,email = email,phone = phone)
+        if full_name and email and country and state and city and address and zipcode and phone:
+            ads = Address.objects.create(user = request.user,country=country,state = state,city = city,address = address,pin_code = zipcode,full_name = full_name,email = email,phone = phone, selected = True)
+        
         return redirect('payment')
     return render(request, 'shipping.html',{'ads':ads})
 
+
+@csrf_exempt  # Disable CSRF for simplicity (use proper authentication in production)
+def select_address(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            address_uid = data.get("address_uid")
+            user = request.user  # Get the logged-in user
+
+            # Unselect all addresses
+            Address.objects.filter(user=user).update(selected=False)
+
+            # Set the selected address
+            selected_address = get_object_or_404(Address, uid=address_uid, user=user)
+            selected_address.selected = True
+            selected_address.save()
+
+            return JsonResponse({"success": True, "message": "Address updated successfully!"})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    return JsonResponse({"success": False, "error": "Invalid request"})
 
 
 @login_required(login_url='login')   
