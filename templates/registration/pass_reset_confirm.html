@@ -1,27 +1,43 @@
- {% extends "index.html" %}
+{% extends "index.html" %}
 {% block content %}
 
-<h1>Reset your password</h1>
-{% if validlink %}
-<p>
-    Please enter your new password
-</p>
-<form action="." method="post">
-    {% csrf_token %}
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password">
-    </div>
-    <div>
-        <label for="password2">Password (again):</label>
-        <input type="password" name="password2" id="password2">
-    </div>
-    <button type="submit">Reset password</button>
+<div class="max-w-md mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Reset Your Password</h1>
+    <p class="text-sm text-gray-600 text-center mb-6">
+        Please enter your new password below.
+    </p>
+    {% if user_id %}
+      
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">New Password:</label>
+            <input type="password" name="password" id="password" required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        
+        <div>
+            <label for="password2" class="block text-sm font-medium text-gray-700">Confirm Password:</label>
+            <input type="password" name="password2" id="password2" required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        
+        <input type="hidden" name="user_id" value="{{ user_id }}">
+        
+        <button type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition">
+        Reset Password
+    </button>
 </form>
 {% else %}
-<p>
-    The password reset link was invalid, possibly because it has already been used. Please request a new password reset.
+<p class="mt-4 text-sm text-gray-600 text-center">
+    If the password reset link was invalid or already used, 
+    <a href="{% url 'password_reset' %}" class="text-blue-600 hover:underline">request a new password reset</a>.
 </p>
 {% endif %}
+
+   
+</div>
 
 {% endblock %}

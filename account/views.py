@@ -5,6 +5,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.utils import timezone
+from .helper import send_forget_password_email
+import uuid
 
 # Create your views here.
 def register(request):
@@ -106,3 +109,69 @@ def delete_address(request, uid):
     address = models.Address.objects.get(uid=uid)
     address.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def ForgetPassword(request):
+    try:
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            if not User.objects.filter(email=email).exists():
+                messages.error(request, "Email Doesn't Exists")
+                return redirect('password_reset')
+            token = uuid.uuid4()
+            user = User.objects.get(email=email)
+            user_extra = models.UserExtra.objects.get(user=user)
+            user_extra.forgot_password_token = token
+            user_extra.forgot_password_token_created_at = timezone.now()
+            user_extra.save()
+            send_forget_password_email(email, token)
+            messages.error(request, "An email is sent to your email. Please reset your password.")
+            return redirect('password_reset')
+    except Exception as e:
+        print(e)
+    
+    return render(request, 'registration/pass_reset_form.html')
+
+
+def change_password(request,token):
+    context = {}
+    try:
+        
+        profile_obj = models.UserExtra.objects.get(forgot_password_token=token)
+        if profile_obj.forgot_password_token != token:
+            messages.error(request, "Invalid Request")
+            context = {
+            'user_id': None
+            }
+        
+            return render(request, 'registration/pass_reset_confirm.html',)
+            
+        if request.method == 'POST':
+            password = request.POST.get('password')
+            password2 = request.POST.get('password2')
+            user_id = request.POST.get('user_id')
+            if user_id is None:
+                messages.error(request, "Invalid Request")
+                return redirect('password_reset_confirm', token=token)
+            if password != password2:
+                messages.error(request, "Password Doesn't Match")
+                return redirect('password_reset_confirm', token=token)
+            user = profile_obj.user
+            user.set_password(password)
+            user.save()
+            profile_obj.forgot_password_token = None
+            profile_obj.forgot_password_token_created_at = None
+            profile_obj.save()
+            messages.success(request, "Password Changed Successfully")
+            return redirect('login')
+        
+        
+        
+        context = {
+            'user_id': profile_obj.user.id
+        }
+        
+        
+    except Exception as e:
+        print(e)    
+    return render(request, 'registration/pass_reset_confirm.html',context)
