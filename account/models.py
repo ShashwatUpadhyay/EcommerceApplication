@@ -6,6 +6,7 @@ class UserExtra(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='extra')
     forgot_password_token = models.CharField(max_length=100, null=True, blank=True)
     forgot_password_token_created_at = models.DateTimeField(null=True, blank=True)
+    change_password_token = models.CharField(max_length=100, null=True, blank=True)
     verified = models.BooleanField(default=False)
     
 

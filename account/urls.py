@@ -7,6 +7,7 @@ urlpatterns = [
     path('delete-address/<uid>/', views.delete_address, name='delete_address'),
     path('password-reset-form', views.ForgetPassword, name='password_reset'),
     path('password-reset-confirm/<token>', views.change_password, name='password_reset_confirm'),
+    path('password-change/', views.UserPassChange, name='passchange'),
     
     
 ]
