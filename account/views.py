@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.utils import timezone
 from .helper import send_forget_password_email
 import uuid
-
+import hashlib
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -183,3 +183,13 @@ def change_password(request,token):
     except Exception as e:
         print(e)    
     return render(request, 'registration/pass_reset_confirm.html',context)
+
+
+def UserPassChange(request):
+    try:
+        if request.method == 'POST':
+            pass
+    except Exception as e:
+        print(e)    
+    return render(request, 'userpass_change.html')
+
