@@ -4,17 +4,17 @@ from django.contrib.auth.models import User
 # Create your models here.
 class UserExtra(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='extra')
+    forgot_password_token = models.CharField(max_length=100, null=True, blank=True)
+    forgot_password_token_created_at = models.DateTimeField(null=True, blank=True)
     verified = models.BooleanField(default=False)
     
-    
-    
-    def __str__(self):
-        return self.user.get_full_name() if self.user.get_full_name() else self.user.username
-  
+
     @property
     def full_name(self):
         return self.user.get_full_name() if self.user.get_full_name() else self.user.username
 
+    def __str__(self):
+        return self.full_name.upper()
     
     @property
     def email(self):

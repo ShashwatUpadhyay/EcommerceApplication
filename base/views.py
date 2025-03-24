@@ -1,10 +1,8 @@
 from django.shortcuts import render
 from shop.models import *
-from itertools import groupby
-from operator import attrgetter
-from math import ceil
 from account.models import UserExtra
 from django.contrib.auth.decorators import login_required
+from account.models import Address
 # Create your views here.
  
 def home(request):
@@ -26,7 +24,9 @@ def home(request):
 def profile(request):
     user = request.user
     user = UserExtra.objects.get(user=user)
+    # address = Address.objects.filter(user=user)
     context = {
-        'user':user
+        'user':user,
+        # 'address':address,
     }
     return render(request,'profile.html',context)
