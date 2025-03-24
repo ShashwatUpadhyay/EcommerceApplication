@@ -29,12 +29,16 @@ class Cart(BaseModel):
     def final_price(self):
         return self.total_price + self.tax
     
+    @property
+    def all_items(self):
+        return self.cartitems.all()
+    
     def __str__(self):
         return self.customer.full_name 
     
 class CartItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cartitems')
-    product = models.ForeignKey(Product, null=True,on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True,on_delete=models.SET_NULL, related_name='incart')
     quantity = models.IntegerField(default=0)
     
 class Order(BaseModel):

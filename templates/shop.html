@@ -1,19 +1,18 @@
 {% extends "index.html" %}
 {% block title %}Ecommerce Home page{% endblock title %}
+{% load cart_filters %} {# Load the custom filter #}
 {% block stylesheet %}
 #search-results {
     position: absolute;
     top: 100%; /* Position right below input */
     left: 0;
-    z-index: 50; /* Ensure it appears above other elements */
     background-color: white;
-    max-height: 200px; /* Prevent overflow */
-    overflow-y: auto; /* Enable scrolling if too many results */
+    max-height: 300px; /* Prevent overflow */
+    overflow-y: scroll; /* Enable scrolling if too many results */
     display: none; /* Initially hidden */
 }
 
 {% endblock stylesheet %}
-
 {% block content %}
 
 <div class="bg-gray-100 min-h-screen">
@@ -54,9 +53,9 @@
                 {% if request.GET.sort %}
                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
                 {% endif %}
-                {% if request.GET.s %}
+                {% comment %} {% if request.GET.s %}
                 <input type="hidden" name="s" value="{{ request.GET.s }}">
-                {% endif %}
+                {% endif %} {% endcomment %}
 
                 <details class="mb-4">
                     <summary class="cursor-pointer font-medium text-gray-700 flex float-center">
@@ -106,7 +105,7 @@
         <!-- Products Section -->
         <div>
             
-        <div class="flex z-100  relative w-full flex-row text-on-surface dark:text-on-surface-dark">
+        <div class="flex relative w-full flex-row text-on-surface dark:text-on-surface-dark">
             <form class="flex items-center mb-2 w-full border border-gray-300 rounded-md overflow-hidden" id="search" method="get">
         {% if request.GET.sort %}
                 <input type="hidden" name="sort" value="{{ request.GET.sort }}">
@@ -251,7 +250,7 @@
             <!-- Product Card -->
             {% if products %}
             {% for product in products %}
-            <div class="block bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
+            <div class="block bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition">
             <a href="{% url 'product' product.slug %}" >
                 <img src="{{ product.latest_image.img.url }}" alt="{{ product.title }}"
                     class="w-full h-48 object-cover rounded-lg">
@@ -259,16 +258,23 @@
                 <p class=" font-small mt-2 text-gray-800">{{ product.category.name }}</p>
                 <p class="text-gray-600">₹{{ product.price }}</p>
             </a>
-            {% if product in request.user.extra.cart.cartitems.all %}
-                <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full flex bg-blue-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
-                    <svg height='24' class='mx-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#000000" stroke-width="1.5"></path> <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#000000" stroke-width="1.5"></path> </g></svg>
-                    delete
-                </button>
+            {% if request.user.is_authenticated %}
+                {% if product|in_cart:request.user %}
+                    <button onclick="window.location.href=`/order/remove-item/?product_id={{ product.uid }}`" class="mt-2 w-full flex bg-red-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-red-300 transition bottom-0">
+                        <svg height='25' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z" fill="#0F0F0F"></path> </g></svg>
+                        remove from cart
+                    </button>
+                    {% else %}
+                    <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full flex bg-blue-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition bottom-0">
+                        <svg height='24' class='mx-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#000000" stroke-width="1.5"></path> <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#000000" stroke-width="1.5"></path> </g></svg>
+                        Add to Cart
+                    </button>
+                {% endif %}
                 {% else %}
-                <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="mt-2 w-full flex bg-blue-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
-                    <svg height='24' class='mx-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#000000" stroke-width="1.5"></path> <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#000000" stroke-width="1.5"></path> </g></svg>
-                    Add to Cart
-                </button>
+                    <button onclick="window.location.href=`{% url 'login' %}`" class="mt-2 w-full flex bg-blue-500 justify-center text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition bottom-0">
+                        <svg height='24' class='mx-2' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M2 3L2.26491 3.0883C3.58495 3.52832 4.24497 3.74832 4.62248 4.2721C5 4.79587 5 5.49159 5 6.88304V9.5C5 12.3284 5 13.7426 5.87868 14.6213C6.75736 15.5 8.17157 15.5 11 15.5H19" stroke="#000000" stroke-width="1.5" stroke-linecap="round"></path> <path opacity="0.5" d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z" stroke="#000000" stroke-width="1.5"></path> <path opacity="0.5" d="M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z" stroke="#000000" stroke-width="1.5"></path> <path d="M5 6H16.4504C18.5054 6 19.5328 6 19.9775 6.67426C20.4221 7.34853 20.0173 8.29294 19.2078 10.1818L18.7792 11.1818C18.4013 12.0636 18.2123 12.5045 17.8366 12.7523C17.4609 13 16.9812 13 16.0218 13H5" stroke="#000000" stroke-width="1.5"></path> </g></svg>
+                        Add to Cart
+                    </button>
             {% endif %}
             </div>
             {% endfor %}
