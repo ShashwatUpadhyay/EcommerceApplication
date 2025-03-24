@@ -107,7 +107,7 @@ def shipping(request):
                                      state = state,
                                     city = city,
                                     address = address,
-                                    pip_code = zipcode,
+                                    pin_code = zipcode,
                                     full_name = full_name,
                                     email = email,
                                     phone = phone
