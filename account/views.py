@@ -114,7 +114,7 @@ def add_address(request):
     return render(request, 'add_address.html')
 
 def delete_address(request, uid):
-    address = models.Address.objects.get(uid=uid)
+    address = models.Address.objects.get(uid=uid)   
     address.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
