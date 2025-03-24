@@ -10,7 +10,14 @@
             <h1 class="text-2xl font-bold text-gray-800 mt-4">Reset Your Password</h1>
             <p class="text-gray-600 mt-2">Enter your email and we'll send you a link to reset your password.</p>
         </div>
-
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{% if message.tags == 'error' %}text-red-500{% endif %}{% if message.tags == 'info' %}text-blue-500{% endif %}{% if message.tags == 'success' %}text-green-500{% endif %}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
         <form method="POST" class="space-y-6">
             {% csrf_token %}
             

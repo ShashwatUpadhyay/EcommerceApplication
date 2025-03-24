@@ -114,7 +114,7 @@ def add_address(request):
     return render(request, 'add_address.html')
 
 def delete_address(request, uid):
-    address = models.Address.objects.get(uid=uid)
+    address = models.Address.objects.get(uid=uid)   
     address.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -133,7 +133,7 @@ def ForgetPassword(request):
             user_extra.forgot_password_token_created_at = timezone.now()
             user_extra.save()
             send_forget_password_email(email, token)
-            messages.error(request, "An email is sent to your email. Please reset your password.")
+            messages.info(request, "An email is sent to your email. Please reset your password.")
             return redirect('password_reset')
     except Exception as e:
         print(e)
