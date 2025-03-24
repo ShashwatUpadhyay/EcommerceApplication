@@ -1,0 +1,90 @@
+{% extends "index.html" %}
+{% block title %}Ecommerce Home page{% endblock title %}
+{% load cart_filters %} {# Load the custom filter #}
+{% block stylesheet %}
+
+{% endblock stylesheet %}
+{% block content %}
+<div class="container mx-auto flex justify-center">
+    
+    <form class='border rounded-lg px-12 py-6 my-10' method='POST'>
+        {% csrf_token %}
+          <div class="border-b border-gray-900/10 pb-12">
+            <h2 class="text-base/7 font-semibold text-gray-900">Personal Information</h2>
+            <p class="mt-1 text-sm/6 text-gray-600">Use a permanent address where you can receive mail.</p>
+      
+            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div class="sm:col-span-3">
+                <label for="full_name" class="block text-sm/6 font-medium text-gray-900">First name</label>
+                <div class="mt-2">
+                  <input type="text" name="full_name" value='{{address.full_name}}' id="full_name" autocomplete="given-name" class="border block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                </div>
+              </div>
+      
+              <div class="sm:col-span-3">
+                <label for="Phone" class=" block text-sm/6 font-medium text-gray-900">Phone</label>
+                <div class="mt-2">
+                  <input type="number" value='{{address.phone}}' name="phone" id="Phone" autocomplete="phone" class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                </div>
+              </div> 
+      
+              <div class="sm:col-span-4">
+                <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
+                <div class="mt-2">
+                  <input id="email" name="email" type="email" value='{{address.email}}' autocomplete="email" class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                </div>
+              </div>
+      
+              <div class="sm:col-span-3">
+                <label for="country" class="block text-sm/6 font-medium text-gray-900">Country</label>
+                <div class="mt-2 grid grid-cols-1">
+                  <select id="country" name="country" autocomplete="country-name" class="col-start-1 border row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <option {% if address.state == 'India' %} selected {% endif %}>India</option>
+                    <option {% if address.state == 'United States' %} selected {% endif %}>United States</option>
+                    <option {% if address.state == 'Canada' %} selected {% endif %}>Canada</option>
+                    <option {% if address.state == 'Mexico' %} selected {% endif %}>Mexico</option>
+                  </select>
+                  <svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" data-slot="icon">
+                    <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+      
+              <div class="col-span-full">
+                <label for="street-address" class="block text-sm/6 font-medium text-gray-900">Street address</label>
+                <div class="mt-2">
+                  <input type="text" name="address" value='{{address.address}}' id="street-address" autocomplete="street-address" class="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                </div>
+              </div>
+      
+              <div class="sm:col-span-2 sm:col-start-1">
+                <label for="city" class="block text-sm/6 font-medium text-gray-900">City</label>
+                <div class="mt-2">
+                  <input type="text" name="city" id="city" value='{{address.city}}' autocomplete="address-level2" class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-gray-600 sm:text-sm/6">
+                </div>
+              </div>
+      
+              <div class="sm:col-span-2">
+                <label for="region" class="block text-sm/6 font-medium text-gray-900">State / Province</label>
+                <div class="mt-2">
+                  <input type="text" name="state" value='{{address.state}}' id="region" autocomplete="address-level1" class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                </div>
+              </div>
+      
+              <div class="sm:col-span-2">
+                <label for="postal-code" class="block text-sm/6 font-medium text-gray-900">ZIP / Postal code</label>
+                <div class="mt-2">
+                  <input type="text" value='{{address.pin_code}}' name="zipcode" id="postal-code" autocomplete="postal-code" class="block w-full border rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                </div>
+              </div>
+            </div>
+          </div>
+      
+          
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+          <a href='{% url "profile" %}' type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</a>
+          <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+        </div>
+      </form>
+    </div>
+{% endblock content %}

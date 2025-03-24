@@ -94,15 +94,6 @@ def shipping(request):
         address = request.POST.get('address')
         zipcode = request.POST.get('zipcode')
         phone = request.POST.get('phone')
-        print(country,
-            state,
-            city,
-            address,
-            zipcode,
-            full_name,
-            email,
-            phone
-            )
         ads = Address.objects.create(user = request.user,country=country,state = state,city = city,address = address,pin_code = zipcode,full_name = full_name,email = email,phone = phone)
         return redirect('payment')
     return render(request, 'shipping.html',{'ads':ads})

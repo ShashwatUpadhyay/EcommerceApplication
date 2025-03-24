@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 def register(request):
@@ -69,3 +70,38 @@ def login_page(request):
 def logoutpage(request):
     logout(request)
     return redirect('login')
+
+def address_edit(request, uid):
+    address = models.Address.objects.get(uid=uid)
+    if request.method == 'POST':
+        address.email = request.POST.get('email')
+        address.full_name = request.POST.get('full_name')
+        address.address = request.POST.get('address')
+        address.country = request.POST.get('country')
+        address.city = request.POST.get('city')
+        address.state = request.POST.get('state')
+        address.pin_code = request.POST.get('zipcode')
+        address.phone = request.POST.get('phone')
+        address.save()
+        return redirect('profile')
+    return render(request, 'address_edit.html', {'address':address})
+
+def add_address(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        full_name = request.POST.get('full_name')
+        address = request.POST.get('address')
+        country = request.POST.get('country')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        pin_code = request.POST.get('zipcode')
+        phone = request.POST.get('phone')
+        models.Address.objects.create(user=request.user, email=email, full_name=full_name, address=address, country=country, city=city, state=state, pin_code=pin_code, phone=phone)
+        messages.success(request, 'Address added successfully.')
+        return redirect('profile')
+    return render(request, 'add_address.html')
+
+def delete_address(request, uid):
+    address = models.Address.objects.get(uid=uid)
+    address.delete()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
