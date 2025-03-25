@@ -21,10 +21,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
     path('', include('base.urls')), 
     path('user/', include('account.urls')),
     path('shop/', include('shop.urls')),
     path('order/', include('orders.urls')),
+    path('blog/', include('blog.urls')),
      
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
