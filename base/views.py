@@ -30,3 +30,6 @@ def profile(request):
         # 'address':address,
     }
     return render(request,'profile.html',context)
+
+
+

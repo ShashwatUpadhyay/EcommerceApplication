@@ -13,11 +13,10 @@ def send_forget_password_email(email, token):
     send_mail( subject,fail_silently, email_from, recipient_list , html_message=html_message)
     return True
 
-def user_change_pass(email, token):
-    token = token
-    subject = 'Password Changed Successfully'
-    message = f'Your password has been changed successfully. If you did not change your password then contact us immediately.'
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = [email]
-    send_mail( subject, message, email_from, recipient_list )
-    return True
+# def contact_submission(email):
+#     subject = 'Feedback & Support'
+#     message = f'Your password has been changed successfully. If you did not change your password then contact us immediately.'
+#     email_from = settings.EMAIL_HOST_USER
+#     recipient_list = [email]
+#     send_mail( subject, message, email_from, recipient_list )
+#     return True
