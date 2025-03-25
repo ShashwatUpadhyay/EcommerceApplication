@@ -6,8 +6,14 @@
 {% endblock stylesheet %}
 {% block content %}
 <div class="container mx-auto flex justify-center">
-    
-<div class='border rounded-lg px-12  my-10'>
+  <div class='border rounded-lg px-12  my-10 pt-5'>
+  {% if messages %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li {% if message.tags %} class="{% if message.tags == 'error' %}text-red-500{% endif %}{% if message.tags == 'info' %}text-blue-500{% endif %}{% if message.tags == 'success' %}text-green-500{% endif %}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-5">
         <h2 class="text-base/7 font-semibold text-gray-900">Profile</h2>
