@@ -14,7 +14,11 @@ import json
 # Create your views here.
 
 def order(request,  uid):
-    return render(request , 'order.html')
+    try:
+        order = models.Order.objects.get(uid = uid)
+    except Exception as e:
+        print(e)
+    return render(request , 'order.html',{'order':order})
 
 @login_required(login_url='login')
 def my_orders(request):
