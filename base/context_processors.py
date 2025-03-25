@@ -9,7 +9,7 @@ def cart_item_count(request):
             if not request.user.is_superuser:
                 customer = request.user.extra
             if customer:
-                cart =  Cart.objects.get(customer=customer) 
+                cart =  Cart.objects.get(customer=customer,order_taken=False) 
                 count = cart.cartitems.count() 
         except Cart.DoesNotExist:
             count = 0

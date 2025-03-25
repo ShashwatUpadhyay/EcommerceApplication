@@ -11,6 +11,7 @@ from django.dispatch import receiver
 class Cart(BaseModel):
     customer  = models.ForeignKey(UserExtra, on_delete=models.CASCADE, related_name='cart')
     is_paid = models.BooleanField(default=False)
+    order_taken = models.BooleanField(default=False)
     
     @property
     def items(self):
@@ -42,9 +43,34 @@ class CartItem(BaseModel):
     quantity = models.IntegerField(default=0)
     
 class Order(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    status_choices = (
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Canceled', 'Canceled'),
+        ('Returned', 'Returned'),
+        ('Refunded', 'Refunded'),
+    )
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='orders')
     address = models.ForeignKey(Address , on_delete=models.DO_NOTHING)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    status = models.CharField(max_length=100, choices=status_choices, default='Pending')
+    is_paid = models.BooleanField(default=False)
+    is_delivered = models.BooleanField(default=False)
+    delevery_date = models.DateTimeField(null=True, blank=True)
+    is_canceled = models.BooleanField(default=False)
+    canceled_date = models.DateTimeField(null=True, blank=True)
+    is_returned = models.BooleanField(default=False)
+    returned_date = models.DateTimeField(null=True, blank=True)
+    is_refunded = models.BooleanField(default=False)
+    refunded_date = models.DateTimeField(null=True, blank=True)
+   
+    def __str__(self):
+        return self.user.extra.full_name
     
+    class Meta:
+        ordering = ['-created_at']  
     
 @receiver(post_save, sender=CartItem)
 def resultAnounced(sender, instance, created, **kwargs):

@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.utils import timezone
 from .helper import send_forget_password_email
 import uuid
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -58,8 +58,8 @@ def login_page(request):
             login(request,user_obj)
             return redirect('/admin')
         
-        if not user_obj.verified:
-            messages.error(request, "Verification mail has been sent to email. Please Verify your account!")
+        # if not user_obj.verified:
+        #     messages.error(request, "Verification mail has been sent to email. Please Verify your account!")
             # return redirect('login')
         
         user_obj = authenticate(username=username, password=password)
@@ -185,12 +185,6 @@ def change_password(request,token):
     return render(request, 'registration/pass_reset_confirm.html',context)
 
 
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
-from django.contrib.auth.password_validation import validate_password
 
 @login_required
 def UserPassChange(request):
