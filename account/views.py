@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.utils import timezone
 from .helper import send_forget_password_email
 import uuid
-import hashlib
+from django.contrib.auth.hashers import check_password
 # Create your views here.
 def register(request):
     if request.method == 'POST':
@@ -185,11 +185,46 @@ def change_password(request,token):
     return render(request, 'registration/pass_reset_confirm.html',context)
 
 
+from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
+
+@login_required
 def UserPassChange(request):
     try:
         if request.method == 'POST':
-            pass
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            new_password2 = request.POST.get('confirm_password')
+            user = request.user
+
+            if not user.check_password(old_password):
+                messages.error(request, "Old Password is Incorrect")
+                return redirect('passchange')
+
+            if new_password != new_password2:
+                messages.error(request, "Passwords do not match!")
+                return redirect('passchange')
+
+            # try:
+            #     validate_password(new_password, user)
+            # except ValidationError as e:
+            #     messages.error(request, " ".join(e.messages))
+            #     return redirect('passchange')
+
+            user.set_password(new_password)
+            user.save()
+
+            update_session_auth_hash(request, user)
+
+            messages.success(request, "Password Changed Successfully")
+            return redirect('profile')
     except Exception as e:
-        print(e)    
+        print(e)
+
     return render(request, 'userpass_change.html')
+
 
