@@ -31,7 +31,7 @@ def shop(request):
     
     if s:
         products = models.Product.objects.filter(Q(title__icontains = s)|Q(category__name__icontains = s)|Q(subcategory__name__icontains = s))
-        p = Paginator(products,6)
+        p = Paginator(products,12)
         page = request.GET.get('page')
         products = p.get_page(page)
         return render(request , 'shop.html',{'products':products, 'categories': category})
@@ -46,7 +46,7 @@ def shop(request):
         elif sort == 'hl':
             products = models.Product.objects.all().order_by('-price')
         
-        p = Paginator(products,6)
+        p = Paginator(products,12)
         page = request.GET.get('page')
         products = p.get_page(page)
         return render(request , 'shop.html',{'products':products, 'categories': category})
@@ -77,7 +77,7 @@ def shop(request):
         print(e)
         messages.error(request , "Product Not Found")
     
-    p = Paginator(products,6)
+    p = Paginator(products,12)
     page = request.GET.get('page')
     products = p.get_page(page)
     
@@ -108,7 +108,7 @@ def product_page(request, slug):
     try:
         product = models.Product.objects.get(slug=slug)
         if request.user.is_authenticated:
-            cart = Cart.objects.get(customer=request.user.extra)
+            cart = Cart.objects.get(customer=request.user.extra,order_taken=False)
             cart_item = CartItem.objects.filter(cart=cart, product = product)
     except Exception as e:
         print(e)

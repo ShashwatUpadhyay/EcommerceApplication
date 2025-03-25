@@ -1,47 +1,66 @@
-<footer class="bg-gray-900 text-white py-10">
-    <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-6">
-        <!-- Company Info -->
+{% load static %}
+
+<footer class="bg-gray-100 text-gray-800 py-8 px-4">
+    <div class="container  mx-auto max-w-6xl">
+      <!-- Main Footer Content -->
+      <div class=" grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-8">
+        <!-- Contact Column -->
         <div>
-            <h2 class="text-xl font-semibold">ShopLogo</h2>
-            <p class="mt-2 text-gray-400">Your go-to online store for the best products at unbeatable prices.</p>
-        </div>
-        
-        <!-- Quick Links -->
-        <div>
-            <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
-            <ul class="space-y-2 text-gray-400">
-                <li><a href="#" class="hover:text-blue-400">Home</a></li>
-                <li><a href="#" class="hover:text-blue-400">Shop</a></li>
-                <li><a href="#" class="hover:text-blue-400">Categories</a></li>
-                <li><a href="#" class="hover:text-blue-400">Deals</a></li>
-                <li><a href="#" class="hover:text-blue-400">Contact</a></li>
-            </ul>
-        </div>
-        
-        <!-- Customer Service -->
-        <div>
-            <h3 class="text-lg font-semibold mb-3">Customer Service</h3>
-            <ul class="space-y-2 text-gray-400">
-                <li><a href="#" class="hover:text-blue-400">FAQs</a></li>
-                <li><a href="#" class="hover:text-blue-400">Shipping & Returns</a></li>
-                <li><a href="#" class="hover:text-blue-400">Privacy Policy</a></li>
-                <li><a href="#" class="hover:text-blue-400">Terms & Conditions</a></li>
-            </ul>
-        </div>
-        
-        <!-- Newsletter Subscription -->
-        <div>
-            <h3 class="text-lg font-semibold mb-3">Stay Updated</h3>
-            <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest deals and offers.</p>
-            <div class="flex items-center bg-white text-gray-800 rounded-lg overflow-hidden">
-                <input type="email" placeholder="Enter your email" class="px-4 py-2 w-full outline-none">
-                <button class="bg-blue-500 px-4 py-2 text-white">Subscribe</button>
+          <h3 class="text-lg font-semibold mb-4">How can we help?</h3>
+          <div class="space-y-2">
+            <p class="font-medium">Contact us</p>
+            <div>
+              <p class="font-medium">Call us:</p>
+              <p>+919310028857</p>
             </div>
+            <div>
+              <p class="font-medium">Email us:</p>
+              <p>sm@pbh.in</p>
+            </div>
+            <p>www.pbh.in</p>
+            <p class="mt-4 font-medium">25 Years in Banking</p>
+          </div>
         </div>
+  
+        <!-- Centered Logo/Image Column -->
+        <div class="flex items-center justify-center">
+          <!-- Replace with your actual image -->
+          <img src="{% static 'image/pbh25yrs_export.webp' %}" alt="Precision Bearing House Logo" class="h-full w-auto">
+        </div>
+  
+        <!-- Address Column -->
+        <div class="justify-end md:col-span-2 lg:col-span-1">
+          <h3 class="text-lg font-semibold mb-4">Contact us</h3>
+          <div class="space-y-2">
+            <p class="font-medium">Head Office New Delhi:</p>
+            <p class="font-bold">Precision Bearing House®</p>
+            <p>B-974, Naraina Industrial Area,</p>
+            <p>Phase- I, New Delhi - 110028 India</p>
+            <p>+919310028857</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Bottom Footer -->
+      <div class="border-t border-gray-300 pt-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <!-- Navigation Links -->
+          <div class="flex space-x-4 mb-4 md:mb-0">
+            <a href="#" class="hover:text-blue-600">Home</a>
+            <span>•</span>
+            <a href="#" class="hover:text-blue-600">About us</a>
+            <span>•</span>
+            <a href="#" class="hover:text-blue-600">Products</a>
+            <span>•</span>
+            <a href="#" class="hover:text-blue-600">Terms of Services</a>
+          </div>
+  
+          <!-- Copyright -->
+          <div class="text-sm text-center md:text-right">
+            <p>All Pages, Text & Images are Copyright © Precision Bearing House®</p>
+            <p>Powered by <span class="font-medium">0000</span> - The #1 Open Source eCommerce</p>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <!-- Copyright -->
-    <div class="text-center text-gray-400 mt-8 border-t border-gray-700 pt-4">
-        <p>&copy; 2025 ShopLogo. All rights reserved.</p>
-    </div>
-</footer>
+  </footer>

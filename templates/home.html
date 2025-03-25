@@ -199,7 +199,22 @@ class="relative w-full overflow-hidden p-4 sm:p-10">
         {% endfor %}
     </div>
 </div>
-
+{% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for message in messages %}
+                Swal.fire({
+                    position: "top-end",
+                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    title: "{{ message }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  
+            {% endfor %}
+        });
+    </script>
+{% endif %}
 {% endblock content %}
 
 {% block script_body %}
