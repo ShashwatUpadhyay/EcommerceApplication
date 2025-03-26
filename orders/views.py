@@ -81,7 +81,7 @@ def removeFromCart(request):
     customer = request.user
     product_id = request.GET.get('product_id')
     try:
-        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, is_paid = False)
+        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, order_taken=False)
         cart_item = models.CartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_id))
         
         if cart_item.exists():
