@@ -6,7 +6,7 @@ class CartItemAdmin(admin.StackedInline):
     model = CartItem
 
 class cartAdmin(admin.ModelAdmin):
-    list_display = ['customer','order_taken']
+    list_display = ['customer','order_taken','is_paid']
     list_filter = ['order_taken']
     inlines = [CartItemAdmin]
 

@@ -195,8 +195,6 @@ def select_address(request):
             return JsonResponse({"success": False, "error": str(e)})
     return JsonResponse({"success": False, "error": "Invalid request"})
 
-
-
     
 from django.urls import reverse
 
@@ -208,9 +206,9 @@ def payment(request):
     except Exception as e:
         print(e)
         return redirect('cart')
-    
+
     currency = 'INR'
-    amount = cart.final_price * 100 
+    amount = int(cart.final_price * 100 )
 
     # Create a Razorpay Order
     razorpay_order = razorpay_client.order.create(dict(amount=amount,
@@ -292,26 +290,20 @@ def paymenthandler(request, uid):
                 razorpay_client.payment.capture(payment_id, amount)
             
             # Update order
-            order, created = models.Order.objects.get_or_create(
+            order = models.Order.objects.create(
+                user = cart.customer.user,
                 cart=cart,
-                defaults={
-                    'user': cart.customer.user,
-                    'is_paid': True,
-                    'payment_id': payment_id,
-                    'razorpay_order_id': razorpay_order_id,
-                    'razorpay_payment_id': payment_id,
-                    'razorpay_signature': signature,
-                    'status': 'Processing'
-                }
+                is_paid=True,
+                payment_id=payment_id,
+                razorpay_order_id=razorpay_order_id,
+                razorpay_payment_id=payment_id,
+                razorpay_signature=signature,
+                status='Processing'
             )
-            
-            if not created:
-                order.is_paid = True
-                order.save()
+            print(order)
 
             # Update cart
             cart.is_paid = True
-            cart.order_taken = True
             cart.save()
 
             messages.success(request, "Payment successful!")
@@ -336,18 +328,25 @@ def order_place(request):
     customer = request.user
     print(customer)
     try:
-        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False,is_paid = False)
+
         address = Address.objects.get(user = customer, selected = True)
-        order = models.Order.objects.create(user = customer, address = address, cart = cart)
+        print(address)
+        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
+        order,_ = models.Order.objects.get_or_create(user = customer, cart = cart)
+        order.address = address
+        if _ :
+            order.is_paid = False
+        order.save()
+        
         cart.order_taken = True
         cart.save()
-        order.status='Processing'
-        order.save()
-        order_successful(order)
+        
+        # order_successful(order)
         messages.success(request, "Your order has been placed successfully.")
         return redirect('home')
     except Exception as e:
         print(e)
         messages.error(request, "Invalid Product ID")
-        # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
         return redirect('home')
+    

@@ -2,6 +2,7 @@
 {% block title %}Shipping{% endblock title %}
 {% block content %}
 {% load custom_filters %}
+{% load static %}
 <section class="bg-white py-8 antialiased dark:bg-white md:py-16">
     <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
       <!-- Progress/Breadcrumb Navigation -->
@@ -96,7 +97,6 @@
               </div>
           </div>
         </div>
-      {% comment %} </section> {% endcomment %}
   
         </div>
       </div>
@@ -106,45 +106,42 @@
   <script>
     var options = {
       
-      // Enter the Key ID generated from the Dashboard
       key: "{{ razorpay_merchant_key }}", 
       
-      // Amount is in currency subunits.
-      // Default currency is INR. Hence, 
-      // 50000 refers to 50000 paise
       amount: "{{ razorpay_amount }}", 
       currency: "{{ currency }}",
       prefill: {
-        name: "{{ request.user.extra.full_name }}",  // Customer name
-        email: "{{ request.user.email }}",        // Customer email  
+        name: "{{ request.user.extra.full_name }}",  
+        email: "{{ request.user.email }}",        
+        contact: "{{ cart.order.phone }}"     
     },
     theme: {
-      color: "yellow",             // Brand color
-      {% comment %} backdrop_color: "#f5f5f5",    // Background color {% endcomment %}
-      hide_topbar: false            // Show/hide Razorpay header
-  },
-  readonly: {
-    email: true,      // Make email uneditable
-    
-},
-handler: function(response) {
-  // Optional: Direct handling instead of callback_url
-  console.log(response);
-},
-
-    
-      // Your/store name.
+      color: "yellow",           
+      hide_topbar: false            
+    },
+    readonly: {
+      email: true,    
+    },
+    handler: function(response) {
+          console.log(response);
+    },
       name: "Ecommerce App", 
-      
-      // Pass the `id` obtained in the response of Step 1
+      image: '{% static 'image/pbh_logo_med.png' %}',
       order_id: "{{ razorpay_order_id }}", 
       callback_url: "{{ callback_url }}",
     };
     
-    // initialise razorpay with the options.
     var rzp1 = new Razorpay(options);
-    
-    // add event listener to the payment button.
+    rzp1.on('payment.failed', function (response){
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+      });
+
     document.getElementById("pay-btn").onclick = function (e) {
       rzp1.open();
       e.preventDefault();
