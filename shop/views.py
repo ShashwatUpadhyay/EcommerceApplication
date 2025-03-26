@@ -109,7 +109,8 @@ def product_page(request, slug):
         product = models.Product.objects.get(slug=slug)
         if request.user.is_authenticated:
             cart = Cart.objects.get(customer=request.user.extra,order_taken=False)
-            cart_item = CartItem.objects.filter(cart=cart, product = product)
+            if cart:
+                cart_item = CartItem.objects.filter(cart=cart, product = product)
     except Exception as e:
         print(e)
     item_count=None
@@ -117,6 +118,7 @@ def product_page(request, slug):
     if request.user.is_authenticated:
         if cart_item.exists():
             exist = True
+            
         if cart_item:
             item_count = cart_item[0].quantity
         else:

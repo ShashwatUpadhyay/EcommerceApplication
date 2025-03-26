@@ -42,6 +42,18 @@ class CartItem(BaseModel):
     product = models.ForeignKey(Product, null=True,on_delete=models.SET_NULL, related_name='incart')
     quantity = models.IntegerField(default=0)
     
+    @property
+    def total_price(self):
+        return self.product.price * self.quantity
+    
+    @property
+    def total_tax(self):
+        return (self.total_price/100)* 18
+    
+    @property
+    def final_price(self):
+        return self.total_price + self.total_tax
+    
 class Order(BaseModel):
     status_choices = (
         ('Pending', 'Pending'),
