@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from . import settings
 from django.conf.urls.static import static
-
+from orders.views import paymenthandler, payment
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
@@ -28,6 +28,9 @@ urlpatterns = [
     path('order/', include('orders.urls')),
     path('blog/', include('blog.urls')),
     path('contact/', include('contact.urls')),
+    path('payment/', payment, name='payment'),
+    path('payment/paymenthandle/<uid>/', paymenthandler, name='paymenthandler'),
+    
      
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
