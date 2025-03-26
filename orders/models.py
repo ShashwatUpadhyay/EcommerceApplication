@@ -65,8 +65,8 @@ class Order(BaseModel):
         ('Refunded', 'Refunded'),
     )
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='orders')
-    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING, null=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='order')
     status = models.CharField(max_length=100, choices=status_choices, default='Pending')
     is_paid = models.BooleanField(default=False)
     payment_id = models.CharField(max_length=200, null=True, blank=True)
@@ -87,7 +87,7 @@ class Order(BaseModel):
     
     class Meta:
         ordering = ['-created_at']  
-    
+        
 @receiver(post_save, sender=CartItem)
 def resultAnounced(sender, instance, created, **kwargs):
     if created:
