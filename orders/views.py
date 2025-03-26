@@ -26,12 +26,13 @@ razorpay_client = razorpay.Client(
 
 # Create your views here.
 
-def order(request,  uid):
+def order(request, uid):
     try:
-        order = models.Order.objects.get(uid = uid)
+        order = models.Order.objects.get(uid=uid)
     except Exception as e:
         print(e)
-    return render(request , 'order.html',{'order':order})
+        return HttpResponse("Order not found", status=404)  # ✅ Proper error response
+    return render(request, 'order.html', {'order': order})
 
 @login_required(login_url='login')
 def my_orders(request):
@@ -196,24 +197,6 @@ def select_address(request):
 
 
 
-@login_required(login_url='login')
-def order_place(request):
-    customer = request.user
-    try:
-        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False,is_paid = False)
-        address = Address.objects.get(user = customer, selected = True)
-        order = models.Order.objects.create(user = customer, address = address, cart = cart)
-        cart.order_taken = True
-        cart.save()
-        order.status='Processing'
-        order.save()
-        order_successful(order)
-        messages.success(request, "Your order has been placed successfully.")
-        return redirect('home')
-    except Exception as e:
-        print(e)
-        messages.error(request, "Invalid Product ID")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
 from django.urls import reverse
 
@@ -273,7 +256,7 @@ def paymenthandler(request, uid):
         payment_id = request.POST.get('razorpay_payment_id', '')
         razorpay_order_id = request.POST.get('razorpay_order_id', '')
         signature = request.POST.get('razorpay_signature', '')
-
+        print(payment_id, razorpay_order_id, signature)
         if not all([payment_id, razorpay_order_id, signature]):
             messages.error(request, "Missing payment parameters")
             return redirect('cart')
@@ -283,13 +266,10 @@ def paymenthandler(request, uid):
             'razorpay_payment_id': payment_id,
             'razorpay_signature': signature
         }
-
+        print(params_dict)
         # Verify signature
         try:
-            result = razorpay_client.utility.verify_payment_signature(params_dict)
-            if result is not None:
-                messages.error(request, "Signature verification failed")
-                return render(request, 'paymentfail.html')
+            razorpay_client.utility.verify_payment_signature(params_dict)
         except Exception as e:
             print(f"Signature verification error: {e}")
             messages.error(request, "Payment verification error")
@@ -301,6 +281,7 @@ def paymenthandler(request, uid):
             return redirect('order_place')  # Or wherever you want to redirect
 
         amount = int(cart.final_price * 100)
+        print(amount)
         
         try:
             # Check payment status before capturing
@@ -349,3 +330,24 @@ def paymenthandler(request, uid):
         messages.error(request, "Payment processing error occurred")
         return redirect('cart')
     
+
+@login_required(login_url='login')
+def order_place(request):
+    customer = request.user
+    print(customer)
+    try:
+        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False,is_paid = False)
+        address = Address.objects.get(user = customer, selected = True)
+        order = models.Order.objects.create(user = customer, address = address, cart = cart)
+        cart.order_taken = True
+        cart.save()
+        order.status='Processing'
+        order.save()
+        order_successful(order)
+        messages.success(request, "Your order has been placed successfully.")
+        return redirect('home')
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        return redirect('home')

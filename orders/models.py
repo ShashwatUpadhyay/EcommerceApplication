@@ -65,7 +65,7 @@ class Order(BaseModel):
         ('Refunded', 'Refunded'),
     )
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='orders')
-    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING)
+    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING,null=True, blank=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     status = models.CharField(max_length=100, choices=status_choices, default='Pending')
     is_paid = models.BooleanField(default=False)
