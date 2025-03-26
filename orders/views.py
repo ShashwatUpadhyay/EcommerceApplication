@@ -10,6 +10,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 import json
+from ecom.emails import order_successful
+from django.shortcuts import render
+import razorpay
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseBadRequest
+from ecom.settings import DOMAIN_NAME
+
+
+
+razorpay_client = razorpay.Client(
+    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
+
 
 # Create your views here.
 
@@ -81,7 +94,7 @@ def removeFromCart(request):
     customer = request.user
     product_id = request.GET.get('product_id')
     try:
-        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, is_paid = False)
+        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, order_taken=False)
         cart_item = models.CartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_id))
         
         if cart_item.exists():
@@ -103,7 +116,7 @@ def removeItem(request):
     customer = request.user
     product_id = request.GET.get('product_id')
     try:
-        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, is_paid = False)
+        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra, order_taken = False)
         cart_item = models.CartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_id))
         
         if cart_item.exists():
@@ -151,7 +164,13 @@ def shipping(request):
             ads = Address.objects.create(user = request.user,country=country,state = state,city = city,address = address,pin_code = zipcode,full_name = full_name,email = email,phone = phone, selected = True)
         
         return redirect('payment')
-    return render(request, 'shipping.html',{'ads':ads})
+    cart=None
+    try:
+        cart = models.Cart.objects.get(customer = request.user.extra,order_taken=False)
+    except Exception as e:
+        print(e)
+        return redirect('cart')
+    return render(request, 'shipping.html',{'ads':ads, 'cart':cart})
 
 
 @csrf_exempt  # Disable CSRF for simplicity (use proper authentication in production)
@@ -176,9 +195,6 @@ def select_address(request):
     return JsonResponse({"success": False, "error": "Invalid request"})
 
 
-@login_required(login_url='login')   
-def payment(request):
-    return render(request , 'payment.html')
 
 @login_required(login_url='login')
 def order_place(request):
@@ -191,10 +207,145 @@ def order_place(request):
         cart.save()
         order.status='Processing'
         order.save()
+        order_successful(order)
         messages.success(request, "Your order has been placed successfully.")
         return redirect('home')
     except Exception as e:
         print(e)
         messages.error(request, "Invalid Product ID")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+from django.urls import reverse
+
+@login_required(login_url='login')
+def payment(request):
+    cart=None
+    try:
+        cart = models.Cart.objects.get(customer = request.user.extra,order_taken=False)
+    except Exception as e:
+        print(e)
+        return redirect('cart')
+    
+    currency = 'INR'
+    amount = cart.final_price * 100 
+
+    # Create a Razorpay Order
+    razorpay_order = razorpay_client.order.create(dict(amount=amount,
+                                                       currency=currency,
+                                                       payment_capture='1'))
+
+    # order id of newly created order.
+    razorpay_order_id = razorpay_order['id']
+    callback_url = request.build_absolute_uri(
+        reverse('paymenthandler', kwargs={'uid': cart.uid})
+    )
+
+
+    # callback_url = '/payment/paymenthandler'
+
+
+
+    # we need to pass these details to frontend.
+    context = {}
+    context['razorpay_order_id'] = razorpay_order_id
+    context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
+    context['razorpay_amount'] = amount
+    context['currency'] = currency
+    context['callback_url'] = callback_url
+    context['cart'] = cart
+
+    return render(request , 'payment.html', context=context)
+
+@csrf_exempt
+def paymenthandler(request, uid):
+    try:
+        cart = models.Cart.objects.get(uid=uid)
+    except Exception as e:
+        print(f"Cart error: {e}")
+        messages.error(request, "Invalid Cart ID")
+        return redirect('cart')  # Make sure 'cart' is a valid URL name
+
+    if request.method != "POST":
+        messages.error(request, "Invalid Request Method")
+        return redirect('cart')
+
+    try:
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+
+        if not all([payment_id, razorpay_order_id, signature]):
+            messages.error(request, "Missing payment parameters")
+            return redirect('cart')
+
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+
+        # Verify signature
+        try:
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            if result is not None:
+                messages.error(request, "Signature verification failed")
+                return render(request, 'paymentfail.html')
+        except Exception as e:
+            print(f"Signature verification error: {e}")
+            messages.error(request, "Payment verification error")
+            return render(request, 'paymentfail.html')
+
+        # Check if payment already exists
+        if models.Order.objects.filter(razorpay_payment_id=payment_id).exists():
+            messages.warning(request, "This payment was already processed")
+            return redirect('order_place')  # Or wherever you want to redirect
+
+        amount = int(cart.final_price * 100)
+        
+        try:
+            # Check payment status before capturing
+            payment = razorpay_client.payment.fetch(payment_id)
+            if payment['status'] == 'captured':
+                messages.info(request, "Payment was already captured")
+            else:
+                razorpay_client.payment.capture(payment_id, amount)
+            
+            # Update order
+            order, created = models.Order.objects.get_or_create(
+                cart=cart,
+                defaults={
+                    'user': cart.customer.user,
+                    'is_paid': True,
+                    'payment_id': payment_id,
+                    'razorpay_order_id': razorpay_order_id,
+                    'razorpay_payment_id': payment_id,
+                    'razorpay_signature': signature,
+                    'status': 'Processing'
+                }
+            )
+            
+            if not created:
+                order.is_paid = True
+                order.save()
+
+            # Update cart
+            cart.is_paid = True
+            cart.order_taken = True
+            cart.save()
+
+            messages.success(request, "Payment successful!")
+            return redirect('order_place')  # Ensure this URL name exists
+
+        except razorpay.errors.BadRequestError as e:
+            if 'already captured' in str(e):
+                messages.warning(request, "Payment was already processed")
+                return redirect('order_place')
+            print(f"Razorpay capture error: {e}")
+            messages.error(request, "Payment processing failed")
+            return render(request, 'paymentfail.html')
+
+    except Exception as e:
+        print(f"General error: {e}")
+        messages.error(request, "Payment processing error occurred")
+        return redirect('cart')
     
