@@ -1,5 +1,5 @@
 {% extends "index.html" %}
-{% block title %}Ecommerce Home page{% endblock title %}
+{% block title %}Shop{% endblock title %}
 {% load cart_filters %} {# Load the custom filter #}
 {% block stylesheet %}
 #search-results {
@@ -13,7 +13,12 @@
     display: none; /* Initially hidden */
 }
 
-
+.rotate-180 {
+    transform: rotate(180deg);
+}
+.transition-transform {
+    transition-property: transform;
+}
 {% endblock stylesheet %}
 {% block content %}
 
@@ -21,132 +26,151 @@
 
     <div class="container mx-auto p-4 flex flex-col md:flex-row gap-4">
         
-        <!-- Sidebar -->
-        <aside class="h-full z-100 sticky top-2 left-0 md:w-1/4 bg-white p-4 rounded-lg shadow-md border border-gray-200 transition-all duration-300 transform md:translate-x-0" id="sidebar">
-            <!-- Header with close button -->
-            <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-                <h2 class="text-xl font-bold text-gray-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                    Filters
-                </h2>
-                <button class="md:hidden text-gray-500 hover:text-gray-700" onclick="toggleSidebar()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        
-            <!-- Sort Section -->
-            <div class="mb-6">
-                <h3 class="text-md font-semibold mb-3 text-gray-700 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
-                    </svg>
-                    Sort Options
-                </h3>
-                <form class="max-w-full" id="sortForm" method="get">
-                    {% if request.GET.category %}
-                    <input type="hidden" name="category" value="{{ request.GET.category }}">
-                    {% endif %}
-                    {% if request.GET.s %}
-                    <input type="hidden" name="s" value="{{ request.GET.s }}">
-                    {% endif %}
-                    <select id="sortSelect" name="sort" onchange="document.getElementById('sortForm').submit();" 
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option disabled {% if not request.GET.sort %}selected{% endif %}>Choose sorting</option>
-                        <option {% if request.GET.sort == 'new'|stringformat:"s" %}selected{% endif %} value="new">Newest Arrivals</option>
-                        <option {% if request.GET.sort == 'az'|stringformat:"s" %}selected{% endif %} value="az">Name (A-Z)</option>
-                        <option {% if request.GET.sort == 'lh'|stringformat:"s" %}selected{% endif %} value="lh">Price: Low to High</option>
-                        <option {% if request.GET.sort == 'hl'|stringformat:"s" %}selected{% endif %} value="hl">Price: High to Low</option>
-                    </select>
-                </form>
-            </div>
-        
-            <!-- Categories Section -->
-            <div>
-                <h3 class="text-md font-semibold mb-3 text-gray-700 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
-                    Product Categories
-                </h3>
-        
-                <form id="filterForm" method="GET" action="{% url 'shop' %}" class="space-y-3">
-                    {% if request.GET.sort %}
-                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
-                    {% endif %}
-        
-                    <!-- All Products Option -->
-                    <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
-                        <input type="radio" id="category_all" name="category" value="all" 
+<!-- Mobile Sidebar Overlay (hidden by default) -->
+<div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50  hidden md:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed z-[200] md:sticky md:top-4 left-0 h-full md:h-[calc(100vh-2rem)] w-72 md:w-64 bg-white p-4 shadow-lg border border-gray-200 rounded-lg transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-50 md:z-auto overflow-y-auto">
+        <!-- Header with close button -->
+        <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
+            <h2 class="text-lg font-bold text-gray-800 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Filters
+            </h2>
+            <button class="md:hidden text-gray-500 hover:text-gray-700" onclick="toggleSidebar()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Sort Section -->
+        <div class="mb-6">
+            <h3 class="text-sm font-semibold mb-2 text-gray-700 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+                </svg>
+                Sort Options
+            </h3>
+            <form class="max-w-full" id="sortForm" method="get">
+                {% if request.GET.category %}
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+                {% endif %}
+                {% if request.GET.s %}
+                <input type="hidden" name="s" value="{{ request.GET.s }}">
+                {% endif %}
+                <select id="sortSelect" name="sort" onchange="document.getElementById('sortForm').submit();" 
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <option disabled {% if not request.GET.sort %}selected{% endif %}>Choose sorting</option>
+                    <option {% if request.GET.sort == 'new'|stringformat:"s" %}selected{% endif %} value="new">Newest Arrivals</option>
+                    <option {% if request.GET.sort == 'az'|stringformat:"s" %}selected{% endif %} value="az">Name (A-Z)</option>
+                    <option {% if request.GET.sort == 'lh'|stringformat:"s" %}selected{% endif %} value="lh">Price: Low to High</option>
+                    <option {% if request.GET.sort == 'hl'|stringformat:"s" %}selected{% endif %} value="hl">Price: High to Low</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Categories Section -->
+        <div>
+            <h3 class="text-sm font-semibold mb-2 text-gray-700 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+                Product Categories
+            </h3>
+
+            <form id="filterForm" method="GET" action="{% url 'shop' %}" class="space-y-2">
+                {% if request.GET.sort %}
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                {% endif %}
+
+                <!-- All Products Option -->
+                <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors duration-150">
+                    <input type="radio" id="category_all" name="category" value="all" 
+                        onchange="document.getElementById('filterForm').submit();"
+                        {% if request.GET.category == 'all'|stringformat:"s"  %}checked{% endif %}
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                    <label for="category_all" class="ml-2 text-sm text-gray-700 cursor-pointer">All Products</label>
+                </div>
+
+                <!-- Categories List -->
+                {% for category in categories %}
+                <div class="border-l border-gray-200 pl-3">
+                    <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg transition-colors duration-150">
+                        <input type="radio" id="category_{{ category.slug }}" name="category" value="{{ category.slug }}"
                             onchange="document.getElementById('filterForm').submit();"
-                            {% if request.GET.category == 'all'|stringformat:"s"  %}checked{% endif %}
+                            {% if request.GET.category == category.slug|stringformat:"s" %}checked{% endif %}
                             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                        <label for="category_all" class="ml-3 text-sm font-medium text-gray-700">All Products</label>
-                    </div>
-        
-                    <!-- Categories List -->
-                    {% for category in categories %}
-                    <div class="border-l-2 border-gray-200 pl-3">
-                        <div class="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
-                            <input type="radio" id="category_{{ category.slug }}" name="category" value="{{ category.slug }}"
-                                onchange="document.getElementById('filterForm').submit();"
-                                {% if request.GET.category == category.slug|stringformat:"s" %}checked{% endif %}
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                            <label for="category_{{ category.slug }}" class="ml-3 text-sm font-medium text-gray-700">{{ category.name }}</label>
-                            
-                            {% if category.sub_category %}
-                            <button type="button" class="ml-auto text-gray-400 hover:text-gray-500" onclick="toggleSubcategories(this)">
-                                <svg class="h-5 w-5 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            {% endif %}
-                        </div>
-        
+                        <label for="category_{{ category.slug }}" class="ml-2 text-sm text-gray-700 cursor-pointer">{{ category.name }}</label>
+                        
                         {% if category.sub_category %}
-                        <div class="subcategory-list hidden pl-5 mt-1 space-y-2">
-                            {% for sub in category.sub_category.all %}
-                            <div class="flex items-center p-1 hover:bg-gray-50 rounded-lg cursor-pointer">
-                                <input type="radio" id="category_{{ sub.slug }}" name="category" value="{{ sub.slug }}"
-                                    onchange="document.getElementById('filterForm').submit();"
-                                    {% if request.GET.category == sub.slug|stringformat:"s" %}checked{% endif %}
-                                    class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                <label for="category_{{ sub.slug }}" class="ml-2 text-xs font-medium text-gray-600">{{ sub.name }}</label>
-                            </div>
-                            {% endfor %}
-                        </div>
+                        <button type="button" class="ml-auto text-gray-400 hover:text-gray-500 transition-colors" onclick="toggleSubcategories(this)">
+                            <svg class="h-4 w-4 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
                         {% endif %}
                     </div>
-                    {% endfor %}
-                </form>
-            </div>
+
+                    {% if category.sub_category %}
+                    <div class="subcategory-list hidden pl-4 mt-1 space-y-1">
+                        {% for sub in category.sub_category.all %}
+                        <div class="flex items-center p-1 hover:bg-gray-50 rounded-lg transition-colors duration-150">
+                            <input type="radio" id="category_{{ sub.slug }}" name="category" value="{{ sub.slug }}"
+                                onchange="document.getElementById('filterForm').submit();"
+                                {% if request.GET.category == sub.slug|stringformat:"s" %}checked{% endif %}
+                                class="h-3.5 w-3.5 text-blue-600 focus:ring-blue-500 border-gray-300">
+                            <label for="category_{{ sub.slug }}" class="ml-2 text-xs text-gray-600 cursor-pointer">{{ sub.name }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+    </aside>
+
+<!-- Mobile Sidebar Toggle Button -->
+<button class="md:hidden fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg z-40 flex items-center justify-center hover:bg-blue-700 transition-colors duration-200"
+    onclick="toggleSidebar()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+    </svg>
+    <span class="sr-only">Filters</span>
+</button>
+
+<script>
+    // Toggle sidebar visibility
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
         
-            
-        </aside>
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
         
-        <!-- Mobile Sidebar Toggle Button -->
-        <button class="md:hidden fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-full shadow-lg z-10 flex items-center"
-            onclick="toggleSidebar()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            Filters
-        </button>
+        // Prevent scrolling when sidebar is open
+        document.body.classList.toggle('overflow-hidden');
+    }
+
+    // Toggle subcategories visibility
+    function toggleSubcategories(button) {
+        const subcategoryList = button.closest('div').nextElementSibling;
+        const icon = button.querySelector('svg');
         
-        <script>
-            function toggleSubcategories(button) {
-                const subcategoryList = button.closest('div').nextElementSibling;
-                subcategoryList.classList.toggle('hidden');
-                button.querySelector('svg').classList.toggle('rotate-180');
-            }
-        </script>
+        subcategoryList.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+    }
+
+    // Close sidebar when clicking on overlay
+    document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+</script>
         <!-- Products Section -->
-        <div>
+<div>
             
-            <div class="relative w-full max-w-3xl mx-4">
+            <div class="relative w-full z-[100] max-w-3xl mx-4 px-4">
                 <form class="relative flex items-center w-full" id="search" method="get">
                     {% if request.GET.sort %}
                     <input type="hidden" name="sort" value="{{ request.GET.sort }}">
@@ -189,8 +213,7 @@
                     </button>
                     
                     <!-- Search Results Dropdown -->
-                    <ul id="search-results" class="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hidden"></ul>
-                </form>
+                <ul id="search-results" class="absolute  top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hidden z-[99999]"></ul>
             </div>
             
             <script>
