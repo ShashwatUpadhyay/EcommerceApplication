@@ -18,4 +18,7 @@ urlpatterns = [
     path("place-order/", views.order_place, name="order_place"),
     path("payment/", views.payment, name="payment"),
     path("paymenthandler/<uid>/", views.paymenthandler, name="paymenthandler"),
+    
+    path('add_to_cart/<customer_uid>/<product_uid>/', views.addToCartAPI, name='addToCartAPI'),
+    path('remove_from_cart/<customer_uid>/<product_uid>/', views.removeFromCartAPI, name='removeFromCartAPI'),
 ]

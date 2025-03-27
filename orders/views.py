@@ -78,7 +78,7 @@ def addToCart(request):
     customer = request.user
     product_id = request.GET.get('product_id')
     try:
-        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra,order_taken=False, is_paid = False)
+        cart , _ = models.Cart.objects.get_or_create(customer = customer.extra,order_taken=False)
         cart_item , _ = models.CartItem.objects.get_or_create(cart = cart , product=Product.objects.get(uid = product_id))
         cart_item.quantity += 1
         cart_item.save()
@@ -88,7 +88,7 @@ def addToCart(request):
         print(e)
         messages.error(request, "Invalid Product ID")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
+    
 @login_required(login_url='login')
 def removeFromCart(request):
     customer = request.user
@@ -110,6 +110,46 @@ def removeFromCart(request):
         print(e)
         messages.error(request, "Invalid Product ID")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+from account.models import UserExtra
+
+@login_required(login_url='login')
+def addToCartAPI(request, customer_uid, product_uid):
+    cart_item=None
+    try:
+        customer = UserExtra.objects.get(uid=customer_uid)  
+        cart , _ = models.Cart.objects.get_or_create(customer = customer,order_taken=False)
+        cart_item , _ = models.CartItem.objects.get_or_create(cart = cart , product=Product.objects.get(uid = product_uid))
+        cart_item.quantity += 1
+        cart_item.save()
+
+        return JsonResponse({'success': True, 'quantity': cart_item.quantity if cart_item else 0})
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        return JsonResponse({'success': False, 'quantity': cart_item.quantity if cart_item else 0})
+
+@login_required(login_url='login')
+def removeFromCartAPI(request,customer_uid, product_uid):
+    customer = UserExtra.objects.get(uid=customer_uid)
+    cart_item=None
+    try:
+        cart , _ = models.Cart.objects.get_or_create(customer = customer, order_taken=False)
+        cart_item = models.CartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_uid))
+        
+        if cart_item.exists():
+            cart_item = cart_item[0]
+            cart_item.quantity -= 1
+            
+            if cart_item.quantity <= cart_item.product.min_order_quanitity-1:
+                cart_item.delete()
+            else:
+                cart_item.save()
+        return JsonResponse({'success': True, 'quantity': cart_item.quantity if cart_item else 0})
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        return JsonResponse({'success': False, 'quantity': cart_item.quantity if cart_item else 0})
     
 @login_required(login_url='login')
 def removeItem(request):
@@ -215,9 +255,12 @@ def payment(request):
 
     # order id of newly created order.
     razorpay_order_id = razorpay_order['id']
-    callback_url = request.build_absolute_uri(
-        reverse('paymenthandler', kwargs={'uid': cart.uid})
-    )
+    
+    # callback_url = request.build_absolute_uri(
+    #     reverse('paymenthandler', kwargs={'uid': cart.uid})
+    # )
+    
+    callback_url = f'{DOMAIN_NAME}order/paymenthandler/{cart.uid}/'  # Use the correct URL for your app
 
 
     # callback_url = '/payment/paymenthandler'
