@@ -21,4 +21,16 @@ urlpatterns = [
     
     path('add_to_cart/<customer_uid>/<product_uid>/', views.addToCartAPI, name='addToCartAPI'),
     path('remove_from_cart/<customer_uid>/<product_uid>/', views.removeFromCartAPI, name='removeFromCartAPI'),
+    
+    # admin view
+    path('a/orders/', views.AllOrders, name='AllOrders'),
+    path('a/pending-orders/', views.PendingOrders, name='PendingOrders'),
+    path('a/processing-orders/', views.ProcessingOrders, name='ProcessingOrders'),
+    path('a/shipped-orders/', views.ShippedOrders, name='ShippedOrders'),
+    path('a/delevered-orders/', views.DeleveredOrders, name='DeleveredOrders'),
+    path('a/canceled-orders/', views.CanceledOrders, name='CanceledOrders'),
+    path('a/mark-as-shipped/<order_uid>/', views.markAsShiped, name='markAsShiped'),
+    path('a/mark-as-canceled/<order_uid>/', views.markAsCanceled, name='markAsCanceled'),
+    path('a/mark-as-delivered/<order_uid>/', views.markAsDelivered, name='markAsDelivered'),
+    path('a/mark-as-processing/<order_uid>/', views.markAsProcessing, name='markAsProcessing'),
 ]

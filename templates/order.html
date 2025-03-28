@@ -77,7 +77,7 @@
                 <a href="{% url 'product' item.product.slug %}">{{ item.product.title }}</a>
               </h4>
               <p class="mt-1 text-sm text-gray-500">{{ item.product.category.name }}</p>
-              <p class="mt-2 text-sm font-medium text-gray-900">₹{{ item.product.price|floatformat:2 }} × {{ item.quantity }} + {{ item.total_tax }} tax</p>
+              <p class="mt-2 text-sm font-medium text-gray-900">₹{{ item.product.price|floatformat:2 }} × {{ item.quantity }} + ₹{{ item.total_tax }} tax</p>
               
               {% if order.status == 'delivered' %}
               <div class="mt-3">

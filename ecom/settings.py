@@ -18,8 +18,8 @@ from .ckeditorconfig import *
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-DOMAIN_NAME = 'https://9319j0b7-8000.inc1.devtunnels.ms/'
-# DOMAIN_NAME = 'http://127.0.0.1:8000/'
+# DOMAIN_NAME = 'https://9319j0b7-8000.inc1.devtunnels.ms/'
+DOMAIN_NAME = 'http://127.0.0.1:8000/'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
