@@ -4,7 +4,9 @@ from account.models import UserExtra
 from django.contrib.auth.decorators import login_required
 from account.models import Address
 # Create your views here.
- 
+def is_staff(request):
+    return request.user.is_staff
+
 def home(request):
     categories = ProductCategory.objects.all()
     products = [category.products.first() for category in categories if category.products.exists()]

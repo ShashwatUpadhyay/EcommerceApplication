@@ -6,8 +6,10 @@ from django.db.models import Q
 from orders.models import Cart, CartItem
 from shop.models import ProductImage
 from django.core.paginator import Paginator
-
+from django.contrib.auth.decorators import login_required 
+from base.views import is_staff
 # Create your views here.
+
 
 def shop(request):
     category = models.ProductCategory.objects.all()
@@ -127,4 +129,17 @@ def product_page(request, slug):
         exist = False
         item_count = 0
     return render(request, 'product.html', {'product':product, 'item_count': item_count, 'exist':exist })
-    
+
+@login_required(login_url='login')
+def stockManage(request):
+    if not is_staff(request):
+        return redirect('home')
+    products = models.Product.objects.all()
+    return render(request , 'admin/stockmanage.html',{'products':products})
+
+@login_required(login_url='login')
+def productEdit(request, uid):
+    if not is_staff(request):
+        return redirect('home')
+    product = models.Product.objects.get(uid=uid)
+    return render(request , 'admin/productEdit.html',{'product':product})

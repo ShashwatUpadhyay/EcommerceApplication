@@ -266,24 +266,24 @@ function markAsCancel(orderId) {
   .then(data => {
     if(data.success == true) {
      let process = document.getElementById(`${orderId}-process`);
+     let cancel = document.getElementById(`${orderId}-cancel`);
+     let ship = document.getElementById(`${orderId}-ship`);
+     let status = document.getElementById(`${orderId}-status`);
       if(process){
         process.classList.add('hidden');
       }
-      let cancel = document.getElementById(`${orderId}-cancel`);
       if(cancel){
         cancel.classList.add('hidden');
       }  
-      let ship = document.getElementById(`${orderId}-ship`);
       if(ship){
         ship.classList.add('hidden');
       }
-      let status = document.getElementById(`${orderId}-status`);
       if(status){
         status.classList.add('text-black');
         status.innerText = 'Canceled';
         status.classList.remove('bg-yellow-600');
         status.classList.remove('bg-blue-200');
-        status.classList.remove('bg-green-500');
+        status.classList.remove('bg-green-500');      
         status.classList.add('bg-red-500');
       }
     } 
@@ -307,11 +307,15 @@ function markAsDelivered(orderId) {
   .then(response => response.json())
   .then(data => {
     if(data.success == true) {
+     let status = document.getElementById(`${orderId}-status`);
+
       document.getElementById(`${orderId}-deliver`).classList.add('hidden');
       document.getElementById(`${orderId}-cancel`).classList.add('hidden');
-      document.getElementById(`${orderId}-status`).classList.add('bg-green-500');
-      document.getElementById(`${orderId}-status`).classList.add('text-black');
-      document.getElementById(`${orderId}-status`).innerText = 'Delivered';
+      if(status){
+        status.classList.add('bg-green-500');
+        status.classList.add('text-black');
+        status.innerText = 'Delivered';
+      }
     }
   })
   .catch(error => {

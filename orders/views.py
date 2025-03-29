@@ -483,8 +483,9 @@ def markAsDelivered(request, order_uid):
         print(e)
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
     
+from base.views import is_staff
 def markAsProcessing(request, order_uid):
-    if request.user.is_staff == False:
+    if not is_staff(request):
         return redirect('home')
     try:
         order = models.Order.objects.get(uid = order_uid)
