@@ -10,6 +10,7 @@ urlpatterns = [
     path('order-delivered/', views.my_orders_orderdelivered , name='orders_delivered'),
     path('order-canceled/', views.my_orders_ordercanceled , name='order_canceled'),
     path('order/<uid>/', views.order , name='order'),
+
     path('add-to-cart/', views.addToCart , name='addToCart'),
     path('remove-from-cart/', views.removeFromCart , name='removeFromCart'),
     path('remove-item/', views.removeItem , name='removeItem'),
@@ -33,4 +34,5 @@ urlpatterns = [
     path('a/mark-as-canceled/<order_uid>/', views.markAsCanceled, name='markAsCanceled'),
     path('a/mark-as-delivered/<order_uid>/', views.markAsDelivered, name='markAsDelivered'),
     path('a/mark-as-processing/<order_uid>/', views.markAsProcessing, name='markAsProcessing'),
+    path('a/low-stock', views.low_stock, name='low_stock'),
 ]

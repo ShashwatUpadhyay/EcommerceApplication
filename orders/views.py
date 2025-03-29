@@ -30,12 +30,13 @@ razorpay_client = razorpay.Client(
 
 # Create your views here.
 
-def order(request,  uid):
+def order(request, uid):
     try:
-        order = models.Order.objects.get(uid = uid)
+        order = models.Order.objects.get(uid=uid)
     except Exception as e:
         print(e)
-    return render(request , 'order.html',{'order':order})
+        return HttpResponse("Order not found", status=404)  # ✅ Proper error response
+    return render(request, 'order.html', {'order': order})
 
 @login_required(login_url='login')
 def my_orders(request):
@@ -237,6 +238,7 @@ def select_address(request):
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
     return JsonResponse({"success": False, "error": "Invalid request"})
+
     
 from django.urls import reverse
 
@@ -373,6 +375,7 @@ def order_place(request):
     customer = request.user
     print(customer)
     try:
+
         address = Address.objects.get(user = customer, selected = True)
         print(address)
         cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
@@ -391,6 +394,7 @@ def order_place(request):
     except Exception as e:
         print(e)
         messages.error(request, "Invalid Product ID")
+
         return redirect('home')
     
 
@@ -495,3 +499,12 @@ def markAsProcessing(request, order_uid):
     except Exception as e:
         print(e)
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
+    
+def low_stock(request):
+    if request.user.is_staff == False:
+        return redirect('home')
+  
+    products = Product.objects.filter(stock__lte=5)
+    print(products)
+    return render(request , 'low_stock.html',{'low_stock':products, 'low_stocks':True})
+   
