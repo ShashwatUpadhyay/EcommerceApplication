@@ -17,6 +17,10 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest
 from ecom.settings import DOMAIN_NAME
+from datetime import datetime
+import pytz
+
+time_zone = pytz.timezone('Asia/Kolkata')
 
 
 
@@ -393,3 +397,104 @@ def order_place(request):
 
         return redirect('home')
     
+
+# admin view start form here
+@login_required(login_url='login')  
+def AllOrders(request):
+    if request.user.is_staff == False:
+        return redirect('home')
+    orders = models.Order.objects.all()
+    p = Paginator(orders,10)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+    return render(request , 'admin/orders.html',{'orders':orders, 'all':True})
+
+@login_required(login_url='login')  
+def PendingOrders(request):
+    orders = models.Order.objects.filter(status = 'Pending')
+    p = Paginator(orders,1010)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+    return render(request , 'admin/orders.html',{'orders':orders, 'pending':True})
+
+@login_required(login_url='login')  
+def ProcessingOrders(request):
+    orders = models.Order.objects.filter(status = 'Processing')
+    p = Paginator(orders,1010)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+    return render(request , 'admin/orders.html',{'orders':orders, 'processing':True})
+
+@login_required(login_url='login')  
+def ShippedOrders(request):
+    orders = models.Order.objects.filter(status = 'Shipped')
+    p = Paginator(orders,1010)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+    return render(request , 'admin/orders.html',{'orders':orders,   'shipped':True})
+
+@login_required(login_url='login')  
+def DeleveredOrders(request):
+    orders = models.Order.objects.filter(status = 'Delivered')
+    p = Paginator(orders,1010)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+    return render(request , 'admin/orders.html',{'orders':orders, 'delivered':True})
+
+@login_required(login_url='login')  
+def CanceledOrders(request):
+    orders = models.Order.objects.filter(status = 'Canceled')
+    p = Paginator(orders,1010)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+    return render(request , 'admin/orders.html',{'orders':orders , 'canceled':True})
+
+def markAsShiped(request, order_uid):
+    if request.user.is_staff == False:
+        return redirect('home')
+    try:
+        order = models.Order.objects.get(uid = order_uid)
+        order.status = 'Shipped'
+        order.save()
+        return JsonResponse({'success': True, 'msg' : "Order status updated to Shipped"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
+
+def markAsCanceled(request, order_uid):
+    if request.user.is_staff == False:
+        return redirect('home')
+    try:
+        order = models.Order.objects.get(uid = order_uid)
+        order.status = 'Canceled'
+        order.canceled_date = datetime.now(time_zone)
+        order.save()
+        return JsonResponse({'success': True, 'msg' : "Order status updated to Canceled"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
+    
+def markAsDelivered(request, order_uid):
+    if request.user.is_staff == False:
+        return redirect('home')
+    try:
+        order = models.Order.objects.get(uid = order_uid)
+        order.status = 'Delivered'
+        order.delevery_date = datetime.now(time_zone)
+        order.save()
+        return JsonResponse({'success': True, 'msg' : "Order status updated to Delivered"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
+    
+def markAsProcessing(request, order_uid):
+    if request.user.is_staff == False:
+        return redirect('home')
+    try:
+        order = models.Order.objects.get(uid = order_uid)
+        order.status = 'Processing'
+        order.save()
+        return JsonResponse({'success': True, 'msg' : "Order status updated to Processing"})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
