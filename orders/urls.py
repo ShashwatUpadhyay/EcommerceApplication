@@ -34,4 +34,5 @@ urlpatterns = [
     path('a/mark-as-canceled/<order_uid>/', views.markAsCanceled, name='markAsCanceled'),
     path('a/mark-as-delivered/<order_uid>/', views.markAsDelivered, name='markAsDelivered'),
     path('a/mark-as-processing/<order_uid>/', views.markAsProcessing, name='markAsProcessing'),
+    path('a/low-stock', views.low_stock, name='low_stock'),
 ]

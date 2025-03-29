@@ -498,3 +498,12 @@ def markAsProcessing(request, order_uid):
     except Exception as e:
         print(e)
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
+    
+def low_stock(request):
+    if request.user.is_staff == False:
+        return redirect('home')
+  
+    products = Product.objects.filter(stock__lte=5)
+    print(products)
+    return render(request , 'low_stock.html',{'low_stock':products, 'low_stocks':True})
+   
