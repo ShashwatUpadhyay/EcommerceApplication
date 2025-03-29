@@ -7,11 +7,10 @@ from django.contrib import messages
 from account.models import Address
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 import json
 from ecom.emails import order_successful
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import razorpay
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -19,6 +18,10 @@ from django.http import HttpResponseBadRequest
 from ecom.settings import DOMAIN_NAME
 from datetime import datetime
 import pytz
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+from account.helper import send_order_confirmation_email
 
 time_zone = pytz.timezone('Asia/Kolkata')
 
@@ -183,7 +186,7 @@ def cart(request):
     tax=0
     final_price=0
     try:
-        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False, is_paid = False)
+        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
         cart_item = models.CartItem.objects.filter(cart = cart)
         total_price = cart.total_price if cart else 0
         tax = cart.tax if cart else 0
@@ -301,7 +304,6 @@ def paymenthandler(request, uid):
         payment_id = request.POST.get('razorpay_payment_id', '')
         razorpay_order_id = request.POST.get('razorpay_order_id', '')
         signature = request.POST.get('razorpay_signature', '')
-        print(payment_id, razorpay_order_id, signature)
         if not all([payment_id, razorpay_order_id, signature]):
             messages.error(request, "Missing payment parameters")
             return redirect('cart')
@@ -311,7 +313,6 @@ def paymenthandler(request, uid):
             'razorpay_payment_id': payment_id,
             'razorpay_signature': signature
         }
-        print(params_dict)
         # Verify signature
         try:
             razorpay_client.utility.verify_payment_signature(params_dict)
@@ -326,11 +327,12 @@ def paymenthandler(request, uid):
             return redirect('order_place')  # Or wherever you want to redirect
 
         amount = int(cart.final_price * 100)
-        print(amount)
         
         try:
             # Check payment status before capturing
             payment = razorpay_client.payment.fetch(payment_id)
+            payment_method = payment['method']
+            print(payment_method)
             if payment['status'] == 'captured':
                 messages.info(request, "Payment was already captured")
             else:
@@ -345,9 +347,9 @@ def paymenthandler(request, uid):
                 razorpay_order_id=razorpay_order_id,
                 razorpay_payment_id=payment_id,
                 razorpay_signature=signature,
-                status='Processing'
+                status='Processing',
+                payment_method=payment_method,
             )
-            print(order)
 
             # Update cart
             cart.is_paid = True
@@ -390,13 +392,42 @@ def order_place(request):
         
         # order_successful(order)
         messages.success(request, "Your order has been placed successfully.")
-        return redirect('home')
+        return redirect('order_confirmation', order_uid=order.uid)  
     except Exception as e:
         print(e)
         messages.error(request, "Invalid Product ID")
 
         return redirect('home')
+def order_confirmation(request, order_uid):
+    order = models.Order.objects.get(uid=order_uid, user=request.user)
+    send_order_confirmation_email(order)
+    return render(request, 'order_confirmation.html', {'order': order})
+
+
     
+
+def download_invoice(request, order_uid):
+    order = models.Order.objects.get(uid=order_uid, user=request.user)
+    
+    template_path = 'invoice_pdf.html'
+    context = {'order': order}
+    
+   
+    template = get_template(template_path)
+    html = template.render(context)
+    result = BytesIO()
+    
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        filename = f"Invoice_{order.uid}.pdf"
+        content = f"attachment; filename={filename}"
+        response['Content-Disposition'] = content
+        return response
+    
+    return HttpResponse("Error generating PDF", status=400)
+
+
 
 # admin view start form here
 @login_required(login_url='login')  
@@ -505,6 +536,5 @@ def low_stock(request):
         return redirect('home')
   
     products = Product.objects.filter(stock__lte=5)
-    print(products)
     return render(request , 'low_stock.html',{'low_stock':products, 'low_stocks':True})
    

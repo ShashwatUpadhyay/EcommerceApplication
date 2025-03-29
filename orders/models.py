@@ -23,6 +23,16 @@ class Cart(BaseModel):
         return items
     
     @property
+    def total_old_price(self):
+        items = sum(item.product.old_price * item.quantity for item in self.cartitems.all())
+        return items
+    
+    @property
+    def money_saved(self):
+        items = self.total_old_price - self.total_price
+        return items
+    
+    @property
     def tax(self):
         return (self.total_price/100)* 18
     
@@ -48,7 +58,7 @@ class CartItem(BaseModel):
     
     @property
     def total_tax(self):
-        return (self.total_price/100)* 18
+        return (self.total_price/100)*18
     
     @property
     def final_price(self):
@@ -70,6 +80,7 @@ class Order(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='order')
     status = models.CharField(max_length=100, choices=status_choices, default='Pending')
     is_paid = models.BooleanField(default=False)
+    payment_method = models.CharField(max_length=100, null=True, blank=True)
     payment_id = models.CharField(max_length=200, null=True, blank=True)
     razorpay_order_id = models.CharField(max_length=200, null=True, blank=True) 
     razorpay_payment_id = models.CharField(max_length=200, null=True, blank=True)   

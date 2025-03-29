@@ -35,4 +35,6 @@ urlpatterns = [
     path('a/mark-as-delivered/<order_uid>/', views.markAsDelivered, name='markAsDelivered'),
     path('a/mark-as-processing/<order_uid>/', views.markAsProcessing, name='markAsProcessing'),
     path('a/low-stock', views.low_stock, name='low_stock'),
+    path('order_confirmation/<order_uid>', views.order_confirmation, name='order_confirmation'),
+    path('download-invoice/<order_uid>', views.download_invoice, name='download_invoice'),
 ]

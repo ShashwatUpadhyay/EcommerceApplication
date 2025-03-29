@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #007bff;
+            color: #ffffff;
+            border-radius: 10px 10px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .order-details {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .order-details th, .order-details td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>Thank You for Your Order, {{ order.user.first_name }}!</h2>
+    </div>
+    <div class="content">
+        <p>Hello {{ order.user.first_name }},</p>
+        <p>We’re happy to confirm that your order <strong>#{{ order.uid }}</strong> has been successfully placed.</p>
+
+        <h3>Order Summary:</h3>
+        <table class="order-details">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.cart.cartitems.all %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.product.price }}</td>
+                    <td>₹{{ item.total_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p class="total">Subtotal: ₹{{ order.cart.total_price }}</p>
+        <p class="total">Tax (18%): ₹{{ order.cart.tax }}</p>
+        <p class="total">Total Amount: ₹{{ order.cart.final_price }}</p>
+
+        <h3>Shipping Details:</h3>
+        <p>
+            <strong>Address:</strong> {{ order.address.full_address }}<br>
+            <strong>City:</strong> {{ order.address.city }}, <strong>State:</strong> {{ order.address.state }}<br>
+            <strong>Zip Code:</strong> {{ order.address.zip_code }}
+        </p>
+
+        <p>Your order is being processed and we will notify you once it is shipped.</p>
+
+        <p>Thank you for shopping with us!</p>
+    </div>
+
+    <div class="footer">
+        <p>For any inquiries, contact our support team at <a href="mailto:support@example.com">support@example.com</a></p>
+        <p>&copy; {{ current_year }} Your Store. All rights reserved.</p>
+    </div>
+</div>
+
