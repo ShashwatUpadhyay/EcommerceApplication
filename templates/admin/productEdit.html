@@ -62,7 +62,7 @@
                                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                     <option value="">Select Category</option>
                                     {% for category in categories %}
-                                    <option value="{{ category.id }}" {% if product.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                                        <option value="{{ category.uid }}" {% if product.category.uid == category.uid %}selected{% endif %}>{{ category.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -76,12 +76,55 @@
                                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
                                     <option value="">Select Subcategory</option>
                                     {% for sub in subcategories %}
-                                    <option value="{{ sub.id }}" {% if product.subcategory and product.subcategory.id == sub.id %}selected{% endif %}>{{ sub.name }}</option>
+                                    <option value="{{ sub.id }}" {% if product.subcategory.uid and product.subcategory.uid == sub.uid %}selected{% endif %}>{{ sub.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Product Features Section -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-medium text-gray-900">Product Features</h3>
+                    <div id="features-container" class="mt-4 space-y-4">
+                        {% for feature in product.features.all %}
+                        <div class="feature-group grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                            <div class="sm:col-span-1">
+                                <label class="block text-sm font-medium text-gray-700">Icon</label>
+                                <select name="feature_icon" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <option value="fa fa-check text-green-500" {% if feature.icon == 'fa fa-check text-green-500' %}selected{% endif %}>✓ Green Check</option>
+                                    <option value="fa fa-times text-red-500" {% if feature.icon == 'fa fa-times text-red-500' %}selected{% endif %}>✗ Red X</option>
+                                    <option value="fa fa-star text-yellow-500" {% if feature.icon == 'fa fa-star text-yellow-500' %}selected{% endif %}>★ Yellow Star</option>
+                                    <option value="fa fa-heart text-red-700" {% if feature.icon == 'fa fa-heart text-red-700' %}selected{% endif %}>❤ Red Heart</option>
+                                    <option value="fa fa-bolt text-yellow-400" {% if feature.icon == 'fa fa-bolt text-yellow-400' %}selected{% endif %}>⚡ Yellow Bolt</option>
+                                    <option value="fa fa-leaf text-green-600" {% if feature.icon == 'fa fa-leaf text-green-600' %}selected{% endif %}>🍃 Green Leaf</option>
+                                    <option value="fa fa-shield text-blue-500" {% if feature.icon == 'fa fa-shield text-blue-500' %}selected{% endif %}>🛡 Blue Shield</option>
+                                    <option value="fa fa-truck text-indigo-500" {% if feature.icon == 'fa fa-truck text-indigo-500' %}selected{% endif %}>🚚 Indigo Truck</option>
+                                    <option value="fa fa-lock text-gray-600" {% if feature.icon == 'fa fa-lock text-gray-600' %}selected{% endif %}>🔒 Gray Lock</option>
+                                    <option value="fa fa-battery-full text-green-600" {% if feature.icon == 'fa fa-battery-full text-green-600' %}selected{% endif %}>🔋 Green Battery</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-4">
+                                <label class="block text-sm font-medium text-gray-700">Feature Text</label>
+                                <input type="text" name="feature_text" value="{{ feature.feature }}" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                            <div class="sm:col-span-1 flex items-end">
+                                <button type="button" onclick="removeFeature(this)" class="text-red-600 hover:text-red-900">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" onclick="addFeature()" class="mt-4 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Add Feature
+                    </button>
                 </div>
 
                 <!-- Pricing Section -->
@@ -141,7 +184,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="ml-4">
-                                    <input type="file" name="main_image" id="main_image" class="py-2 px-3 border border-gray-300 rounded-md text-sm">
+                                    <input type="file" name="main_image" id="main_image" class="py-2 px-3 border border-gray-300 rounded-md text-sm"/>
                                     <p class="mt-1 text-xs text-gray-500">JPG, PNG or GIF (800x800 recommended)</p>
                                 </div>
                             </div>
@@ -151,7 +194,7 @@
                         <div class="sm:col-span-6">
                             <label class="block text-sm font-medium text-gray-700">Additional Images</label>
                             <div class="mt-1 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                {% for image in product.images.all %}
+                                {% for image in product.image.all %}
                                 <div class="relative group">
                                     <div class="h-24 w-full rounded-md overflow-hidden bg-gray-100">
                                         <img src="{{ image.img.url }}" alt="{{ product.title }}" class="h-full w-full object-cover">
@@ -241,6 +284,48 @@
                 }
             });
         }
+    }
+
+    // Add new feature field
+    function addFeature() {
+        const container = document.getElementById('features-container');
+        const newFeature = document.createElement('div');
+        newFeature.className = 'feature-group grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6';
+        newFeature.innerHTML = `
+            <div class="sm:col-span-1">
+                <label class="block text-sm font-medium text-gray-700">Icon</label>
+                <select name="feature_icon" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    <option value="fa fa-check text-green-500">✓ Green Check</option>
+                    <option value="fa fa-times text-red-500">✗ Red X</option>
+                    <option value="fa fa-star text-yellow-500">★ Yellow Star</option>
+                    <option value="fa fa-heart text-red-700">❤ Red Heart</option>
+                    <option value="fa fa-bolt text-yellow-400">⚡ Yellow Bolt</option>
+                    <option value="fa fa-leaf text-green-600">🍃 Green Leaf</option>
+                    <option value="fa fa-shield text-blue-500">🛡 Blue Shield</option>
+                    <option value="fa fa-truck text-indigo-500">🚚 Indigo Truck</option>
+                    <option value="fa fa-lock text-gray-600">🔒 Gray Lock</option>
+                    <option value="fa fa-battery-full text-green-600">🔋 Green Battery</option>
+                </select>
+            </div>
+            <div class="sm:col-span-4">
+                <label class="block text-sm font-medium text-gray-700">Feature Text</label>
+                <input type="text" name="feature_text" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+            </div>
+            <div class="sm:col-span-1 flex items-end">
+                <button type="button" onclick="removeFeature(this)" class="text-red-600 hover:text-red-900">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+            </div>
+        `;
+        container.appendChild(newFeature);
+    }
+
+    // Remove feature field
+    function removeFeature(button) {
+        const featureGroup = button.closest('.feature-group');
+        featureGroup.remove();
     }
 </script>
 

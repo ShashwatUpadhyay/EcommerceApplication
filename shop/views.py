@@ -142,4 +142,6 @@ def productEdit(request, uid):
     if not is_staff(request):
         return redirect('home')
     product = models.Product.objects.get(uid=uid)
-    return render(request , 'admin/productEdit.html',{'product':product})
+    categories = models.ProductCategory.objects.all()
+    subcategories = models.ProductSubCategory.objects.all()
+    return render(request , 'admin/productEdit.html',{'product':product,'categories':categories,'subcategories':subcategories})
