@@ -135,7 +135,43 @@ def stockManage(request):
     if not is_staff(request):
         return redirect('home')
     products = models.Product.objects.all()
-    return render(request , 'admin/stockmanage.html',{'products':products})
+    categories = models.ProductCategory.objects.all()
+    
+    if request.method == 'POST':
+        stock = request.POST.get('stock')
+        category = request.POST.get('category')
+        search = request.POST.get('s')
+        if stock:
+            if stock == 'low_stock':
+                print(stock, True)
+                products = models.Product.objects.filter(stock__lte=9).order_by('-stock')
+            elif stock == 'in_stock':
+                print(stock, True)
+                products = models.Product.objects.filter(stock__gte=10)
+            elif stock == 'out_of_stock':
+                print(stock, True)
+                products = models.Product.objects.filter(stock=0)
+                for p in products:
+                    print(p.title)           
+            else:
+                print(stock, True)
+                products = models.Product.objects.all()
+            
+        if category:
+            if category=='all':
+                products = models.Product.objects.all()
+            else:
+                products = models.Product.objects.filter(category__slug=category)
+        
+        if search:
+            products = models.Product.objects.filter(Q(title__icontains=search)|Q(category__name__icontains=search)|Q(subcategory__name__icontains=search))
+            
+    p = Paginator(products,10)
+    page = request.GET.get('page')
+    products = p.get_page(page)
+            
+        
+    return render(request , 'admin/stockmanage.html',{'products':products,'categories':categories})
 
 @login_required(login_url='login')
 def productEdit(request, uid):
@@ -144,4 +180,22 @@ def productEdit(request, uid):
     product = models.Product.objects.get(uid=uid)
     categories = models.ProductCategory.objects.all()
     subcategories = models.ProductSubCategory.objects.all()
+    
+    if request.method == "POST":
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category = request.POST.get('category')
+        subcategory = request.POST.get('subcategory')
+        price = request.POST.get('price')
+        min_order_quantity = request.POST.get('min_order_quantity')
+        stock = request.POST.get('stock')
+        main_image = request.POST.get('main_image')
+        gallery_img = request.POST.get('gallery_img')
+        print(title,
+description,
+category,
+subcategory,
+price,
+min_order_quantity,
+stock)
     return render(request , 'admin/productEdit.html',{'product':product,'categories':categories,'subcategories':subcategories})

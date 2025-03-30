@@ -34,17 +34,6 @@
                                     class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
                             </div>
                         </div>
-
-                        <!-- Slug (auto-generated but editable) -->
-                        <div class="sm:col-span-6">
-                            <label for="slug" class="block text-sm font-medium text-gray-700">URL Slug</label>
-                            <div class="mt-1">
-                                <input type="text" name="slug" id="slug" value="{{ product.slug }}"
-                                    class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                                <p class="mt-1 text-xs text-gray-500">Leave blank to auto-generate from product name</p>
-                            </div>
-                        </div>
-
                         <!-- Description -->
                         <div class="sm:col-span-6">
                             <label for="description" class="block text-sm font-medium text-gray-700">Description*</label>
@@ -207,8 +196,8 @@
                                 </div>
                                 {% endfor %}
                                 <div class="h-24 w-full rounded-md border-2 border-dashed border-gray-300 flex items-center justify-center">
-                                    <input type="file" name="gallery_images" id="gallery_images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                                    <div class="text-center">
+                                    <div class="relative text-center">
+                                        <input type="file" name="gallery_img" id="" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                                         <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                         </svg>
@@ -235,16 +224,6 @@
 </div>
 
 <script>
-    // Auto-generate slug from title if slug is empty
-    document.getElementById('title').addEventListener('input', function() {
-        const slugField = document.getElementById('slug');
-        if (!slugField.value) {
-            slugField.value = this.value.toLowerCase()
-                .replace(/[^\w\s-]/g, '') // Remove special chars
-                .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
-                .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
-        }
-    });
 
     // Update subcategories when category changes
     document.getElementById('category').addEventListener('change', function() {
