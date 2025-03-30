@@ -83,6 +83,12 @@
                                 <p>Subtotal</p>
                                 <p>₹{{ order.cart.total_price|floatformat:2 }}</p>
                             </div>
+                            {% if order.cart.total_old_price %}
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                                <p>Money saved</p>
+                                <p class="line-through">₹{{ order.cart.money_saved|floatformat:2 }}</p>
+                            </div>
+                            {% endif %}
                             <div class="flex justify-between text-base font-medium text-gray-900">
                                 <p>GST</p>
                                 <p>₹{{ order.cart.tax|floatformat:2 }}</p>

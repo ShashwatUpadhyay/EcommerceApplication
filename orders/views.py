@@ -409,10 +409,10 @@ def order_confirmation(request, order_uid):
 def download_invoice(request, order_uid):
     order = models.Order.objects.get(uid=order_uid, user=request.user)
     
+    
     template_path = 'invoice_pdf.html'
     context = {'order': order}
     
-   
     template = get_template(template_path)
     html = template.render(context)
     result = BytesIO()

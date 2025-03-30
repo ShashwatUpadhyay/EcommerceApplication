@@ -45,6 +45,13 @@
                 <span class="text-gray-600">Shipping:</span>
                 <span class="font-medium">Free</span>
               </div>
+              {% if cart.total_old_price %}
+
+              <div class="flex justify-between">
+                <span class="text-gray-600">Money saved:</span>
+                <span class="font-medium line-through">₹{{cart.money_saved|floatformat:2}}</span>
+              </div>
+              {% endif %}
               <div class="flex justify-between">
                 <span class="text-gray-600">Tax:</span>
                 <span class="font-medium">₹{{cart.tax|floatformat:2}}</span>

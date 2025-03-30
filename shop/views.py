@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse , redirect
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
 from . import models
 from django.contrib import messages
 from django.db.models import Q
@@ -8,6 +8,7 @@ from shop.models import ProductImage
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required 
 from base.views import is_staff
+
 # Create your views here.
 
 
@@ -192,10 +193,42 @@ def productEdit(request, uid):
         main_image = request.POST.get('main_image')
         gallery_img = request.POST.get('gallery_img')
         print(title,
-description,
-category,
-subcategory,
-price,
-min_order_quantity,
-stock)
+            description,
+            category,
+            subcategory,
+            price,
+            min_order_quantity,
+            stock)
     return render(request , 'admin/productEdit.html',{'product':product,'categories':categories,'subcategories':subcategories})
+
+
+
+# add to wishlist
+@login_required(login_url='login')
+def add_to_wishlist(request, uid):
+    product = models.Product.objects.get(uid=uid)
+    wishlist = models.Whislist.objects.filter(user=request.user, product=product).first()
+    if wishlist:
+        messages.error(request , "Product already in wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        models.Whislist.objects.create(user=request.user, product=product)
+        messages.success(request , "Product added to wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+@login_required(login_url='login')
+def wishlist(request):
+    wishlist = models.Whislist.objects.filter(user=request.user)
+    return render(request , 'wishlist.html',{'wishlist_items':wishlist})
+
+@login_required(login_url='login')
+def remove_wishlist(request, uid):
+    try:
+        wishlist = models.Whislist.objects.get(product = models.Product.objects.get(uid=uid),user=request.user)
+        wishlist.delete()
+        messages.success(request , "Product removed from wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except models.Whislist.DoesNotExist:
+        print("Wishlist item does not exist")
+        messages.error(request , "Product not found in wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

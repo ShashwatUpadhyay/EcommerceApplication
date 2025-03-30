@@ -84,6 +84,9 @@
         </table>
 
         <p class="total">Subtotal: ₹{{ order.cart.total_price }}</p>
+        {% if order.cart.total_old_price %}
+        <p class="total">Money saved: <p> class="line-through">₹{{ order.cart.money_saved }}</p></p>
+        {% endif %}
         <p class="total">Tax (18%): ₹{{ order.cart.tax }}</p>
         <p class="total">Total Amount: ₹{{ order.cart.final_price }}</p>
 

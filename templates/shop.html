@@ -314,12 +314,22 @@
                         </button>
                         
                         <!-- Wishlist Button -->
-                        <button class="flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 p-2 rounded-md transition-colors"
+                        {% if request.user.is_authenticated %}
+                        {% if product|in_wishlist:request.user %}
+                        <a href="{% url 'remove_wishlist' product.uid %}" class="flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 p-2 rounded-md transition-colors"
+                            title="Add to wishlist">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#f50000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M1.24264 8.24264L8 15L14.7574 8.24264C15.553 7.44699 16 6.36786 16 5.24264V5.05234C16 2.8143 14.1857 1 11.9477 1C10.7166 1 9.55233 1.55959 8.78331 2.52086L8 3.5L7.21669 2.52086C6.44767 1.55959 5.28338 1 4.05234 1C1.8143 1 0 2.8143 0 5.05234V5.24264C0 6.36786 0.44699 7.44699 1.24264 8.24264Z" fill="#ff0000"></path> </g></svg>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'add_to_wishlist' product.uid %}" class="flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-600 p-2 rounded-md transition-colors"
                             title="Add to wishlist">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
-                        </button>
+                        </a>
+
+                        {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
