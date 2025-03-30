@@ -481,7 +481,7 @@ def CanceledOrders(request):
     return render(request , 'admin/orders.html',{'orders':orders , 'canceled':True})
 
 def markAsShiped(request, order_uid):
-    if request.user.is_staff == False:
+    if not is_staff(request):
         return redirect('home')
     try:
         order = models.Order.objects.get(uid = order_uid)
@@ -493,7 +493,7 @@ def markAsShiped(request, order_uid):
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
 
 def markAsCanceled(request, order_uid):
-    if request.user.is_staff == False:
+    if not is_staff(request):
         return redirect('home')
     try:
         order = models.Order.objects.get(uid = order_uid)
@@ -504,9 +504,9 @@ def markAsCanceled(request, order_uid):
     except Exception as e:
         print(e)
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
-    
+
 def markAsDelivered(request, order_uid):
-    if request.user.is_staff == False:
+    if not is_staff(request):
         return redirect('home')
     try:
         order = models.Order.objects.get(uid = order_uid)
@@ -530,11 +530,14 @@ def markAsProcessing(request, order_uid):
     except Exception as e:
         print(e)
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
-    
+
+@login_required(login_url='login')
 def low_stock(request):
-    if request.user.is_staff == False:
+    if not is_staff(request):
         return redirect('home')
   
     products = Product.objects.filter(stock__lte=5)
-    return render(request , 'low_stock.html',{'low_stock':products, 'low_stocks':True})
+
+    print(products)
+    return render(request , 'admin/low_stock.html',{'low_stock':products, 'low_stocks':True})
    
