@@ -156,4 +156,3 @@ EMAIL_HOST_PASSWORD = 'cehw lkgf jjuw leqp'
 
 RAZOR_KEY_ID = 'rzp_test_fFBpYlGzvN55lA'
 RAZOR_KEY_SECRET = 'BtXZLUJmvHcGU9ZyMWllSgJv'
-

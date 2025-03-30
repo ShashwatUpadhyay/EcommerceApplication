@@ -88,6 +88,7 @@
                 <!-- Price -->
                 <div class="mb-6">
                     <span class="text-3xl font-bold text-gray-900">₹{{product.price}}</span>
+                    <span class="text-lg font-bold line-through text-gray-500">₹{{product.old_price}}</span>
                     {% if product.compare_at_price %}
                     <span class="ml-2 text-lg text-gray-500 line-through">₹{{product.compare_at_price}}</span>
                     <span class="ml-2 text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded">Save ₹123123</span>

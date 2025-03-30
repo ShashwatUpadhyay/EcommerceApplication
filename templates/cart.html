@@ -144,6 +144,11 @@
               <span class="font-medium">₹{{ total_price|floatformat:2 }}</span>
             </div>
 
+            {% comment %} <div class="flex justify-between">
+              <span class="text-gray-600">Old price</span>
+              <span class="font-medium">₹{{ tax|floatformat:2 }}</span>
+            </div> {% endcomment %}
+
             <div class="flex justify-between">
               <span class="text-gray-600">Tax</span>
               <span class="font-medium">₹{{ tax|floatformat:2 }}</span>
