@@ -76,6 +76,9 @@ def cart(request):
     customer = request.user
     product_id = request.GET.get('product_id')
     cart_item=None
+    total_price=0
+    tax=0
+    final_price=0
     
     try:
         cart = models.Cart.objects.get(customer = customer.extra, is_paid = False)
