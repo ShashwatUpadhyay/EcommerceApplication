@@ -6,9 +6,14 @@ class CartItemAdmin(admin.StackedInline):
     model = CartItem
 
 class cartAdmin(admin.ModelAdmin):
-    list_display = ['customer','is_paid']
-    list_filter = ['is_paid']
+    list_display = ['customer','order_taken','is_paid']
+    list_filter = ['order_taken']
     inlines = [CartItemAdmin]
 
 admin.site.register(Cart,cartAdmin)
 admin.site.register(CartItem)
+
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['user','status','is_paid','is_delivered']
+    list_filter = ['is_paid','is_delivered','is_canceled','is_returned','is_refunded']
+admin.site.register(Order,OrderAdmin)

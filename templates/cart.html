@@ -1,246 +1,224 @@
 {% extends "index.html" %}
-{% block title %}Cart{% endblock title %}
-{% block content %}
+{% block title %}Your Shopping Cart{% endblock title %}
 {% load custom_filters %}
-<section class="bg-white py-8 antialiased dark:bg-white md:py-16">
-    <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-      <nav class="text-2xl font-medium text-black dark:text-black mb-8" aria-label="breadcrumb">
-        <ol class="flex flex-wrap items-center gap-1">
-          <li class="flex items-center gap-1">
-            <a href="{% url 'cart' %}" class="hover:text-black font-bold dark:hover:text-black">Cart</a>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" stroke-width="2" stroke="currentColor" class="size-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-            </svg>
-          </li>
-          <li class="flex items-center gap-1">
-            <a  class="hover:text-black dark:hover:text-black">Shipping</a>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true" stroke-width="2" stroke="currentColor" class="size-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-            </svg>
-          </li>
-          <li class="flex items-center text-black gap-1  dark:text-black" aria-current="page">Payment</li>
-        </ol>
-      </nav>
 
-    
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-black sm:text-2xl">Shopping Cart</h2>
-  
-      <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-        <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
+{% block content %}
+<section class="bg-gray-50 py-8 antialiased dark:bg-gray-50 md:py-12">
+  <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+    <!-- Breadcrumb Navigation -->
+    <nav class="mb-8" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 text-lg font-medium">
+        <li class="flex items-center gap-2">
+          <a href="{% url 'cart' %}" class="text-primary-600 hover:text-primary-800 transition-colors">Cart</a>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </li>
+        <li class="flex items-center gap-2 text-gray-500">
+          <span>Shipping</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </li>
+        <li class="text-gray-400">Payment</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Your Shopping Cart</h1>
+      <p class="text-gray-600">
+        {% if cart_items %}
+          {{ cart_items|length }} item{{ cart_items|length|pluralize }} in cart
+        {% else %}
+          Your cart is empty
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
+      <!-- Cart Items Section -->
+      <div class="lg:flex-1">
+        {% if cart_items %}
           <div class="space-y-6">
             {% for cart_item in cart_items %}
-            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm  dark:bg-white md:p-6">
-                <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                <a href="#" class="shrink-0 md:order-1">
-                  <img class="h-20 w-20 dark:hidden" src="{{ cart_item.product.latest_image.img.url }}" alt="{{ cart_item.product.title }}" />
-                  <img class="hidden h-20 w-20 dark:block" src="{{ cart_item.product.latest_image.img.url }}" alt="{{ cart_item.product.title }}" />
+            <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+              <div class="flex flex-col gap-6 md:flex-row md:items-center">
+                <!-- Product Image -->
+                <a href="{% url 'product' cart_item.product.slug %}" class="shrink-0">
+                  <img class="h-32 w-32 rounded-lg object-cover" src="{{ cart_item.product.latest_image.img.url }}" 
+                       alt="{{ cart_item.product.title }}" loading="lazy">
                 </a>
-  
-                <label for="counter-input" class="sr-only">Choose quantity:</label>
-                <div class="flex items-center justify-between md:order-3 md:justify-end">
-                  <div class="flex items-center">
-                    <button onclick="window.location.href=`/order/remove-from-cart/?product_id={{ cart_item.product.uid }}`" type="button" id="decrement-button" data-input-counter-decrement="counter-input" class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                      <svg class="h-3 w-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
-                      </svg>
-                    </button>
-                    <input type="text" id="counter-input" data-input-counter class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-black" placeholder="" value="{{cart_item.quantity}}" required />
-                    <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ cart_item.product.uid }}`" type="button" id="increment-button" data-input-counter-increment="counter-input" class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                      <svg class="h-3 w-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-                      </svg>
-                    </button>
+
+                <!-- Product Info -->
+                <div class="flex-1">
+                  <div class="flex flex-col justify-between gap-4 md:flex-row">
+                    <div>
+                      <a href="{% url 'product' cart_item.product.slug %}" class="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors">
+                        {{ cart_item.product.title }}
+                      </a>
+                      <p class="text-gray-600">{{ cart_item.product.category.title }}</p>
+                      <p class="mt-1 font-medium">₹{{ cart_item.product.price|floatformat:2 }}</p>
+                    </div>
+                    
+                    <!-- Mobile Price -->
+                    <div class="block md:hidden">
+                      <p class="text-lg font-bold">₹{{ cart_item.product.price|multiply:cart_item.quantity|floatformat:2 }}</p>
+                    </div>
                   </div>
-                  <div class="text-end md:order-4 md:w-32">
-                    {% comment %} <p class="text-base font-bold text-gray-900 dark:text-black"> ₹{{ cart_item.product.price|floatformat:2 }} </p> {% endcomment %}
-                    <p class="text-base font-bold text-gray-900 dark:text-black"> ₹{{ cart_item.product.price|multiply:cart_item.quantity|floatformat:2 }} </p>
-  
-                </div>
-                </div>
-  
-                <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                  <a href="{% url 'product' cart_item.product.slug %}" class="text-base font-medium text-gray-900 hover:underline dark:text-black">{{cart_item.product.title}}</a>
-                    <p class="">₹{{cart_item.product.price|floatformat:2}}</p>
-                    <p class="text-base font-medium text-gray-900 hover:underline dark:text-black">{{cart_item.product.category.title}}</p>
-                  <div class="flex items-center gap-4">
-  
-                    <button onclick="window.location.href=`/order/remove-item/?product_id={{ cart_item.product.uid }}`" type="button" class="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500">
-                      <svg class="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
+
+                  <!-- Quantity Controls -->
+                  <div class="mt-4 flex items-center justify-between">
+                    <div class="flex items-center rounded-lg border border-gray-200">
+                      <button onclick="window.location.href=`/order/remove-from-cart/?product_id={{ cart_item.product.uid }}`" 
+                              class="h-10 w-10 rounded-l-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                        <svg class="mx-auto h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                        </svg>
+                      </button>
+                      <span class="w-12 text-center">{{ cart_item.quantity }}</span>
+                      <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ cart_item.product.uid }}`" 
+                              class="h-10 w-10 rounded-r-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                        <svg class="mx-auto h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button onclick="window.location.href=`/order/remove-item/?product_id={{ cart_item.product.uid }}`" 
+                            class="flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-800 transition-colors">
+                      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                       Remove
                     </button>
                   </div>
                 </div>
+
+                <!-- Desktop Price -->
+                <div class="hidden md:block text-right">
+                  <p class="text-xl font-bold">₹{{ cart_item.product.price|multiply:cart_item.quantity|floatformat:2 }}</p>
+                </div>
               </div>
             </div>
             {% endfor %}
           </div>
-          <div class="hidden xl:mt-8 xl:block">
-            <h3 class="text-2xl font-semibold text-gray-900 dark:text-white">People also bought</h3>
-            <div class="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
-              <div class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                <a href="#" class="overflow-hidden rounded">
-                  <img class="mx-auto h-44 w-44 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="imac image" />
-                  <img class="mx-auto hidden h-44 w-44 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="imac image" />
-                </a>
-                <div>
-                  <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">iMac 27”</a>
-                  <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">This generation has some improvements, including a longer continuous battery life.</p>
-                </div>
-                <div>
-                  <p class="text-lg font-bold text-gray-900 dark:text-white">
-                    <span class="line-through"> ₹399,99 </span>
-                  </p>
-                  <p class="text-lg font-bold leading-tight text-red-600 dark:text-red-500">₹299</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2.5">
-                  <button data-tooltip-target="favourites-tooltip-1" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-                    <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"></path>
-                    </svg>
-                  </button>
-                  <div id="favourites-tooltip-1" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                    Add to favourites
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                  </div>
-                  <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                    </svg>
-                    Add to cart
-                  </button>
-                </div>
-              </div>
-              <div class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                <a href="#" class="overflow-hidden rounded">
-                  <img class="mx-auto h-44 w-44 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-light.svg" alt="imac image" />
-                  <img class="mx-auto hidden h-44 w-44 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/ps5-dark.svg" alt="imac image" />
-                </a>
-                <div>
-                  <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">Playstation 5</a>
-                  <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">This generation has some improvements, including a longer continuous battery life.</p>
-                </div>
-                <div>
-                  <p class="text-lg font-bold text-gray-900 dark:text-white">
-                    <span class="line-through"> ₹799,99 </span>
-                  </p>
-                  <p class="text-lg font-bold leading-tight text-red-600 dark:text-red-500">₹499</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2.5">
-                  <button data-tooltip-target="favourites-tooltip-2" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-                    <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"></path>
-                    </svg>
-                  </button>
-                  <div id="favourites-tooltip-2" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                    Add to favourites
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                  </div>
-                  <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                    </svg>
-                    Add to cart
-                  </button>
-                </div>
-              </div>
-              <div class="space-y-6 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                <a href="#" class="overflow-hidden rounded">
-                  <img class="mx-auto h-44 w-44 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-light.svg" alt="imac image" />
-                  <img class="mx-auto hidden h-44 w-44 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-dark.svg" alt="imac image" />
-                </a>
-                <div>
-                  <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">Apple Watch Series 8</a>
-                  <p class="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">This generation has some improvements, including a longer continuous battery life.</p>
-                </div>
-                <div>
-                  <p class="text-lg font-bold text-gray-900 dark:text-white">
-                    <span class="line-through"> ₹1799,99 </span>
-                  </p>
-                  <p class="text-lg font-bold leading-tight text-red-600 dark:text-red-500">₹1199</p>
-                </div>
-                <div class="mt-6 flex items-center gap-2.5">
-                  <button data-tooltip-target="favourites-tooltip-3" type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-                    <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"></path>
-                    </svg>
-                  </button>
-                  <div id="favourites-tooltip-3" role="tooltip" class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
-                    Add to favourites
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                  </div>
-  
-                  <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                    <svg class="-ms-2 me-2 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4" />
-                    </svg>
-                    Add to cart
-                  </button>
-                </div>
-              </div>
-            </div>
+
+          <!-- Continue Shopping Button (Mobile) -->
+          <div class="mt-6 block lg:hidden">
+            <a href="{% url 'shop' %}" class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-3 font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Continue Shopping
+            </a>
           </div>
-        </div>
-  
-        <div class="fixed sticky top-2 h-full right-0 mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-          <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-white dark:text-black sm:p-6">
-            <p class="text-xl font-semibold text-gray-900 dark:text-black">Order summary</p>
-  
-            <div class="space-y-4">
-              <div class="space-y-2">
-                <dl class="flex items-center justify-between gap-4">
-                  <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Products price</dt>
-                  <dd class="text-base font-medium text-gray-900 dark:text-black">₹{{total_price|floatformat:2}}</dd>
-                </dl>
-  
-                {% comment %} <dl class="flex items-center justify-between gap-4">
-                  <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                  <dd class="text-base font-medium text-green-600">-₹299.00</dd>
-                </dl> {% endcomment %}
-  
-                {% comment %} <dl class="flex items-center justify-between gap-4">
-                  <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Store Pickup</dt>
-                  <dd class="text-base font-medium text-gray-900 dark:text-black">₹99</dd>
-                </dl> {% endcomment %}
-  
-                <dl class="flex items-center justify-between gap-4">
-                  <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                  <dd class="text-base font-medium text-gray-900 dark:text-black">₹{{tax|floatformat:2}}</dd>
-                </dl>
-              </div>
-  
-              <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                <dt class="text-base font-bold text-gray-900 dark:text-black">Total</dt>
-                <dd class="text-base font-bold text-gray-900 dark:text-black">₹{{final_price|floatformat:2}}</dd>
-              </dl>
+        {% else %}
+          <!-- Empty Cart State -->
+          <div class="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
+            <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900">Your cart is empty</h3>
+            <p class="mt-2 text-gray-600">Start shopping to add items to your cart</p>
+            <a href="{% url 'shop' %}" class="mt-6 inline-flex items-center rounded-lg bg-blue-600 px-5 py-3 font-medium text-white hover:bg-primary-700 transition-colors">
+              Browse Products
+              <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Order Summary Section -->
+      {% if cart_items %}
+      <div class="lg:sticky lg:top-4 lg:w-96">
+        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 class="text-xl font-bold text-gray-900">Order Summary</h2>
+
+          <div class="mt-6 space-y-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Subtotal ({{ cart_items|length }} item{{ cart_items|length|pluralize }})</span>
+              <span class="font-medium">₹{{ total_price|floatformat:2 }}</span>
             </div>
-  
-            <a href="{% url 'shipping' %}" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-black hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed to Checkout</a>
-  
-            <div class="flex items-center justify-center gap-2">
-              <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
-              <a href="{% url 'shop' %}" title="" class="inline-flex items-center gap-2 text-sm font-medium text-black light:text-primary-700 underline hover:no-underline dark:text-primary-500">
-                Continue Shopping
-                <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
-                </svg>
+
+            {% comment %} <div class="flex justify-between">
+              <span class="text-gray-600">Old price</span>
+              <span class="font-medium">₹{{ tax|floatformat:2 }}</span>
+            </div> {% endcomment %}
+
+            <div class="flex justify-between">
+              <span class="text-gray-600">Tax</span>
+              <span class="font-medium">₹{{ tax|floatformat:2 }}</span>
+            </div>
+
+            {% comment %} Optional: Shipping estimate or discount field could go here {% endcomment %}
+
+            <div class="border-t border-gray-200 pt-4">
+              <div class="flex justify-between">
+                <span class="text-lg font-bold">Total</span>
+                <span class="text-lg font-bold">₹{{ final_price|floatformat:2 }}</span>
+              </div>
+            </div>
+
+            <div class="pt-4">
+              <a href="{% url 'shipping' %}" class="block w-full rounded-lg bg-blue-600 px-5 py-3 text-center font-medium text-white hover:bg-primary-700 transition-colors">
+                Proceed to Checkout
               </a>
             </div>
-          </div>
-  
-          {% comment %} <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-            <form class="space-y-4">
-              <div>
-                <label for="voucher" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Do you have a voucher or gift card? </label>
-                <input type="text" id="voucher" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="" required />
+
+            <!-- Continue Shopping Button (Desktop) -->
+            <div class="pt-2 hidden lg:block">
+              <a href="{% url 'shop' %}" class="flex items-center justify-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-800 transition-colors">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Continue Shopping
+              </a>
+            </div>
+
+            {% comment %} Optional: Add promo code field {% endcomment %}
+            {% comment %}
+            <div class="pt-4">
+              <label for="promo-code" class="mb-2 block text-sm font-medium text-gray-700">Promo Code</label>
+              <div class="flex gap-2">
+                <input type="text" id="promo-code" class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:border-primary-500 focus:ring-primary-500">
+                <button class="rounded-lg bg-gray-100 px-4 py-2 font-medium text-gray-700 hover:bg-gray-200 transition-colors">
+                  Apply
+                </button>
               </div>
-              <button type="submit" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Apply Code</button>
-            </form>
-          </div> {% endcomment %}
+            </div>
+            {% endcomment %}
+          </div>
         </div>
       </div>
+      {% endif %}
     </div>
-  </section>
+  </div>
+</section>
+{% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for message in messages %}
+                Swal.fire({
+                    position: "top-end",
+                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    title: "{{ message }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+
+<script>
+
+  
+
+</script>
 
 {% endblock content %}

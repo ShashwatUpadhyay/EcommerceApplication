@@ -1,13 +1,16 @@
 from django.shortcuts import render, HttpResponse , redirect
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
 from . import models
 from django.contrib import messages
 from django.db.models import Q
 from orders.models import Cart, CartItem
 from shop.models import ProductImage
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required 
+from base.views import is_staff
 
 # Create your views here.
+
 
 def shop(request):
     category = models.ProductCategory.objects.all()
@@ -31,7 +34,7 @@ def shop(request):
     
     if s:
         products = models.Product.objects.filter(Q(title__icontains = s)|Q(category__name__icontains = s)|Q(subcategory__name__icontains = s))
-        p = Paginator(products,6)
+        p = Paginator(products,12)
         page = request.GET.get('page')
         products = p.get_page(page)
         return render(request , 'shop.html',{'products':products, 'categories': category})
@@ -46,7 +49,7 @@ def shop(request):
         elif sort == 'hl':
             products = models.Product.objects.all().order_by('-price')
         
-        p = Paginator(products,6)
+        p = Paginator(products,12)
         page = request.GET.get('page')
         products = p.get_page(page)
         return render(request , 'shop.html',{'products':products, 'categories': category})
@@ -77,7 +80,7 @@ def shop(request):
         print(e)
         messages.error(request , "Product Not Found")
     
-    p = Paginator(products,6)
+    p = Paginator(products,12)
     page = request.GET.get('page')
     products = p.get_page(page)
     
@@ -108,8 +111,9 @@ def product_page(request, slug):
     try:
         product = models.Product.objects.get(slug=slug)
         if request.user.is_authenticated:
-            cart = Cart.objects.get(customer=request.user.extra)
-            cart_item = CartItem.objects.filter(cart=cart, product = product)
+            cart = Cart.objects.get(customer=request.user.extra,order_taken=False)
+            if cart:
+                cart_item = CartItem.objects.filter(cart=cart, product = product)
     except Exception as e:
         print(e)
     item_count=None
@@ -117,6 +121,7 @@ def product_page(request, slug):
     if request.user.is_authenticated:
         if cart_item.exists():
             exist = True
+            
         if cart_item:
             item_count = cart_item[0].quantity
         else:
@@ -125,4 +130,105 @@ def product_page(request, slug):
         exist = False
         item_count = 0
     return render(request, 'product.html', {'product':product, 'item_count': item_count, 'exist':exist })
+
+@login_required(login_url='login')
+def stockManage(request):
+    if not is_staff(request):
+        return redirect('home')
+    products = models.Product.objects.all()
+    categories = models.ProductCategory.objects.all()
     
+    if request.method == 'POST':
+        stock = request.POST.get('stock')
+        category = request.POST.get('category')
+        search = request.POST.get('s')
+        if stock:
+            if stock == 'low_stock':
+                print(stock, True)
+                products = models.Product.objects.filter(stock__lte=9).order_by('-stock')
+            elif stock == 'in_stock':
+                print(stock, True)
+                products = models.Product.objects.filter(stock__gte=10)
+            elif stock == 'out_of_stock':
+                print(stock, True)
+                products = models.Product.objects.filter(stock=0)
+                for p in products:
+                    print(p.title)           
+            else:
+                print(stock, True)
+                products = models.Product.objects.all()
+            
+        if category:
+            if category=='all':
+                products = models.Product.objects.all()
+            else:
+                products = models.Product.objects.filter(category__slug=category)
+        
+        if search:
+            products = models.Product.objects.filter(Q(title__icontains=search)|Q(category__name__icontains=search)|Q(subcategory__name__icontains=search))
+            
+    p = Paginator(products,10)
+    page = request.GET.get('page')
+    products = p.get_page(page)
+            
+        
+    return render(request , 'admin/stockmanage.html',{'products':products,'categories':categories})
+
+@login_required(login_url='login')
+def productEdit(request, uid):
+    if not is_staff(request):
+        return redirect('home')
+    product = models.Product.objects.get(uid=uid)
+    categories = models.ProductCategory.objects.all()
+    subcategories = models.ProductSubCategory.objects.all()
+    
+    if request.method == "POST":
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category = request.POST.get('category')
+        subcategory = request.POST.get('subcategory')
+        price = request.POST.get('price')
+        min_order_quantity = request.POST.get('min_order_quantity')
+        stock = request.POST.get('stock')
+        main_image = request.POST.get('main_image')
+        gallery_img = request.POST.get('gallery_img')
+        print(title,
+            description,
+            category,
+            subcategory,
+            price,
+            min_order_quantity,
+            stock)
+    return render(request , 'admin/productEdit.html',{'product':product,'categories':categories,'subcategories':subcategories})
+
+
+
+# add to wishlist
+@login_required(login_url='login')
+def add_to_wishlist(request, uid):
+    product = models.Product.objects.get(uid=uid)
+    wishlist = models.Whislist.objects.filter(user=request.user, product=product).first()
+    if wishlist:
+        messages.error(request , "Product already in wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        models.Whislist.objects.create(user=request.user, product=product)
+        messages.success(request , "Product added to wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+@login_required(login_url='login')
+def wishlist(request):
+    wishlist = models.Whislist.objects.filter(user=request.user)
+    return render(request , 'wishlist.html',{'wishlist_items':wishlist})
+
+@login_required(login_url='login')
+def remove_wishlist(request, uid):
+    try:
+        wishlist = models.Whislist.objects.get(product = models.Product.objects.get(uid=uid),user=request.user)
+        wishlist.delete()
+        messages.success(request , "Product removed from wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except models.Whislist.DoesNotExist:
+        print("Wishlist item does not exist")
+        messages.error(request , "Product not found in wishlist")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

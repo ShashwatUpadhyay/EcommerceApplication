@@ -6,12 +6,27 @@
 {% endblock stylesheet %}
 {% block content %}
 <div class="container mx-auto flex justify-center">
-    
-<div class='border rounded-lg px-12  my-10'>
+  <div class='border rounded-lg px-12  my-10 pt-5'>
+    {% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for message in messages %}
+                Swal.fire({
+                    position: "top-end",
+                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    title: "{{ message }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  
+            {% endfor %}
+        });
+    </script>
+{% endif %}
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-5">
         <h2 class="text-base/7 font-semibold text-gray-900">Profile</h2>
-        <p class="mt-1 text-sm/6 text-gray-600">This information will be displayed publicly so be careful what you share.</p>
+        <p class="mt-1 text-sm/6 text-gray-600"></p>
   
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div class="sm:col-span-4">

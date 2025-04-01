@@ -13,12 +13,21 @@
             
             
             {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{% if message.tags == 'error' %}text-red-500{% endif %} {% if message.tags == 'success' %}text-green-500{% endif %}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    {% for message in messages %}
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                            title: "{{ message }}",
+                            showConfirmButton: false,
+                            timer: 5000
+                          });
+                          
+                    {% endfor %}
+                });
+            </script>
+        {% endif %}
             <div class="relative flex items-center mt-8">
                 <span class="absolute">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-3 text-gray-300 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

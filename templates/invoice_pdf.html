@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - {{ order.uid }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 150px;
+            max-height: 80px;
+        }
+        .invoice-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .company-address {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        .invoice-info {
+            margin-top: 20px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #444;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th {
+            text-align: left;
+            padding: 8px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="header">
+        <table>
+            <tr>
+                <td width="60%">
+                    {% if logo %}
+                    <img src="{{ logo }}" class="logo" alt="Company Logo">
+                    {% endif %}
+                    <div class="company-address">
+                        <strong>Maxima</strong><br>
+                        <p>27, 1st Main Road,<br>
+                            R.T. Nagar,<br>
+                            Bangalore, Karnataka 560032,<br>India.</p><br>
+                        Phone: 12345678891<br>
+                        Email: ABC@gmail.com
+                    </div>
+                </td>
+                <td width="40%" class="text-right">
+                    <div class="invoice-title">INVOICE</div>
+                    <div class="invoice-info">
+                        <strong>Invoice #:</strong> {{ order.uid }}<br>
+                        <strong>Date:</strong> {{ order.created_at|date:"F j, Y" }}<br>
+                        <strong>Due Date:</strong> {{ order.created_at|date:"F j, Y" }}<br>
+                        <strong>Status:</strong> Paid
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="billing-info">
+        <table>
+            <tr>
+                <td width="50%">
+                    <strong>Bill To:</strong><br>
+                    {{ order.user.first_name }} {{ order.user.last_name }}<br>
+                    {{ order.address.address }}<br>
+                    {{ order.address.city }}, {{ order.address.state }} {{ order.address.postal_code }}<br>
+                    {{ order.address.country }}<br>
+                    Phone: {{ order.address.phone }}
+                </td>
+                <td width="50%">
+                    <strong>Ship To:</strong><br>
+                    {{ order.user.first_name }} {{ order.user.last_name }}<br>
+                    {{ order.address.address }}<br>
+                    {{ order.address.city }}, {{ order.address.state }} {{ order.address.postal_code }}<br>
+                    {{ order.address.country }}<br>
+                    Phone: {{ order.address.phone }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section-title">Order Details</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.cart.cartitems.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.product.slug }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>Rs.{{ item.product.price }}</td>
+                <td>Rs.{{ item.cart.total_price|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table style="width: 300px; float: right;">
+        <tr>
+            <td>Subtotal:</td>
+            <td class="text-right">Rs.{{ order.cart.total_price|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td>GST:</td>
+            <td class="text-right">Rs.{{ order.cart.tax|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td>Shipping:</td>
+            <td class="text-right">Rs.{{ order.shipping_cost }}</td>
+        </tr>
+        <tr class="total-row">
+            <td><strong>Total:</strong></td>
+            <td class="text-right"><strong>Rs.{{ order.cart.final_price|floatformat:2 }}</strong></td>
+        </tr>
+    </table>
+
+    <div style="clear: both;"></div>
+
+    <div class="section-title">Payment Method</div>
+    <p><b>{{ order.payment_method }}</b></p>
+
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>Maxima - 236851236 - whbde@gmail.com</p>
+        <p>terms and conditions goes here</p>
+    </div>
+</body>
+</html>
+   

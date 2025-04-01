@@ -1,0 +1,421 @@
+{% extends "index.html" %}
+{% block title %}Admin - Order Management{% endblock %}
+
+{% block content %}
+{% load custon_filter %}
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Page Header -->
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-gray-900">Order Management</h1>
+      <p class="mt-2 text-sm text-gray-600">View and manage all customer orders</p>
+    </div>
+
+    <!-- Order Tabs -->
+    <div class="mb-6 border-b border-gray-200">
+      <nav class="-mb-px flex space-x-8">
+        <a href="{% url "AllOrders" %}" class="{% if all %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">All Orders</a>
+        <a href="{% url "PendingOrders" %}" class="{% if pending %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Pending</a>
+        <a href="{% url "ProcessingOrders" %}" class="{% if processing %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Processing</a>
+        <a href="{% url "ShippedOrders" %}" class="{% if shipped %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Shipped</a>
+        <a href="{% url "DeleveredOrders" %}" class="{% if delivered %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Delivered</a>
+        <a href="{% url "CanceledOrders" %}" class="{% if canceled %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Cancelled</a>
+        <a href="{% url "low_stock" %}" class="{% if low_stocks %}border-blue-500 text-blue-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300{% endif %} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Low Stock</a>
+      </nav>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="mb-6 bg-white p-4 rounded-lg shadow">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex-1">
+          <label for="search" class="sr-only">Search</label>
+          <div class="relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <input type="text" name="search" id="search" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2" placeholder="Search orders...">
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div>
+            <label for="sort" class="sr-only">Sort</label>
+            <select id="sort" name="sort" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+              <option>Newest First</option>
+              <option>Oldest First</option>
+              <option>Highest Amount</option>
+              <option>Lowest Amount</option>
+            </select>
+          </div>
+          <button class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Filter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order List -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      {% if orders %}
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Details</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              {% for order in orders %}
+              <tr class="hover:bg-gray-50" id='{{ order.uid }}-row' >
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 text-blue-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">#{{ order.uid }}</div>
+                      <div class="text-sm text-gray-500">{{ order.created_at|date:"M j, Y" }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900">{{ order.user.extra.full_name }}</div>
+                  <div class="text-sm text-gray-500">{{ order.user.email }}</div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex -space-x-2">
+                    {% for item in order.cart.cartitems.all|slice:":3" %}
+                    <img class="h-10 w-10 rounded-full border-2 border-white" src="{{ item.product.latest_image.img.url }}" alt="{{ item.product.title }}">
+                    {% endfor %}
+                    {% if order.cart.cartitems.all|length > 3 %}
+                    <span class="h-10 w-10 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">+{{ order.cart.cartitems.all|length|add:"-3" }}</span>
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span id='{{ order.uid }}-status' class="text-black {% if order.status == 'Pending' %} bg-gray-300 {% endif %}{% if order.status == 'Delivered' %} bg-green-500 text-black {% endif %}{% if order.status == 'Shipped' %}bg-yellow-600 text-black {% endif %}{% if order.status == 'Processing' %} bg-blue-200 text-black {% endif %}{% if order.status == 'Canceled' %}bg-red-500{% endif %}{% if order.status == 'Refunded' %}bg-orange-100{% endif %}{% if order.status == 'Returned' %}bg-green-100{% endif %} px-2.5 py-0.5 rounded-full text-xs font-medium">
+                    {{order.status}}
+                  </span>
+                  <span class="text-black {% if order.is_paid %}bg-green-300 {% else %}bg-red-400{% endif %} ml-2 px-2.5 py-0.5 rounded-full text-xs font-medium">
+                    {{order.is_paid|yesno:"Paid,Unpaid"}} 
+                  </span>
+                  {% if order.is_delivered %}
+                  <div class="text-xs text-gray-500 mt-1">Delivered {{ order.delevery_date|date:"M j" }}</div>
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                  ₹{{ order.cart.final_price|floatformat:2 }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex space-x-2">
+                    <a href="{% url 'order' order.uid %}" class="text-blue-600 hover:text-blue-900">Details</a>
+                    
+                    {% if order.status == 'Pending' %}
+                      <button id='{{ order.uid }}-process' onclick="confirmProcess('{{ order.uid }}')" class="text-yellow-600 hover:text-yellow-900">Process</button>
+                    {% endif %}
+
+                    {% if order.status == 'Processing' %}
+                    <button id='{{ order.uid }}-ship' onclick="confirmShipping('{{ order.uid }}')" class="text-yellow-600 hover:text-yellow-900">Ship</button>
+                    {% endif %}
+                    
+                    {% if order.status == 'Shipped' %}
+                    <button id='{{ order.uid }}-deliver' onclick="confirmDeliver('{{ order.uid }}')" class="text-green-600 hover:text-green-900">Deliver</button>
+                    {% endif %}
+                    
+                    {% if order.status != 'Canceled' and order.status != 'Delivered' %}
+                    <button id='{{ order.uid }}-cancel' onclick="confirmCancel('{{ order.uid }}')" class="text-red-600 hover:text-red-900">Cancel</button>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              
+              <!-- Expanded row for mobile view -->
+              <tr class="sm:hidden">
+                <td colspan="6" class="px-4 py-2 bg-gray-50">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="text-sm font-medium">Items:</span>
+                      <div class="flex -space-x-2 mt-1">
+                        {% for item in order.cart.cartitems.all %}
+                        <img class="h-8 w-8 rounded-full border-2 border-white" src="{{ item.product.latest_image.img.url }}" alt="{{ item.product.title }}">
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="space-x-2">
+                      <a href="{% url 'order' order.uid %}" class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                        Details
+                      </a>
+                      {% if order.status == 'Processing' %}
+                      <button id='{{ order.id }}-ship ' onclick="confirmShipping('{{ order.uid }}')" class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-yellow-600 hover:bg-yellow-700">
+                        Ship
+                      </button>
+                      {% endif %}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <!-- Empty State (same as before) -->
+      <div class="text-center py-16">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <h3 class="mt-2 text-lg font-medium text-gray-900">No orders found</h3>
+        <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if orders.has_other_pages %}
+    <div class="mt-8 flex items-center justify-between">
+      <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+        <div>
+          <p class="text-sm text-gray-700">
+            Showing <span class="font-medium">{{ orders.start_index }}</span> to <span class="font-medium">{{ orders.end_index }}</span> of <span class="font-medium">{{ orders.paginator.count }}</span> results
+          </p>
+        </div>
+        <div>
+          <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            {% if orders.has_previous %}
+            <a href="?page={{ orders.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Previous</span>
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            {% endif %}
+
+            {% for i in orders.paginator.page_range %}
+              {% if orders.number == i %}
+              <a href="#" aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                {{ i }}
+              </a>
+              {% else %}
+              <a href="?page={{ i }}" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                {{ i }}
+              </a>
+              {% endif %}
+            {% endfor %}
+
+            {% if orders.has_next %}
+            <a href="?page={{ orders.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <span class="sr-only">Next</span>
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </a>
+            {% endif %}
+          </nav>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function updateOrderStatus(orderId) {
+  // You would typically make an AJAX call here to update the order status
+  fetch(`/order/a/mark-as-shipped/${orderId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({status: status})
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success) {
+      document.getElementById(`${orderId}-ship`).classList.add('hidden');
+      document.getElementById(`${orderId}-status`).classList.add('bg-yellow-600');
+      document.getElementById(`${orderId}-status`).classList.add('text-black');
+      document.getElementById(`${orderId}-status`).innerText = 'Shipped';
+    } 
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+function markAsCancel(orderId) {
+  // You would typically make an AJAX call here to update the order status
+  fetch(`/order/a/mark-as-canceled/${orderId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({status: status})
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success == true) {
+     let process = document.getElementById(`${orderId}-process`);
+     let cancel = document.getElementById(`${orderId}-cancel`);
+     let ship = document.getElementById(`${orderId}-ship`);
+     let status = document.getElementById(`${orderId}-status`);
+      if(process){
+        process.classList.add('hidden');
+      }
+      if(cancel){
+        cancel.classList.add('hidden');
+      }  
+      if(ship){
+        ship.classList.add('hidden');
+      }
+      if(status){
+        status.classList.add('text-black');
+        status.innerText = 'Canceled';
+        status.classList.remove('bg-yellow-600');
+        status.classList.remove('bg-blue-200');
+        status.classList.remove('bg-green-500');      
+        status.classList.add('bg-red-500');
+      }
+    } 
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    //location.reload()
+  });
+}
+
+function markAsDelivered(orderId) {
+  // You would typically make an AJAX call here to update the order status
+  fetch(`/order/a/mark-as-delivered/${orderId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({status: status})
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success == true) {
+     let status = document.getElementById(`${orderId}-status`);
+
+      document.getElementById(`${orderId}-deliver`).classList.add('hidden');
+      document.getElementById(`${orderId}-cancel`).classList.add('hidden');
+      if(status){
+        status.classList.add('bg-green-500');
+        status.classList.add('text-black');
+        status.innerText = 'Delivered';
+      }
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+function markAsProcessing(orderId) {
+  // You would typically make an AJAX call here to update the order status
+  fetch(`/order/a/mark-as-processing/${orderId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: JSON.stringify({status: status})
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success === true) {
+      const element = document.getElementById(`${orderId}-process`);
+      if (element) {
+          element.classList.add('hidden');
+      } else {
+          console.error(`Element with ID "${orderId}-process" not found.`);
+      }
+
+      document.getElementById(`${orderId}-status`).classList.add('bg-blue-200');
+      document.getElementById(`${orderId}-status`).classList.add('text-black');
+      document.getElementById(`${orderId}-status`).innerText = 'Processing';
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+
+function confirmCancel(orderId) {
+          Swal.fire({
+              title: "Are you sure?",
+              text: `Do you want to Cancel Order #${orderId}?`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#3085d6",
+              confirmButtonText: "Confirm"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  markAsCancel(orderId)  
+              }
+          });
+      }
+
+function confirmShipping(orderId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Mark Order #${orderId} as Shipped?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Confirm"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                updateOrderStatus(orderId)  
+            }
+        });
+    }
+function confirmDeliver(orderId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Mark Order #${orderId} as Shipped?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Confirm"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                markAsDelivered(orderId)  
+            }
+        });
+    }
+
+function confirmProcess(orderId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: `Take the order in Process`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Confirm"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                markAsProcessing(orderId)  
+            }
+        });
+    }
+    </script>
+{% endblock content %}

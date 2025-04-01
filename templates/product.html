@@ -1,134 +1,395 @@
 {% extends "index.html" %}
 {% block title %}{{product.title}}{% endblock title %}
+{% load static %}
 {% block content %}
 
-<div class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-      <div class="flex flex-wrap -mx-4">
-        <!-- Product Images -->
-        <div class="w-full md:w-1/2 px-4 mb-8">
-          <img src="{{product.latest_image.img.url }}" alt="Product"
-                      class="w-full h-auto rounded-lg shadow-md mb-4" id="mainImage">
-          <div class="flex gap-4 py-4 justify-center overflow-x-auto">
-            {% for img in product.image.all %}
-            <img src="{{img.img.url}}" alt="Thumbnail 1"
-                          class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                          onclick="changeImage(this.src)">
-                          {% endfor %}
-          </div>
-        </div>
-  
-        <!-- Product Details -->
-        <div class="w-full md:w-1/2 px-4">
-          <h2 class="text-3xl font-bold mb-2">{{product.title}}</h2>
-          <p class="text-gray-600 mb-4">SKU: WH1000XM4</p>
-          <div class="mb-4">
-            <span class="text-2xl font-bold mr-2">₹{{product.price}}</span>
-            <span class="text-gray-500 line-through">₹{{product.price}}</span>
-          </div>
-          <div class="flex items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-              class="size-6 text-yellow-500">
-              <path fill-rule="evenodd"
-                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                clip-rule="evenodd" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-              class="size-6 text-yellow-500">
-              <path fill-rule="evenodd"
-                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                clip-rule="evenodd" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-              class="size-6 text-yellow-500">
-              <path fill-rule="evenodd"
-                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                clip-rule="evenodd" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-              class="size-6 text-yellow-500">
-              <path fill-rule="evenodd"
-                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                clip-rule="evenodd" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-              class="size-6 text-yellow-500">
-              <path fill-rule="evenodd"
-                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                clip-rule="evenodd" />
-            </svg>
-            <span class="ml-2 text-gray-600">4.5 (120 reviews)</span>
-          </div>
-          <p class="text-gray-700 mb-6">{{product.description}}</p>
-  
-          
-          {% if exist %}
-          <div class="mb-6">
-            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity:</label>
-            <div x-data="{ currentVal: 1, minVal: 0, maxVal: 10, decimalPoints: 0, incrementAmount: 1 }" class="flex flex-col gap-1">
-              <div x-on:dblclick.prevent class="flex items-center">
-                  <button {% if item_count == 0 %}disabled{% endif %}  onclick="window.location.href=`/order/remove-from-cart/?product_id={{ product.uid }}`" class="flex h-10 items-center justify-center rounded-l-radius border border-outline bg-surface-alt px-4 py-2 text-on-surface hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark dark:focus-visible:outline-primary-dark" aria-label="subtract">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2" class="size-4">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/>
-                      </svg>
-                  </button>
-                  <input  id="counterInput" value='{% if item_count > 0 %}{{item_count}} {% else %} 1 {% endif %} ' type="text" class="border-x-none h-10 w-20 rounded-none border-y border-outline bg-surface-alt/50 text-center text-on-surface-strong focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:text-on-surface-dark-strong dark:focus-visible:outline-primary-dark" readonly />
-                  <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`" class="flex h-10 items-center justify-center rounded-r-radius border border-outline bg-surface-alt px-4 py-2 text-on-surface hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark dark:focus-visible:outline-primary-dark" aria-label="add">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2" class="size-4">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-                      </svg>
-                  </button>
-              </div>
-          </div>
-          </div>
-          {% endif %}
-          <div class="flex space-x-4 mb-6">
-            {% if exist %}
-            <button onclick="window.location.href=`/order/remove-item/?product_id={{ product.uid }}`"
-                          class="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                          <svg height='24' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                          Remove 
-                      </button>
-                      <button onclick="window.location.href=`{% url 'cart' %}`"
-                      class="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                      stroke-width="1.5" stroke="currentColor" class="size-6">
-                      <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                  </svg>                      Go to cart
-                  </button>
+<div class="bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumbs -->
+        <nav class="flex mb-6" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                <li class="inline-flex items-center">
+                    <a href="{% url 'home' %}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <svg class="w-3 h-3 mr-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <a href="{% url 'shop' %}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Shop</a>
+                    </div>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <svg class="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">{{product.title|truncatechars:20}}</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+            <!-- Product Images -->
+            <div class="mb-8 lg:mb-0">
+                <div class="bg-gray-50 rounded-lg overflow-hidden mb-4">
+                    <img src="{{product.latest_image.img.url}}" alt="{{product.title}}" 
+                         class="w-full h-auto object-contain max-h-[500px] mx-auto" 
+                         id="mainImage">
+                </div>
+                <div class="flex gap-3 overflow-x-auto py-2 px-1 -mx-1">
+                    {% for img in product.image.all %}
+                    <button onclick="changeImage('{{img.img.url}}')" 
+                            class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md border-2 border-transparent hover:border-blue-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <img src="{{img.img.url}}" alt="Thumbnail" 
+                             class="w-full h-full object-cover rounded-md">
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="lg:sticky lg:top-4">
+                <div class="mb-4">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{{product.title}}</h1>
+                    <p class="text-gray-500 text-sm">SKU: {{product.sku|default:"N/A"}}</p>
+                </div>
+
+                <!-- Rating -->
+                <div class="flex items-center mb-4">
+                    <div class="flex">
+                        {% for i in "12345" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="size-5 text-yellow-400">
+                            <path fill-rule="evenodd"
+                                d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        {% endfor %}
+                    </div>
+                    <span class="ml-2 text-sm text-gray-600">4.5 (120 reviews)</span>
+                    <span class="mx-2 text-gray-300">|</span>
+                    {% if product.stock == 0 %}
+                    <span class="text-sm text-red-600 font-medium">Out Of Stock</span>
+                    {% elif product.stock > 0 and product.stock <= 10  %}
+                    <span class="text-sm text-yellow-600 font-medium">Only {{ product.stock }} left. Hurry up!!!!</span>
+                    {% else %}
+                    <span class="text-sm text-green-600 font-medium">In Stock</span>
+                    {% endif %}
+                
+                    </div>
+                    
+                <!-- Price -->
+                <div class="mb-6">
+                    <span class="text-3xl font-bold text-gray-900">₹{{product.price}}</span>
+                    <span class="text-lg font-bold line-through text-gray-500">₹{{product.old_price}}</span>
+                    {% if product.compare_at_price %}
+                    <span class="ml-2 text-lg text-gray-500 line-through">₹{{product.compare_at_price}}</span>
+                    <span class="ml-2 text-sm bg-green-100 text-green-800 px-2 py-0.5 rounded">Save ₹123123</span>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="prose max-w-none text-gray-700 mb-6">
+                    {{product.description|linebreaks}}
+                </div>
+
+                <!-- Quantity Selector -->
+                {% if exist %}
+                <div class="mb-6" id="quantity-selector">
+                    <div class="flex items-center">
+                        <span class="mr-3 text-sm font-medium text-gray-900">Quantity:</span>
+                        <div class="flex items-center border border-gray-300 rounded-md">
+                            <button  
+                            id='remove-from-cart'
+                                    class="h-10 w-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/>
+                                </svg>
+                            </button>
+                            <input type="text" value="{{item_count}}" 
+                            id = 'quantity'
+                                   class="h-10 w-12 text-center border-x border-gray-300 bg-white text-gray-900 focus:outline-none" 
+                                   readonly>
+                            <button 
+                                    id = 'add-to-cart'
+                                    class="h-10 w-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="mb-6 hidden" id="quantity-selector">
+                    <div class="flex items-center">
+                        <span class="mr-3 text-sm font-medium text-gray-900">Quantity:</span>
+                        <div class="flex items-center border border-gray-300 rounded-md">
+                            <button 
+                            id='remove-from-cart'
+                                    class="h-10 w-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 focus:outline-none ">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/>
+                                </svg>
+                            </button>
+                            <input type="text" value="{{item_count}}" 
+                            id = 'quantity'
+                                   class="h-10 w-12 text-center border-x border-gray-300 bg-white text-gray-900 focus:outline-none" 
+                                   readonly>
+                            <button 
+                                    id = 'add-to-cart'
+                                    class="h-10 w-10 flex items-center justify-center text-gray-600 hover:bg-gray-100 focus:outline-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap gap-3 mb-8">
+                    {% if exist %}
+                    <button onclick="window.location.href=`/order/remove-item/?product_id={{ product.uid }}`"
+                        id="remove-btn"
+                            class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                        <svg height='20' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        Remove
+                    </button>
+                    
+                    <button onclick="window.location.href=`{% url 'cart' %}`"
+                                id = 'go-to-cart-btn'
+                            class="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                        </svg>
+                        Go to Cart
+                    </button>
+                    <button 
+                            id="add-to-cart-button"
+                            class="hidden flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                        </svg>
+                        Add to Cart
+                    </button>
+                    {% else %}
+                    <button onclick="window.location.href=`/order/remove-item/?product_id={{ product.uid }}`"
+                    id="remove-btn"
+                        class="flex hidden items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                    <svg height='20' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    Remove
+                </button>
+                
+                <button onclick="window.location.href=`{% url 'cart' %}`"
+                            id = 'go-to-cart-btn'
+                        class="flex hidden items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                    Go to Cart
+                </button>
+                {% if request.user.is_authenticated %}
+                {% if product.stock == 0 %}
+                <button 
+                id="add-to-cart-button"
+                disabled
+                class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                Out Of Stock
+            </button>
             {% else %}
-            <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ product.uid }}`"
-                          class="bg-indigo-600 flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                              stroke-width="1.5" stroke="currentColor" class="size-6">
-                              <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                          </svg>
-                          Add to Cart
-                      </button>
+            <button 
+                id="add-to-cart-button"
+                class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                Add to Cart
+            </button>
             {% endif %}
-           
-          </div>
-  
-          <div>
-            <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
-            <ul class="list-disc list-inside text-gray-700">
-              <li>Industry-leading noise cancellation</li>
-              <li>30-hour battery life</li>
-              <li>Touch sensor controls</li>
-              <li>Speak-to-chat technology</li>
-            </ul>
-          </div>
+            {% else %}
+            <a 
+                href='{% url "login" %}'
+                class="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                Add to Cart
+            </a>
+            {% endif %}
+                    {% endif %}
+                </div>
+
+                <!-- Features -->
+                {% if product.features.all %}
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
+                    <ul class="space-y-2">
+                        {% for feature in product.features.all %}
+                          <li class="flex items-start">
+                              <p> 
+                                <i class="{{feature.icon}}"></i>
+                                <span class="text-gray-700">{{feature.feature}}</span>
+                              </p>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                      {% endif %}
+            </div>
         </div>
-      </div>
     </div>
-  
-    <script>
-      function changeImage(src) {
-              document.getElementById('mainImage').src = src;
-          }
-    </script>
-  </div>
+</div>
+
+<script>
+    function changeImage(src) {
+        document.getElementById('mainImage').src = src;
+        
+        // Update active thumbnail styling
+        const thumbnails = document.querySelectorAll('[onclick^="changeImage"]');
+        thumbnails.forEach(thumb => {
+            const img = thumb.querySelector('img');
+            if (img && img.src === src) {
+                thumb.classList.add('border-blue-500');
+                thumb.classList.remove('border-transparent');
+            } else {
+                thumb.classList.add('border-transparent');
+                thumb.classList.remove('border-blue-500');
+            }
+        });
+    }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            addToCartButton = document.getElementById('add-to-cart');
+            cartBtn = document.getElementById('add-to-cart-button');
+            removeFromCartButton = document.getElementById('remove-from-cart');
+            quantitySelector = document.getElementById('quantity-selector');
+            removeBtn = document.getElementById('remove-btn');
+            goToCartBtn = document.getElementById('go-to-cart-btn');
+            decreaseBtn = document.getElementById('decrease-btn');
+            quantity = document.getElementById('quantity');
+            const productId = "{{ product.uid }}"; // Get the product ID from the template context
+            const customerId = "{{ user.extra.uid }}"; // Get the product ID from the template context
+
+
+            cartBtn.addEventListener('click', function(event) {
+                event.preventDefault(); 
+                console.log("Add to cart button clicked");
+                {% if request.user.is_authenticated %}
+                 const url = `{% url "addToCartAPI" user.extra.uid product.uid %}`; // Construct the URL
+                {% endif %}
+                fetch(url,{
+                    method: 'GET',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('data.success:', data.success); // Handle the response data as needed
+                    if (data.success === true) {
+                        cartBtn.classList.add('hidden'); 
+                        cartBtn.classList.add('hidden');
+                        goToCartBtn.classList.remove('hidden');
+                        removeBtn.classList.remove('hidden'); 
+                        quantitySelector.classList.remove('hidden'); 
+                        quantity.value = data.quantity 
+                    } else {
+                        alert('Error adding to cart: ' + data.message);
+                    }
+                });
+            });
+
+            addToCartButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default action
+                {% if request.user.is_authenticated %}
+                const url = `{% url "addToCartAPI" user.extra.uid product.uid %}`; // Construct the URL
+                {% endif %}
+                fetch(url,{
+                    method: 'GET',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('added to cart'); // Handle the response data as needed
+                    if (data.success === true) {
+                        cartBtn.classList.add('hidden'); // Hide the add to cart button
+                        goToCartBtn.classList.remove('hidden'); // Show the go to cart button
+                        removeBtn.classList.remove('hidden'); // Show the remove button
+                        quantitySelector.classList.remove('hidden'); // Show the quantity selector
+                        quantity.value = data.quantity // Update the quantity in the input field
+                        cartBtn.classList.add('hidden'); // Hide the add to cart button
+                    } else {
+                        alert('Error adding to cart: ' + data.message);
+                    }
+                })
+            });
+
+            removeFromCartButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default action
+                const productId = "{{ product.uid }}"; // Get the product ID from the template context
+                const customerId = "{{ user.extra.uid }}"; // Get the product ID from the template context
+                {% if request.user.is_authenticated %}
+                const url = `{% url "removeFromCartAPI" user.extra.uid product.uid %}`; // Construct the URL
+                {% endif %}
+                fetch(url,{
+                    method: 'GET',
+                    headers:{
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('remove from cart'); // Handle the response data as needed
+                    if (data.success === true) {
+                        quantity.value = data.quantity // Update the quantity in the input field
+                        if(data.quantity == 0){
+                            cartBtn.classList.remove('hidden'); // Show the add to cart button
+                            goToCartBtn.classList.add('hidden'); // Hide the go to cart button
+                            removeBtn.classList.add('hidden'); // Hide the remove button
+                            quantitySelector.classList.add('hidden'); // Hide the quantity selector
+                            decreaseBtn.disabled = true; // Disable the decrease button
+                        }
+                    } else {
+                        alert('Error adding to cart: ' + data.message);
+                    }
+                })
+            });
+            
+
+            });
+</script>
 
 {% endblock content %}

@@ -13,9 +13,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from .ckeditorconfig import *
+
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# DOMAIN_NAME = 'https://9319j0b7-8000.inc1.devtunnels.ms/'
 DOMAIN_NAME = 'http://127.0.0.1:8000/'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,9 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_ckeditor_5',
     'base',
     'shop',
     'orders',
+    'blog',
+    'contact',
 ]
 
 MIDDLEWARE = [
@@ -115,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -148,3 +154,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('email') 
 EMAIL_HOST_PASSWORD = 'cehw lkgf jjuw leqp'
 
+RAZOR_KEY_ID = 'rzp_test_fFBpYlGzvN55lA'
+RAZOR_KEY_SECRET = 'BtXZLUJmvHcGU9ZyMWllSgJv'

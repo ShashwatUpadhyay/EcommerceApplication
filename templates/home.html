@@ -1,209 +1,250 @@
 {% extends "index.html" %}
-{% block title %}Ecommerce Home page{% endblock title %}
+{% block title %}Maxima® Industrial Components | Home{% endblock title %}
 
 {% block content %}
 
-<div class="bg-orange-300 py-4 sm:py-6 text-center">
-    <h1 class="text-lg sm:text-xl font-bold">Maxima&reg; Aluminum Profile</h1>
-    <h2 class="text-sm sm:text-lg">Maxima&reg; Stepper Motor & Drive | Maxima&reg; Actuator | Maxima&reg; Conveyor</h2>
+<!-- Hero Banner -->
+<div class="bg-gradient-to-r from-orange-400 to-orange-600 py-8 sm:py-12 text-center">
+    <div class="container mx-auto px-4">
+        <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">Maxima® Industrial Components</h1>
+        <h2 class="text-lg sm:text-2xl text-white opacity-90">Premium Aluminum Profiles • Stepper Motors • Actuators • Conveyor Systems</h2>
+        <a href="{% url 'shop' %}" class="mt-6 inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300">
+            Shop Now
+        </a>
+    </div>
 </div>
 
-<div class="container mx-auto p-4 sm:p-10">
-    <!-- Product Features -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <div class="bg-white p-4 shadow rounded">
-            <h3 class="font-bold text-lg">Product</h3>
-            <ul class="mt-2 space-y-2">
-                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50">
-                        <path d="M 11 4 C 7.1 4 4 7.1 4 11 L 4 39 C 4 42.9 7.1 46 11 46 L 39 46 C 42.9 46 46 42.9 46 39 L 46 14.900391 L 44 17.300781 L 44 39 C 44 41.8 41.8 44 39 44 L 11 44 C 8.2 44 6 41.8 6 39 L 6 11 C 6 8.2 8.2 6 11 6 L 37.199219 6 L 38.900391 4 L 11 4 z M 43.236328 7.7539062 L 23.914062 30.554688 L 15.78125 22.96875 L 14.417969 24.431641 L 24.083984 33.447266 L 44.763672 9.046875 L 43.236328 7.7539062 z"></path>
-                    </svg>
-                    <span>1000+ Industrial Components</span>
-                </li>
-                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
-                    <svg viewBox="0 0 192 192" width="30" height="30" xmlns="http://www.w3.org/2000/svg" fill="none">
-                        <path stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="12" d="M95.958 22C121.031 42.867 149.785 42 158 42c-1.797 118.676-15 95-62.042 128C49 137 35.798 160.676 34 42c8.13 0 36.883.867 61.958-20Z"></path>
-                    </svg>
-                    <span>Reliable Products</span>
-                </li>
-                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
-                    <svg fill="#000000" viewBox="0 0 1024 1024" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M960 95.888l-256.224.001V32.113c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76h-256v-63.76c0-17.68-14.32-32-32-32s-32 14.32-32 32v63.76H64c-35.344 0-64 28.656-64 64v800c0 35.343 28.656 64 64 64h896c35.344 0 64-28.657 64-64v-800c0-35.329-28.656-63.985-64-63.985zm0 863.985H64v-800h255.776v32.24c0 17.679 14.32 32 32 32s32-14.321 32-32v-32.224h256v32.24c0 17.68 14.32 32 32 32s32-14.32 32-32v-32.24H960v799.984zM736 511.888h64c17.664 0 32-14.336 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32zm0 255.984h64c17.664 0 32-14.32 32-32v-64c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32v64c0 17.696 14.336 32 32 32zm-192-128h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32zm0-255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm-256 0h-64c-17.664 0-32 14.336-32 32v64c0 17.664 14.336 32 32 32h64c17.664 0 32-14.336 32-32v-64c0-17.68-14.336-32-32-32zm0 255.984h-64c-17.664 0-32 14.336-32 32v64c0 17.68 14.336 32 32 32h64c17.664 0 32-14.32 32-32v-64c0-17.648-14.336-32-32-32z"></path>
-                    </svg>
-                    <span>25+ Years Experience</span>
-                </li>
-            </ul>
-        </div>
-        <div class="bg-white p-4 shadow rounded">
-            <h3 class="font-bold text-lg">Advantage +</h3>
-            <ul class="mt-2 space-y-2">
-                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
-                    <svg fill="#000000" width="30" height="30" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1072.588 960c0 167.266 96.226 245.308 189.29 320.64 116.555 94.532 247.793 200.922 261.346 526.419H396.07c13.553-325.497 144.79-431.887 261.345-526.419 93.064-75.332 189.29-153.374 189.29-320.64s-96.226-245.308-189.29-320.64C540.86 544.828 409.623 438.438 396.07 112.941h1127.153c-13.553 325.497-144.791 431.887-261.346 526.419-93.064 75.332-189.29 153.374-189.29 320.64m260.443-232.998c135.529-109.891 304.263-246.663 304.263-670.531V0H282v56.47c0 423.869 168.734 560.64 304.264 670.532 88.771 72.057 147.5 119.605 147.5 232.998 0 113.393-58.729 160.941-147.5 232.998C450.734 1302.889 282 1439.66 282 1863.529V1920h1355.294v-56.47c0-423.869-168.734-560.64-304.263-670.532-88.772-72.057-147.502-119.605-147.502-232.998 0-113.393 58.73-160.941 147.502-232.998M933.84 1274.665l-169.638 137.676c-74.315 60.197-138.353 112.037-172.687 225.317h736.264c-34.334-113.28-98.372-165.12-172.687-225.317l-169.638-137.676c-15.021-12.197-36.593-12.197-51.614 0" fill-rule="evenodd"></path>
-                    </svg>
-                    <span>Fast Despatch</span>
-                </li>
-                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
-                    <svg fill="#000000" viewBox="0 0 24 24" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-                        <polyline id="secondary" points="9 11 11 13 15 9" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline>
-                        <path id="primary" d="M12,21l.88-.38a11,11,0,0,0,6.63-9.26l.43-5.52a1,1,0,0,0-.76-1L12,3,4.82,4.8a1,1,0,0,0-.76,1l.43,5.52a11,11,0,0,0,6.63,9.26Z" style="fill: none; stroke: #000000; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>
-                    </svg>
-                    <span>Secure Payment</span>
-                </li>
-                <li class="flex items-center space-x-2 text-sm sm:text-2xl">
-                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C11.3953 1.25 10.8384 1.40029 10.2288 1.65242C9.64008 1.89588 8.95633 2.25471 8.1049 2.70153L6.03739 3.78651C4.99242 4.33487 4.15616 4.77371 3.51047 5.20491C2.84154 5.65164 2.32632 6.12201 1.95112 6.75918C1.57718 7.39421 1.40896 8.08184 1.32829 8.90072C1.24999 9.69558 1.24999 10.6731 1.25 11.9026V12.0974C1.24999 13.3268 1.24999 14.3044 1.32829 15.0993C1.40896 15.9182 1.57718 16.6058 1.95112 17.2408C2.32632 17.878 2.84154 18.3484 3.51047 18.7951C4.15616 19.2263 4.99241 19.6651 6.03737 20.2135L8.10481 21.2984C8.95628 21.7453 9.64006 22.1041 10.2288 22.3476C10.8384 22.5997 11.3953 22.75 12 22.75C12.6047 22.75 13.1616 22.5997 13.7712 22.3476C14.3599 22.1041 15.0437 21.7453 15.8951 21.2985L17.9626 20.2135C19.0076 19.6651 19.8438 19.2263 20.4895 18.7951C21.1585 18.3484 21.6737 17.878 22.0489 17.2408C22.4228 16.6058 22.591 15.9182 22.6717 15.0993C22.75 14.3044 22.75 13.3269 22.75 12.0975V11.9025C22.75 10.6731 22.75 9.69557 22.6717 8.90072C22.591 8.08184 22.4228 7.39421 22.0489 6.75918C21.6737 6.12201 21.1585 5.65164 20.4895 5.20491C19.8438 4.77371 19.0076 4.33487 17.9626 3.7865L15.8951 2.70154C15.0437 2.25472 14.3599 1.89589 13.7712 1.65242C13.1616 1.40029 12.6047 1.25 12 1.25ZM8.7708 4.04608C9.66052 3.57917 10.284 3.2528 10.802 3.03856C11.3062 2.83004 11.6605 2.75 12 2.75C12.3395 2.75 12.6938 2.83004 13.198 3.03856C13.716 3.2528 14.3395 3.57917 15.2292 4.04608L17.2292 5.09563C18.3189 5.66748 19.0845 6.07032 19.6565 6.45232C19.9387 6.64078 20.1604 6.81578 20.3395 6.99174L17.0088 8.65708L8.50895 4.18349L8.7708 4.04608ZM6.94466 5.00439L6.7708 5.09563C5.68111 5.66747 4.91553 6.07032 4.34352 6.45232C4.06131 6.64078 3.83956 6.81578 3.66054 6.99174L12 11.1615L15.3572 9.48289L7.15069 5.16369C7.07096 5.12173 7.00191 5.06743 6.94466 5.00439ZM2.93768 8.30737C2.88718 8.52125 2.84901 8.76413 2.82106 9.04778C2.75084 9.7606 2.75 10.6644 2.75 11.9415V12.0585C2.75 13.3356 2.75084 14.2394 2.82106 14.9522C2.88974 15.6494 3.02022 16.1002 3.24367 16.4797C3.46587 16.857 3.78727 17.1762 4.34352 17.5477C4.91553 17.9297 5.68111 18.3325 6.7708 18.9044L8.7708 19.9539C9.66052 20.4208 10.284 20.7472 10.802 20.9614C10.9656 21.0291 11.1134 21.0832 11.25 21.1255V12.4635L2.93768 8.30737ZM12.75 21.1255C12.8866 21.0832 13.0344 21.0291 13.198 20.9614C13.716 20.7472 14.3395 20.4208 15.2292 19.9539L17.2292 18.9044C18.3189 18.3325 19.0845 17.9297 19.6565 17.5477C20.2127 17.1762 20.5341 16.857 20.7563 16.4797C20.9798 16.1002 21.1103 15.6494 21.1789 14.9522C21.2492 14.2394 21.25 13.3356 21.25 12.0585V11.9415C21.25 10.6644 21.2492 9.7606 21.1789 9.04778C21.151 8.76412 21.1128 8.52125 21.0623 8.30736L17.75 9.96352V13C17.75 13.4142 17.4142 13.75 17 13.75C16.5858 13.75 16.25 13.4142 16.25 13V10.7135L12.75 12.4635V21.1255Z" fill="#000000"></path>
-                    </svg>
-                    <span>Easy to Place Orders</span>
-                </li>
-            </ul>
-        </div>
+<!-- Features Section -->
+<div class="container mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-gray-800 mb-4">Why Choose Maxima®</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">25+ years of industrial expertise delivering high-quality automation components</p>
     </div>
 
-    <!-- FAQ Section -->
-    <div class="mt-6 bg-white p-4 shadow rounded">
-        <h3 class="font-bold text-lg mb-2">FAQs</h3>
-        <div class="space-y-2">
-            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">Returning Customers</span>
-                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
-                </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    If you have bought previously on our website prior to Oct 23rd 2020, please note that you have to make your account again. 
-                    This is because we have moved to a new robust & integrated platform.
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300 text-center">
+            <div class="bg-orange-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
             </div>
+            <h3 class="text-xl font-semibold mb-2">Premium Quality</h3>
+            <p class="text-gray-600">Manufactured to exacting standards for industrial durability and performance</p>
+        </div>
 
-
-            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">New Customers</span>
-                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
-                </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    Precision Bearing House is  a 25 year old company with HQ in New Delhi & branches in Chennai and Ahmedabad.  We are the manufacturer, importer & exporter of Industrial Components used in Industrial Automation
-                </div>
+        <!-- Feature 2 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300 text-center">
+            <div class="bg-orange-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
             </div>
+            <h3 class="text-xl font-semibold mb-2">Fast Shipping</h3>
+            <p class="text-gray-600">Orders placed by 3PM shipped same day via reliable carriers</p>
+        </div>
 
-
-            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">If you are a reseller/trader</span>
-                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
-                </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white text-red">
-                    Sorry we don't sell to Resellers/ Traders/ Shopkeeprs. We sell directly to end users, machine manufacturers.
-                </div>
+        <!-- Feature 3 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300 text-center">
+            <div class="bg-orange-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
             </div>
-
-
-            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">Payment options</span>
-                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
-                </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    On check-out you have two option to choose between: Bank Transfer & PayU    <br>
-      <b> PayU  :</b>   If you want to pay by Debit/Credit Card please choose PayU. PayU is India’s leading Payment Gateway for online payments.     We accept all major Credit / Debit Cards like Visa, Mastercard, Amex, Rupay, Diner & Wallets like  PhonePe, PayZapp, ITZ Cash.   <br>
-     <b>Bank Transfer :</b>     In Bank Transfer option, you have to make an NEFT/IMPS from your bank. Order  in this case will executed only on receipt of payment 
-                </div>
-            </div>
-
-
-            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">Shipping</span>
-                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
-                </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    All orders received by 3PM are shipped same day.  We normally ship by Bluedart, DTDC, Trackon. All shipping charges are for surface mode only. Contact us  for shipping cost if you need it by Air mode. 
-                </div>
-            </div>
-
-
-            <div x-data="{ open: false }" class="border rounded-lg overflow-hidden shadow-md mb-2">
-                <button @click="open = !open" class="w-full px-4 py-3 bg-gray-100 text-left flex justify-between items-center">
-                    <span class="font-semibold">Internationals Customers</span>
-                    <span x-text="open ? '➖' : '➕'" class="text-lg"></span>
-                </button>
-                <div x-show="open" x-transition.duration.300ms class="p-4 bg-white">
-                    Please email your enquiry to sm@pbh.in , we will email you sales quote with bank details
-                </div>
-            </div>
-            <!-- Repeat for other FAQ items -->
+            <h3 class="text-xl font-semibold mb-2">Secure Payments</h3>
+            <p class="text-gray-600">Multiple payment options with industry-leading security</p>
         </div>
     </div>
 </div>
 
-<div x-data="{ 
-    currentIndex: 0, 
-    totalSlides: {{ slides|length }}, 
-    interval: null 
-}" 
-x-init="interval = setInterval(() => { 
-    currentIndex = (currentIndex + 1) % totalSlides 
-}, 3000)" 
-class="relative w-full overflow-hidden p-4 sm:p-10">
-
-    <!-- Slider Container -->
-    <div class="flex transition-transform duration-500 ease-in-out" 
-         :style="'transform: translateX(-' + (currentIndex * 100) + '%)'">
-        
-        {% for slide in slides %}
-        <div class="flex min-w-full justify-center space-x-4">
-            {% for product in slide %}
-            <div class="relative w-1/2 p-2 sm:p-4 bg-white shadow rounded-lg">
-                <a href="{% url 'product' product.slug %}" class="block">
-                    <div class="w-full h-40 overflow-hidden rounded-md flex justify-center items-center bg-gray-100">
-                        <img src="{{ product.latest_image.img.url }}" alt="{{ product.title }}" class="w-auto h-full max-h-full object-contain">
-                    </div>
-                    <h4 class="font-bold mt-2 text-sm sm:text-lg text-gray-900">{{ product.title }}</h4>
-                    <p class="text-xs sm:text-sm text-gray-600 mb-5 line-clamp-2">{{ product.description }}</p>
-                    <p class="absolute bottom-2 text-sm sm:text-lg text-gray-700 font-semibold">₹{{ product.price }}</p>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- Navigation Buttons -->
-    <button @click="currentIndex = (currentIndex - 1 + totalSlides) % totalSlides" 
-            class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-l">
-        &#10094;
-    </button>
-    <button @click="currentIndex = (currentIndex + 1) % totalSlides" 
-            class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-3 py-2 rounded-r">
-        &#10095;
-    </button>
-</div>
-
-
-
-<!-- Product Categories -->
-<div class="max-w-5xl mx-auto pb-10 px-4 sm:px-6">
-    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Product Categories</h2>
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {% for category in catogery %}
-        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center">
-            <a href="/shop/?sort=&category={{ category.slug }}" class="w-full flex flex-col items-center">
-                <div class="w-full h-44 overflow-hidden rounded-lg">
-                    <img src="{{ category.img.url }}" alt="{{ category.name }}" class="w-full h-full object-cover">
-                </div>
-                <h3 class="text-xl font-semibold mt-4 text-gray-900">{{ category.name }}</h3>
-                
+<!-- Featured Products Carousel -->
+<div class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-800">Featured Products</h2>
+            <a href="{% url 'shop' %}" class="text-orange-600 hover:text-orange-700 font-medium flex items-center">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
             </a>
         </div>
+
+        <div x-data="{ 
+            currentIndex: 0, 
+            totalSlides: {{ slides|length }}, 
+            interval: null 
+        }" 
+        x-init="interval = setInterval(() => { 
+            currentIndex = (currentIndex + 1) % totalSlides 
+        }, 4000)" 
+        class="relative overflow-hidden">
+            <!-- Slider Container -->
+            <div class="flex transition-transform duration-500 ease-in-out" 
+                :style="'transform: translateX(-' + (currentIndex * 100) + '%)'">
+                
+                {% for slide in slides %}
+                <div class="w-full flex-shrink-0">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {% for product in slide %}
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                            <a href="{% url 'product' product.slug %}" class="block">
+                                <div class="h-48 bg-gray-100 flex items-center justify-center p-4">
+                                    <img src="{{ product.latest_image.img.url }}" alt="{{ product.title }}" class="h-full w-auto object-contain">
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-semibold text-gray-800 mb-1 line-clamp-1">{{ product.title }}</h3>
+                                    <p class="text-orange-600 font-bold">₹{{ product.price }}</p>
+                                    <button class="mt-3 w-full bg-orange-600 text-white py-2 rounded hover:bg-orange-700 transition duration-300">
+                                        View Details
+                                    </button>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Navigation Dots -->
+            <div class="flex justify-center mt-6 space-x-2">
+                {% for i in slides %}
+                <button @click="currentIndex = {{ forloop.counter0 }}" 
+                        :class="{'bg-orange-600': currentIndex === {{ forloop.counter0 }}, 'bg-gray-300': currentIndex !== {{ forloop.counter0 }}}" 
+                        class="w-3 h-3 rounded-full transition duration-300"></button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Categories -->
+<div class="container mx-auto py-12 px-4">
+    <h2 class="text-2xl font-bold text-center mb-8 text-gray-800">Browse Our Categories</h2>
+    
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        {% for category in catogery %}
+        <a href="/shop/?sort=&category={{ category.slug }}" class="group">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 h-full flex flex-col">
+                <div class="h-40 bg-gray-100 flex items-center justify-center p-4">
+                    <img src="{{ category.img.url }}" alt="{{ category.name }}" class="h-full w-auto object-contain group-hover:scale-105 transition duration-300">
+                </div>
+                <div class="p-4 flex-grow">
+                    <h3 class="font-semibold text-gray-800 text-center group-hover:text-orange-600 transition duration-300">{{ category.name }}</h3>
+                </div>
+            </div>
+        </a>
         {% endfor %}
     </div>
 </div>
 
-{% endblock content %}
+<!-- FAQ Section -->
+<div class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <h2 class="text-2xl font-bold text-center mb-8 text-gray-800">Frequently Asked Questions</h2>
+        
+        <div class="space-y-4">
+            {% with faqs=faq_list %}
+            {% for faq in faqs %}
+            <div x-data="{ open: false }" class="border border-gray-200 rounded-lg overflow-hidden">
+                <button @click="open = !open" class="w-full px-6 py-4 bg-white text-left flex justify-between items-center hover:bg-gray-50 transition duration-300">
+                    <span class="font-semibold text-gray-800">{{ faq.question }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 transition-transform duration-300" 
+                         :class="{'transform rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div x-show="open" x-collapse class="px-6 py-4 bg-white border-t border-gray-200 text-gray-600">
+                    {{ faq.answer|safe }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+</div>
 
-{% block script_body %}
+<!-- Testimonials -->
+<div class="container mx-auto py-12 px-4">
+    <h2 class="text-2xl font-bold text-center mb-8 text-gray-800">What Our Customers Say</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="flex items-center mb-4">
+                <div class="text-orange-400 text-2xl">★★★★★</div>
+            </div>
+            <p class="text-gray-600 mb-4">"The quality of Maxima aluminum profiles is exceptional. We've been using them in our automation systems for years without any issues."</p>
+            <div class="flex items-center">
+                <div class="ml-4">
+                    <h4 class="font-semibold text-gray-800">Rajesh Kumar</h4>
+                    <p class="text-sm text-gray-500">Automation Engineer, Chennai</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="flex items-center mb-4">
+                <div class="text-orange-400 text-2xl">★★★★★</div>
+            </div>
+            <p class="text-gray-600 mb-4">"Fast delivery and excellent customer service. The stepper motors we ordered worked perfectly in our CNC machine application."</p>
+            <div class="flex items-center">
+                <div class="ml-4">
+                    <h4 class="font-semibold text-gray-800">Priya Sharma</h4>
+                    <p class="text-sm text-gray-500">Manufacturing Director, Delhi</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="flex items-center mb-4">
+                <div class="text-orange-400 text-2xl">★★★★☆</div>
+            </div>
+            <p class="text-gray-600 mb-4">"Reliable components at competitive prices. The linear actuators have significantly improved our packaging line efficiency."</p>
+            <div class="flex items-center">
+                <div class="ml-4">
+                    <h4 class="font-semibold text-gray-800">Amit Patel</h4>
+                    <p class="text-sm text-gray-500">Operations Manager, Ahmedabad</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="bg-orange-600 py-12 text-center">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">Ready to Upgrade Your Industrial Components?</h2>
+        <p class="text-white opacity-90 max-w-2xl mx-auto mb-8">Join thousands of satisfied customers who trust Maxima® for their automation needs</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{% url 'shop' %}" class="bg-white text-orange-600 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300">
+                Browse Products
+            </a>
+            <a href="{% url 'contact' %}" class="bg-transparent border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white hover:text-orange-600 transition duration-300">
+                Contact Sales
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
 <script>
-    console.log('Hello from Home page');
+    document.addEventListener("DOMContentLoaded", function() {
+        {% for message in messages %}
+            Swal.fire({
+                position: "top-end",
+                icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                title: "{{ message }}",
+                showConfirmButton: false,
+                timer: 1500
+              });
+              
+        {% endfor %}
+    });
 </script>
-{% endblock script_body %}
+{% endif %}
+
+{% endblock content %}
