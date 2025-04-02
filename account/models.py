@@ -1,6 +1,8 @@
 from django.db import models
 from base.base_model import BaseModel
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 # Create your models here.
 class UserExtra(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='extra')
@@ -32,3 +34,8 @@ class Address(BaseModel):
     address = models.CharField(max_length=50, null=True,blank=True)
     pin_code = models.CharField(max_length=20, null=True,blank=True)
     selected = models.BooleanField(default=True)
+    
+@receiver(post_save , sender = User)
+def createUserExtra(sender, instance, created, **kwargs):
+    if created:
+        user_extra, created = UserExtra.objects.get_or_create(user=instance)
