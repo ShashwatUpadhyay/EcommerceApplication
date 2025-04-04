@@ -185,6 +185,7 @@ def cart(request):
     total_price=0
     tax=0
     final_price=0
+
     try:
         cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
         cart_item = models.CartItem.objects.filter(cart = cart)

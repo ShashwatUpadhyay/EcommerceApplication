@@ -18,9 +18,15 @@ class Cart(BaseModel):
         return self.cartitems.all().count()
     
     @property
+    def total_old_price(self):
+        items = sum(item.product.old_price * item.quantity for item in self.cartitems.all())
+        return items
+    
+    
+    @property
     def total_price(self):
         items = sum(item.product.price * item.quantity for item in self.cartitems.all())
-        return items
+        return items if items else 0
     
     @property
     def total_old_price(self):
