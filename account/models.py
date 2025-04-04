@@ -38,4 +38,5 @@ class Address(BaseModel):
 @receiver(post_save , sender = User)
 def createUserExtra(sender, instance, created, **kwargs):
     if created:
-        user_extra, created = UserExtra.objects.get_or_create(user=instance)
+        if instance.is_superuser or instance.is_staff:
+            user_extra, created = UserExtra.objects.get_or_create(user=instance)
