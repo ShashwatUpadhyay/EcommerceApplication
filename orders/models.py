@@ -9,7 +9,7 @@ from django.dispatch import receiver
 
 # Create your models here.
 class Cart(BaseModel):
-    customer  = models.ForeignKey(UserExtra, on_delete=models.CASCADE, related_name='cart')
+    customer  = models.ForeignKey(UserExtra, on_delete=models.CASCADE, related_name='cart', null=True)
     is_paid = models.BooleanField(default=False)
     order_taken = models.BooleanField(default=False)
     
@@ -64,7 +64,7 @@ class CartItem(BaseModel):
     
     @property
     def total_tax(self):
-        return (self.total_price/100)*18
+        return (self.total_price/100)*self.product.tax
     
     @property
     def final_price(self):
@@ -81,7 +81,7 @@ class Order(BaseModel):
         ('Refunded', 'Refunded'),
     )
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='orders')
-
+    session_key = models.CharField(max_length=255, null=True, blank=True)
     address = models.ForeignKey(Address , on_delete=models.DO_NOTHING, null=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='order')
     status = models.CharField(max_length=100, choices=status_choices, default='Pending')
@@ -111,3 +111,63 @@ def resultAnounced(sender, instance, created, **kwargs):
     if created:
         instance.quantity = instance.product.min_order_quanitity-1
         instance.save()
+        
+class NonUserCart(BaseModel):
+    session_key = models.CharField(max_length=255, unique=True)
+    is_paid = models.BooleanField(default=False)
+    order_taken = models.BooleanField(default=False)    
+    
+    def __str__(self):
+        return self.session_key
+    
+    @property
+    def items_count(self):
+        return self.items.all().count()
+    
+    @property
+    def total_old_price(self):
+        items = sum(item.product.old_price * item.quantity for item in self.items.all())
+        return items
+    @property
+    def total_price(self):
+        items = sum(item.product.price * item.quantity for item in self.items.all())
+        return items if items else 0
+    
+    @property
+    def total_old_price(self):
+        items = sum(item.product.old_price * item.quantity for item in self.items.all())
+        return items
+    
+    @property
+    def money_saved(self):
+        items = self.total_old_price - self.total_price
+        return items
+    
+    @property
+    def tax(self):
+        return (self.total_price/100)* 18
+    
+    @property
+    def final_price(self):
+        return self.total_price + self.tax
+    
+    @property
+    def all_items(self):
+        return self.items.all()
+        
+class NonUserCartItem(BaseModel):
+    cart = models.ForeignKey(NonUserCart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, null=True,on_delete=models.SET_NULL, related_name='in_cart')
+    quantity = models.IntegerField(default=0)
+    
+    @property
+    def total_price(self):
+        return self.product.price * self.quantity
+    
+    @property
+    def total_tax(self):
+        return (self.total_price/100)*self.product.tax
+    
+    @property
+    def final_price(self):
+        return self.total_price + self.total_tax

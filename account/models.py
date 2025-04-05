@@ -24,7 +24,8 @@ class UserExtra(BaseModel):
         return self.user.email
 
 class Address(BaseModel):
-    user = models.ForeignKey(User , on_delete=models.CASCADE, related_name='address')
+    user = models.ForeignKey(User , on_delete=models.CASCADE, related_name='address', null=True, blank=True)
+    session_key = models.CharField(max_length=100, null=True, blank=True)
     full_name = models.CharField(max_length=50, null=True,blank=True)
     email = models.CharField(max_length=50, null=True,blank=True)
     phone = models.CharField(max_length=50, null=True,blank=True)

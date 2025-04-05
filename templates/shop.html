@@ -296,7 +296,7 @@
                             </a>
                             {% endif %}
                         {% else %}
-                            <a href="{% url 'login' %}" 
+                            <a href="{% url 'add_to_cart_of_unauthenticated' product.uid %}" 
                                 class="flex-1 flex items-center justify-center bg-blue-50 hover:bg-blue-100 text-blue-600 p-2 rounded-md transition-colors"
                                 title="Login to add to cart">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
