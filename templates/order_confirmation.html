@@ -49,7 +49,7 @@
                     <div>
                         <h4 class="text-lg font-medium text-gray-900 mb-4">Shipping Information</h4>
                         <address class="not-italic text-gray-600">
-                            <p class="font-medium">{{ order.user.first_name }} {{ order.user.last_name }}</p>
+                            <p class="font-medium">{{ order.address.full_name }}</p>
                             <p>{{ order.address.address }}</p>
                             <p>{{ order.address.city }}, {{ order.address.state }} {{ order.address.pin_code }}</p>
                             <p>{{ order.address.country }}</p>
@@ -158,4 +158,20 @@
         </div>
     </div>
 </div>
+{% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for message in messages %}
+                Swal.fire({
+                    position: "top-end",
+                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    title: "{{ message }}",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  
+            {% endfor %}
+        });
+    </script>
+{% endif %}
 {% endblock %}

@@ -102,8 +102,6 @@ def get_img(request, uid):
     image = ProductImage.objects.get(uid=uid)
     return JsonResponse({'image_url': image.img.url})
 
-
-
 def product_page(request, slug):
     cart = None
     product = None

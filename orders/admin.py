@@ -14,7 +14,7 @@ admin.site.register(Cart,cartAdmin)
 admin.site.register(CartItem)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user','status','is_paid','is_delivered']
+    list_display = ['user','order_number','status','is_paid','is_delivered']
     list_filter = ['is_paid','is_delivered','is_canceled','is_returned','is_refunded']
 admin.site.register(Order,OrderAdmin)
 

@@ -70,50 +70,8 @@ class CartItem(BaseModel):
     def final_price(self):
         return self.total_price + self.total_tax
     
-class Order(BaseModel):
-    status_choices = (
-        ('Pending', 'Pending'),
-        ('Processing', 'Processing'),
-        ('Shipped', 'Shipped'),
-        ('Delivered', 'Delivered'),
-        ('Canceled', 'Canceled'),
-        ('Returned', 'Returned'),
-        ('Refunded', 'Refunded'),
-    )
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='orders')
-    session_key = models.CharField(max_length=255, null=True, blank=True)
-    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING, null=True)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='order')
-    status = models.CharField(max_length=100, choices=status_choices, default='Pending')
-    is_paid = models.BooleanField(default=False)
-    payment_method = models.CharField(max_length=100, null=True, blank=True)
-    payment_id = models.CharField(max_length=200, null=True, blank=True)
-    razorpay_order_id = models.CharField(max_length=200, null=True, blank=True) 
-    razorpay_payment_id = models.CharField(max_length=200, null=True, blank=True)   
-    razorpay_signature = models.CharField(max_length=200, null=True, blank=True)    
-    is_delivered = models.BooleanField(default=False)
-    delevery_date = models.DateTimeField(null=True, blank=True)
-    is_canceled = models.BooleanField(default=False)
-    canceled_date = models.DateTimeField(null=True, blank=True)
-    is_returned = models.BooleanField(default=False)
-    returned_date = models.DateTimeField(null=True, blank=True)
-    is_refunded = models.BooleanField(default=False)
-    refunded_date = models.DateTimeField(null=True, blank=True)
-   
-    def __str__(self):
-        return self.user.extra.full_name
-    
-    class Meta:
-        ordering = ['-created_at']  
-        
-@receiver(post_save, sender=CartItem)
-def resultAnounced(sender, instance, created, **kwargs):
-    if created:
-        instance.quantity = instance.product.min_order_quanitity-1
-        instance.save()
-        
 class NonUserCart(BaseModel):
-    session_key = models.CharField(max_length=255, unique=True)
+    session_key = models.CharField(max_length=255)
     is_paid = models.BooleanField(default=False)
     order_taken = models.BooleanField(default=False)    
     
@@ -170,4 +128,50 @@ class NonUserCartItem(BaseModel):
     
     @property
     def final_price(self):
-        return self.total_price + self.total_tax
+        return self.total_price + self.total_tax    
+    
+
+class Order(BaseModel):
+    status_choices = (
+        ('Pending', 'Pending'),
+        ('Processing', 'Processing'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Canceled', 'Canceled'),
+        ('Returned', 'Returned'),
+        ('Refunded', 'Refunded'),
+    )
+    order_number = models.CharField(max_length=100, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='orders', null=True, blank=True)
+    session_key = models.CharField(max_length=255, null=True, blank=True)
+    address = models.ForeignKey(Address , on_delete=models.DO_NOTHING, null=True, blank=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='order',null=True, blank=True)
+    non_user_cart = models.ForeignKey(NonUserCart, on_delete=models.CASCADE, related_name='order',null=True, blank=True)
+    status = models.CharField(max_length=100, choices=status_choices, default='Pending',null=True, blank=True)
+    is_paid = models.BooleanField(default=False)
+    payment_method = models.CharField(max_length=100, null=True, blank=True)
+    payment_id = models.CharField(max_length=200, null=True, blank=True)
+    razorpay_order_id = models.CharField(max_length=200, null=True, blank=True) 
+    razorpay_payment_id = models.CharField(max_length=200, null=True, blank=True)   
+    razorpay_signature = models.CharField(max_length=200, null=True, blank=True)    
+    is_delivered = models.BooleanField(default=False)
+    delevery_date = models.DateTimeField(null=True, blank=True)
+    is_canceled = models.BooleanField(default=False)
+    canceled_date = models.DateTimeField(null=True, blank=True)
+    is_returned = models.BooleanField(default=False)
+    returned_date = models.DateTimeField(null=True, blank=True)
+    is_refunded = models.BooleanField(default=False)
+    refunded_date = models.DateTimeField(null=True, blank=True)
+   
+    def __str__(self):
+        return self.order_number if self.order_number else str(self.uid)
+    
+    class Meta:
+        ordering = ['-created_at']  
+        
+@receiver(post_save, sender=CartItem)
+def resultAnounced(sender, instance, created, **kwargs):
+    if created:
+        instance.quantity = instance.product.min_order_quanitity-1
+        instance.save()
+        

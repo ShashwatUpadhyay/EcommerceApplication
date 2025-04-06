@@ -24,7 +24,7 @@ def non_user_cart_item_count(request):
     count = 0
     if key is not None: 
         try:
-            cart = NonUserCart.objects.get(session_key=key)
+            cart = NonUserCart.objects.get(session_key=key, order_taken=False)
             count = cart.items.count()
         except Exception as e:
             count = 0

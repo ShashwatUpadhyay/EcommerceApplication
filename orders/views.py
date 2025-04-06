@@ -24,6 +24,7 @@ from io import BytesIO
 from account.helper import send_order_confirmation_email
 import uuid
 from django.shortcuts import get_object_or_404
+import random
 
 time_zone = pytz.timezone('Asia/Kolkata')
 
@@ -160,6 +161,12 @@ def removeFromCartAPI(request,customer_uid, product_uid):
         print(e)
         messages.error(request, "Invalid Product ID")
         return JsonResponse({'success': False, 'quantity': cart_item.quantity if cart_item else 0})
+    
+def generate_unique_order_id():
+    while True:
+        order_id = random.randint(100000, 9999999)
+        if not models.Order.objects.filter(order_number=order_id).exists():
+            return order_id
 
 def add_to_cart_of_unauthenticated(request, product_uid):
     key = request.session.get('eci',None)
@@ -168,12 +175,11 @@ def add_to_cart_of_unauthenticated(request, product_uid):
     try:
         if key is not None:
             cart , _ = models.NonUserCart.objects.get_or_create(session_key=key, order_taken=False)
-            if cart:
-                cart_item , _ = models.NonUserCartItem.objects.get_or_create(cart = cart , product=Product.objects.get(uid = product_uid))
-                if cart_item:
-                    cart_item.quantity += 1
-                    cart_item.save()
-                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            cart_item , _ = models.NonUserCartItem.objects.get_or_create(cart = cart , product=Product.objects.get(uid = product_uid))
+            if cart_item:
+                cart_item.quantity += 1
+                cart_item.save()
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             key = request.session['eci'] = str(uuid.uuid4())
             cart = models.NonUserCart.objects.create(session_key=key, order_taken=False)
@@ -226,12 +232,20 @@ def cart(request):
 
 def cart_(request):
     key = request.session.get('eci',None)
+    cart=None
+    cart_item=None
+    total_price = None
+    tax = None
+    final_price = None
     if key is not None:
-        cart = models.NonUserCart.objects.get(session_key=key, order_taken=False)
-        cart_item = models.NonUserCartItem.objects.filter(cart = cart)
-        total_price = cart.total_price if cart else 0
-        tax = cart.tax if cart else 0
-        final_price = cart.final_price if cart else 0
+        try:
+            cart = models.NonUserCart.objects.get(session_key=key, order_taken=False)
+            cart_item = models.NonUserCartItem.objects.filter(cart = cart)
+            total_price = cart.total_price if cart else 0
+            tax = cart.tax if cart else 0
+            final_price = cart.final_price if cart else 0
+        except Exception as e:
+            print(e)
     else:
         cart_item = None
         total_price = 0
@@ -332,7 +346,7 @@ def payment(request):
                                                        payment_capture='1'))
     # order id of newly created order.
     razorpay_order_id = razorpay_order['id']
-    callback_url = f'{DOMAIN_NAME}order/paymenthandler_/{cart.uid}/'  # Use the correct URL for your app
+    callback_url = f'{DOMAIN_NAME}order/paymenthandler/{cart.uid}/'  # Use the correct URL for your app
     # we need to pass these details to frontend.
     context = {}
     context['razorpay_order_id'] = razorpay_order_id
@@ -343,39 +357,7 @@ def payment(request):
     context['cart'] = cart
     return render(request , 'payment.html', context=context)
 
-def payment_(request):
-    key = request.session.get('eci',None)
-    cart=None
-    try:
-        cart = models.NonUserCart.objects.get(session_key = key,order_taken=False)
-        address = models.Address.objects.get(session_key = key)
-    except Exception as e:
-        print(e)
-        return redirect('cart')
 
-    currency = 'INR'
-    amount = int(cart.final_price * 100 )
-    print(cart.final_price)
-
-    # Create a Razorpay Order
-    razorpay_order = razorpay_client.order.create(dict(amount=amount,
-                                                       currency=currency,
-                                                       payment_capture='1'))
-
-    # order id of newly created order.
-    razorpay_order_id = razorpay_order['id']
-    callback_url = f'{DOMAIN_NAME}order/paymenthandler/{cart.uid}/'  # Use the correct URL for your app
-    # we need to pass these details to frontend.
-    context = {}
-    context['razorpay_order_id'] = razorpay_order_id
-    context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
-    context['razorpay_amount'] = amount
-    context['currency'] = currency
-    context['callback_url'] = callback_url
-    context['cart'] = cart
-    context['address'] = address
-
-    return render(request , 'payment_.html', context=context)
 
 @csrf_exempt
 def paymenthandler(request, uid):
@@ -446,7 +428,7 @@ def paymenthandler(request, uid):
             cart.save()
 
             messages.success(request, "Payment successful!")
-            return redirect('order_place_')  # Ensure this URL name exists
+            return redirect('order_place')  # Ensure this URL name exists
 
         except razorpay.errors.BadRequestError as e:
             if 'already captured' in str(e):
@@ -460,15 +442,77 @@ def paymenthandler(request, uid):
         print(f"General error: {e}")
         messages.error(request, "Payment processing error occurred")
         return redirect('cart')
+
+@login_required(login_url='login')
+def order_place(request):
+    customer = request.user
+    print(customer)
+    try:
+
+        address = Address.objects.get(user = customer, selected = True)
+        print(address)
+        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
+        order,_ = models.Order.objects.get_or_create(user = customer, cart = cart)
+        order.address = address
+        if _ :
+            order.is_paid = False
+        order.save()
+        
+        cart.order_taken = True
+        cart.save()
+        
+        # order_successful(order)
+        messages.success(request, "Your order has been placed successfully.")
+        return redirect('order_confirmation', order_uid=order.uid)  
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+
+        return redirect('home')
     
+
+def payment_(request):
+    key = request.session.get('eci',None)
+    cart=None
+    try:
+        cart = models.NonUserCart.objects.get(session_key = key,order_taken=False)
+        address = models.Address.objects.get(session_key=key,selected=True)
+    except Exception as e:
+        print(e)
+        return redirect('cart_')
+
+    currency = 'INR'
+    amount = int(cart.final_price * 100 )
+    print(cart.final_price)
+
+    # Create a Razorpay Order
+    razorpay_order = razorpay_client.order.create(dict(amount=amount,
+                                                       currency=currency,
+                                                       payment_capture='1'))
+
+    # order id of newly created order.
+    razorpay_order_id = razorpay_order['id']
+    callback_url = f'{DOMAIN_NAME}order/paymenthandler_/{cart.uid}/'  # Use the correct URL for your app
+    # we need to pass these details to frontend.
+    context = {}
+    context['razorpay_order_id'] = razorpay_order_id
+    context['razorpay_merchant_key'] = settings.RAZOR_KEY_ID
+    context['razorpay_amount'] = amount
+    context['currency'] = currency
+    context['callback_url'] = callback_url
+    context['cart'] = cart
+    context['address'] = address
+
+    return render(request , 'payment_.html', context=context)
+
 @csrf_exempt
 def paymenthandler_(request, uid):
-    key = request.session.get('eci',None)
+    key =   request.session.get('eci',None)
     try:
-        cart = models.NonUserCart.objects.get(session_key=key)
+        cart = models.NonUserCart.objects.get(uid=uid)
     except Exception as e:
         print(f"Cart error: {e}")
-        messages.error(request, "Invalid Cart ID")
+        messages.error(request, "Invalid Cart ID from  paymenthandler_")
         return redirect('cart')  # Make sure 'cart' is a valid URL name
 
     if request.method != "POST":
@@ -499,7 +543,7 @@ def paymenthandler_(request, uid):
         # Check if payment already exists
         if models.Order.objects.filter(razorpay_payment_id=payment_id).exists():
             messages.warning(request, "This payment was already processed")
-            return redirect('order_place')  # Or wherever you want to redirect
+            return redirect('order_place_')  # Or wherever you want to redirect
 
         amount = int(cart.final_price * 100)
         
@@ -507,16 +551,14 @@ def paymenthandler_(request, uid):
             # Check payment status before capturing
             payment = razorpay_client.payment.fetch(payment_id)
             payment_method = payment['method']
-            print(payment_method)
             if payment['status'] == 'captured':
                 messages.info(request, "Payment was already captured")
             else:
                 razorpay_client.payment.capture(payment_id, amount)
-            
             # Update order
             order = models.Order.objects.create(
                 session_key = key,
-                cart=cart,
+                non_user_cart=cart,
                 is_paid=True,
                 payment_id=payment_id,
                 razorpay_order_id=razorpay_order_id,
@@ -525,18 +567,15 @@ def paymenthandler_(request, uid):
                 status='Processing',
                 payment_method=payment_method,
             )
-
             # Update cart
             cart.is_paid = True
             cart.save()
-
             messages.success(request, "Payment successful!")
-            return redirect('order_place')  # Ensure this URL name exists
+            return redirect('order_place_')
 
         except razorpay.errors.BadRequestError as e:
             if 'already captured' in str(e):
                 messages.warning(request, "Payment was already processed")
-                return redirect('order_place')
             print(f"Razorpay capture error: {e}")
             messages.error(request, "Payment processing failed")
             return render(request, 'paymentfail.html')
@@ -544,72 +583,39 @@ def paymenthandler_(request, uid):
     except Exception as e:
         print(f"General error: {e}")
         messages.error(request, "Payment processing error occurred")
-        return redirect('cart')
-    
+        return redirect('cart_')
 
-@login_required(login_url='login')
-def order_place(request):
-    customer = request.user
-    print(customer)
-    try:
-
-        address = Address.objects.get(user = customer, selected = True)
-        print(address)
-        cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
-        order,_ = models.Order.objects.get_or_create(user = customer, cart = cart)
-        order.address = address
-        if _ :
-            order.is_paid = False
-        order.save()
-        
-        cart.order_taken = True
-        cart.save()
-        
-        # order_successful(order)
-        messages.success(request, "Your order has been placed successfully.")
-        return redirect('order_confirmation', order_uid=order.uid)  
-    except Exception as e:
-        print(e)
-        messages.error(request, "Invalid Product ID")
-
-        return redirect('home')
-    
+  
 def order_place_(request):
     key =   request.session.get('eci',None)
     try:
-
         address = Address.objects.get(session_key= key, selected = True)
         print(address)
         cart = models.NonUserCart.objects.get(session_key= key,order_taken=False)
-        order,_ = models.Order.objects.get_or_create(session_key = key, cart = cart)
+        order,_ = models.Order.objects.get_or_create(session_key = key, non_user_cart = cart)
         order.address = address
+        order.order_number = generate_unique_order_id()
         if _ :
             order.is_paid = False
         order.save()
         
         cart.order_taken = True
-        cart.save()
-        
+        cart.save()    
         # order_successful(order)
         messages.success(request, "Your order has been placed successfully.")
         return redirect('order_confirmation', order_uid=order.uid)  
     except Exception as e:
         print(e)
-        messages.error(request, "Invalid Product ID")
-
-        return redirect('home')
+        messages.error(request, "Something went wrong")
+        return redirect('cart_')
+    
 def order_confirmation(request, order_uid):
-    order = models.Order.objects.get(uid=order_uid, user=request.user)
+    order = models.Order.objects.get(uid=order_uid)
     send_order_confirmation_email(order)
     return render(request, 'order_confirmation.html', {'order': order})
 
-
-    
-
 def download_invoice(request, order_uid):
-    order = models.Order.objects.get(uid=order_uid, user=request.user)
-    
-    
+    order = models.Order.objects.get(uid=order_uid)
     template_path = 'invoice_pdf.html'
     context = {'order': order}
     
