@@ -192,7 +192,47 @@ def add_to_cart_of_unauthenticated(request, product_uid):
         print(e)
         messages.error(request, "Invalid Product ID")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def remove_from_cart_of_unauthenticated(request,product_uid):
+    key = request.session.get('eci',None)
+    cart=None
+    cart_item=None
+    try:
+        cart , _ = models.NonUserCart.objects.get_or_create(session_key = key, order_taken=False)
+        cart_item = models.NonUserCartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_uid))
+        
+        if cart_item.exists():
+            cart_item = cart_item[0]
+            cart_item.quantity -= 1
+            
+            if cart_item.quantity <= cart_item.product.min_order_quanitity-1:
+                cart_item.delete()
+            else:
+                cart_item.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     
+def remove_item_of_unauthenticated(request,product_uid):
+    key = request.session.get('eci',None)
+    cart=None
+    cart_item=None
+    try:
+        cart , _ = models.NonUserCart.objects.get_or_create(session_key = key, order_taken = False)
+        cart_item = models.NonUserCartItem.objects.filter(cart = cart , product=Product.objects.get(uid = product_uid))
+        
+        if cart_item.exists():
+            cart_item = cart_item[0]
+            cart_item.delete()
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except Exception as e:
+        print(e)
+        messages.error(request, "Invalid Product ID")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 @login_required(login_url='login')
 def removeItem(request):
     customer = request.user

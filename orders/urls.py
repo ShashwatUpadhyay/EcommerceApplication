@@ -28,6 +28,8 @@ urlpatterns = [
     path('add_to_cart/<customer_uid>/<product_uid>/', views.addToCartAPI, name='addToCartAPI'),
     path('remove_from_cart/<customer_uid>/<product_uid>/', views.removeFromCartAPI, name='removeFromCartAPI'),
     path('add_to_cart_n/<product_uid>/', views.add_to_cart_of_unauthenticated, name='add_to_cart_of_unauthenticated'),
+    path('remove_from_cart_n/<product_uid>/', views.remove_from_cart_of_unauthenticated, name='remove_from_cart_of_unauthenticated'),
+    path('remove_item_cart_n/<product_uid>/', views.remove_item_of_unauthenticated, name='remove_item_of_unauthenticated'),
     
     # admin view
     path('a/orders/', views.AllOrders, name='AllOrders'),

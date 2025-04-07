@@ -9,7 +9,7 @@
     <nav class="mb-8" aria-label="Breadcrumb">
       <ol class="flex flex-wrap items-center gap-2 text-lg font-medium">
         <li class="flex items-center gap-2">
-          <a href="{% url 'cart' %}" class="text-primary-600 hover:text-primary-800 transition-colors">Cart</a>
+          <a href="{% url 'cart_' %}" class="text-primary-600 hover:text-primary-800 transition-colors">Cart</a>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
@@ -70,14 +70,14 @@
                   <!-- Quantity Controls -->
                   <div class="mt-4 flex items-center justify-between">
                     <div class="flex items-center rounded-lg border border-gray-200">
-                      <button onclick="window.location.href=`/order/remove-from-cart/?product_id={{ cart_item.product.uid }}`" 
+                      <button onclick="window.location.href=`/order/remove_from_cart_n/{{ cart_item.product.uid }}/`" 
                               class="h-10 w-10 rounded-l-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
                         <svg class="mx-auto h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                         </svg>
                       </button>
                       <span class="w-12 text-center">{{ cart_item.quantity }}</span>
-                      <button onclick="window.location.href=`/order/add-to-cart/?product_id={{ cart_item.product.uid }}`" 
+                      <button onclick="window.location.href=`/order/add_to_cart_n/{{ cart_item.product.uid }}/`" 
                               class="h-10 w-10 rounded-r-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
                         <svg class="mx-auto h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -86,7 +86,7 @@
                     </div>
 
                     <!-- Remove Button -->
-                    <button onclick="window.location.href=`/order/remove-item/?product_id={{ cart_item.product.uid }}`" 
+                    <button onclick="window.location.href=`/order/remove_item_cart_n/{{ cart_item.product.uid }}/`" 
                             class="flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-800 transition-colors">
                       <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

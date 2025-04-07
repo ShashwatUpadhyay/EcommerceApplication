@@ -13,7 +13,7 @@ def home(request):
     
     slides = [products[i:i+4] for i in range(0, len(products), 2)]  
     cat = ProductCategory.objects.all().distinct()
-    
+    print(request.headers)
     context = {
         'products': products,
         'catogery': cat,

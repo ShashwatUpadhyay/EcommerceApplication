@@ -31,7 +31,7 @@ class Cart(BaseModel):
     @property
     def total_old_price(self):
         items = sum(item.product.old_price * item.quantity for item in self.cartitems.all())
-        return items
+        return items if items else 0
     
     @property
     def money_saved(self):
@@ -85,7 +85,7 @@ class NonUserCart(BaseModel):
     @property
     def total_old_price(self):
         items = sum(item.product.old_price * item.quantity for item in self.items.all())
-        return items
+        return items if items else 0
     @property
     def total_price(self):
         items = sum(item.product.price * item.quantity for item in self.items.all())
