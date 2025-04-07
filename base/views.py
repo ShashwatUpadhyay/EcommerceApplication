@@ -4,11 +4,13 @@ from account.models import UserExtra
 from django.contrib.auth.decorators import login_required
 from account.models import Address
 from orders.models import Order
+from .rabbitmq import publish_message
 # Create your views here.
 def is_staff(request):
     return request.user.is_staff
 
 def home(request):
+    publish_message("hellow")
     categories = ProductCategory.objects.all()
     products = [category.products.first() for category in categories if category.products.exists()]
     
@@ -37,10 +39,10 @@ def profile(request):
 def track(request):
     if request.method == 'POST':
         order_number = request.POST.get('order_number')
-        return redirect('track' , order_number)
+        return redirect('track_order' , number = order_number)
     return render(request, 'track_order.html')
 
 def track_order(request,number):
-    order = Order.objects.get(order_number = number)
+    order = get_object_or_404(Order, order_number = number)
     return render(request, 'track.html', {'order':order})
 
