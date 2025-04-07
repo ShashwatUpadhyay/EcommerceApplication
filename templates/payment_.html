@@ -1,0 +1,156 @@
+{% extends "index.html" %}
+{% block title %}Shipping{% endblock title %}
+{% block content %}
+{% load custom_filters %}
+{% load static %}
+<section class="bg-white py-8 antialiased dark:bg-white md:py-16">
+    <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+      <!-- Progress/Breadcrumb Navigation -->
+    <nav class="mb-8" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 text-lg font-medium">
+        <li class="flex items-center gap-2">
+          <a href="{% url 'cart' %}" class="text-primary-600 hover:text-primary-800 transition-colors">Cart</a>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </li>
+        <li class="flex items-center gap-2 text-gray-900">
+          <a href="{% url 'shipping' %}" class="text-primary-600 hover:text-primary-800 transition-colors">Shipping</a>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </li>
+        <li class="flex items-center gap-2 text-gray-900">
+          <a href="{% url 'payment' %}" class="text-primary-600 hover:text-primary-800 transition-colors">Payment</a>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </li>
+      </ol>
+    </nav>
+      <!-- component -->
+      {% comment %} <section class="bg-white py-8 antialiased md:py-16"> {% endcomment %}
+        <div class="mx-auto max-w-md px-4">
+          <!-- Payment Card -->
+          <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Payment Information</h2>
+            
+            <!-- Price Summary -->
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Subtotal:</span>
+                <span class="font-medium">₹{{cart.total_price|floatformat:2}}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Shipping:</span>
+                <span class="font-medium">Free</span>
+              </div>
+              {% if cart.total_old_price > 0%}
+              <div class="flex justify-between">
+                <span class="text-gray-600">Money saved:</span>
+                <span class="font-medium line-through">₹{{cart.money_saved|floatformat:2}}</span>
+              </div>
+              {% endif %}
+              <div class="flex justify-between">
+                <span class="text-gray-600">Tax:</span>
+                <span class="font-medium">₹{{cart.tax|floatformat:2}}</span>
+              </div>
+              <div class="border-t border-gray-200 pt-3 flex justify-between">
+                <span class="font-bold">Total:</span>
+                <span class="font-bold text-lg">₹{{cart.final_price|floatformat:2}}</span>
+              </div>
+            </div>
+             {% comment %} {% url "paymenthandler" %}  {% endcomment %}
+            {% comment %} <!-- Card Payment Form -->
+            <div class="space-y-4">
+              <div>
+                <label for="card-number" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                <input type="text" id="card-number" placeholder="4242 4242 4242 4242" 
+                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="expiry" class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                  <input type="text" id="expiry" placeholder="MM/YY" 
+                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                  <label for="cvc" class="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                  <input type="text" id="cvc" placeholder="123" 
+                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+              </div>
+              
+              <div>
+                <label for="card-name" class="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
+                <input type="text" id="card-name" placeholder="John Smith" 
+                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+              </div>
+              </div> {% endcomment %}
+              <div class="pt-2">
+                <button id="pay-btn" class="w-full rounded-md bg-indigo-600 py-2 px-4 font-medium text-white hover:bg-indigo-700">
+                  Pay ₹{{cart.final_price|floatformat:2}}
+
+                </button>
+              </div>
+              <div class="flex items-center justify-center mt-4 gap-2 text-sm text-gray-500">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                Secure SSL encrypted payment
+              </div>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+      
+      key: "{{ razorpay_merchant_key }}", 
+      
+      amount: "{{ razorpay_amount }}", 
+      currency: "{{ currency }}",
+      prefill: {
+        name: "{{ address.full_name }}",  
+        email: "{{ address.email }}",        
+        contact: "{{ address.phone }}"     
+    },
+    theme: {
+      color: "yellow",           
+      hide_topbar: false            
+    },
+    readonly: {
+      email: true,    
+    },
+    handler: function(response) {
+          console.log(response);
+    },
+      name: "Ecommerce App", 
+      image: '{% static 'image/pbh_logo_med.png' %}',
+      order_id: "{{ razorpay_order_id }}", 
+      callback_url: "{{ callback_url }}",
+    };
+    
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+      });
+
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
+
+{% endblock content %}

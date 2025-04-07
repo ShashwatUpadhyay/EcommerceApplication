@@ -36,6 +36,7 @@ class Product(BaseModel):
     subcategory = models.ForeignKey(ProductSubCategory, on_delete=models.SET_NULL,null=True,blank=True)
     description = models.TextField()
     price = models.FloatField()
+    tax = models.FloatField(default=0.0, verbose_name='Tax %')
     old_price = models.FloatField(null=True, blank=True)
     min_order_quanitity = models.PositiveIntegerField(default=1, verbose_name='Minimum order quantity')
     stock = models.PositiveIntegerField(default=0)

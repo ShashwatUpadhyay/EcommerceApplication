@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-&hnolzt56b3gx*h666u8tg_$3v)s_#0vjf79fjitortjlesc*b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'base.context_processors.cart_item_count',
+                'base.context_processors.non_user_cart_item_count',
                 'shop.context_processors.cart_context',
             ],
         },

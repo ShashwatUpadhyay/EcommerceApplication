@@ -28,7 +28,7 @@ def send_forget_password_email(email, token):
 
 def send_order_confirmation_email(order):
     subject = f"Order Confirmation - {order.uid}"
-    recipient_email = order.user.email  
+    recipient_email = order.address.email  
     from_email = settings.DEFAULT_FROM_EMAIL
 
     # Create email content using template
