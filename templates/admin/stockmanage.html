@@ -66,6 +66,10 @@
             </form>
         </div>
 
+
+        <form action="{% url 'bulk_action' %}" method="post" id="product-form" >
+        {% csrf_token %}
+             
         <!-- Products Table -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="overflow-x-auto">
@@ -92,6 +96,9 @@
                             </th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                selected
                             </th>
                         </tr>
                     </thead>
@@ -132,7 +139,7 @@
                             <!-- Stock -->
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <input type="number" value="{{ product.stock|default:0 }}" 
+                                    <input type="number" value="{{ product.stock }}" name="stocks[{{ product.uid }}]" 
                                         class="w-20 px-2 py-1 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
                                     <span class="ml-2 text-xs text-gray-500">in stock</span>
                                 </div>
@@ -170,30 +177,51 @@
                                     </button>
                                 </div>
                             </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <input type="checkbox" name="uids" class="product-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" value="{{ product.uid }}">
+                                    <label class="ml-2 text-sm text-gray-700">Select</label>
+                                </div>
+                            </td>
+                            
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
             
+
+            
             <!-- Bulk Actions -->
             <div class="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
                 <div class="flex items-center">
-                    <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <input type="checkbox" id="select-all" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <span class="ml-2 text-sm text-gray-700">Select all</span>
                 </div>
                 <div class="flex space-x-3">
-                    <select class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select id="bulk-action" name="action_status" class="border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <option>Bulk Actions</option>
-                        <option>Update Stock</option>
-                        <option>Change Status</option>
-                        <option>Delete Selected</option>
+                        <option value="update-stock">Update Stock</option>
+                        <option value="change-status">Change Status</option>
+                        <option value="delete">Delete Selected</option>
                     </select>
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md text-sm">
+
+
+                    <select id="status-options" name="new_status" class="hidden border border-gray-300 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="in_stock">In Stock</option>
+                        <option value="low_stock">Low Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                    </select>
+
+
+                    <!-- <button id="apply-button" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md text-sm">
                         Apply
-                    </button>
+                    </button> -->
+                    <input type="submit" id="apply-button" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md text-sm" value="Apply">
                 </div>
             </div>
+        </form>
             
             <!-- Pagination -->
             {% if products.paginator.num_pages > 1 %}
@@ -328,6 +356,59 @@
                 }
             });
         });
+    });
+
+
+
+
+
+    document.getElementById('select-all').addEventListener('change', function () {
+        const isChecked = this.checked;
+        document.querySelectorAll('.product-checkbox').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    });
+   // 
+   // document.getElementById('apply-button').addEventListener('click', function () {
+   //     const selectedCheckboxes = document.querySelectorAll('.product-checkbox:checked');
+   //     const selectedUIDs = Array.from(selectedCheckboxes).map(cb => cb.value);
+   // 
+   //     const selectedAction = document.getElementById('bulk-action').value;
+   // 
+   //     if (selectedUIDs.length === 0) {
+   //         alert('Please select at least one product.');
+   //         return;
+   //     }
+   // 
+   //     if (selectedAction === 'Bulk Actions') {
+   //         alert('Please select a valid bulk action.');
+   //         return;
+   //     }
+   // 
+   //     // Use selectedUIDs and selectedAction (e.g., send to backend)
+   //     console.log('Selected UIDs:', selectedUIDs);
+   //     console.log('Selected Action:', selectedAction);
+   // 
+   //     // ✅ Uncheck all checkboxes after applying the action
+   //     document.getElementById('select-all').checked = false;
+   //     document.querySelectorAll('.product-checkbox').forEach(cb => cb.checked = false);
+   // });
+    
+
+
+
+
+    // toggle status oiptions
+
+    const bulkAction = document.getElementById("bulk-action");
+    const statusOptions = document.getElementById("status-options");
+
+    bulkAction.addEventListener("change", function () {
+        if (this.value === "change-status") {
+            statusOptions.classList.remove("hidden");
+        } else {
+            statusOptions.classList.add("hidden");
+        }
     });
 </script>
 

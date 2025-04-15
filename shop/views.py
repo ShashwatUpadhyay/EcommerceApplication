@@ -8,6 +8,10 @@ from shop.models import ProductImage
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required 
 from base.views import is_staff
+from django.views.decorators.csrf import csrf_exempt
+from shop.models import Product
+
+
 
 # Create your views here.
 
@@ -230,6 +234,7 @@ def remove_wishlist(request, uid):
         print("Wishlist item does not exist")
         messages.error(request , "Product not found in wishlist")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
     
 
     
