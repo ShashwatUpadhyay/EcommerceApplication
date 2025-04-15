@@ -46,4 +46,5 @@ urlpatterns = [
     path('order_confirmation/<order_uid>', views.order_confirmation, name='order_confirmation'),
     path('download-invoice/<order_uid>', views.download_invoice, name='download_invoice'),
     path('bulk-action/', views.bulk_action, name='bulk_action'),
+    path('export/csv/', views.export_products_csv, name='export_products_csv'),
 ]

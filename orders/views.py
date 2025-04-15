@@ -25,6 +25,7 @@ from account.helper import send_order_confirmation_email
 import uuid
 from django.shortcuts import get_object_or_404
 import random
+import csv
 
 time_zone = pytz.timezone('Asia/Kolkata')
 
@@ -849,3 +850,36 @@ def bulk_action(request):
             messages.error(request, "Invalid action selected.")
 
     return redirect('stockManage')
+
+
+
+def export_products_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="products.csv"'
+    
+    writer = csv.writer(response)
+    
+    writer.writerow(['Product Name', 'UID', 'Category', 'Price', 'Stock', 'Status'])
+    products = Product.objects.all()
+    for product in products:
+        writer.writerow([
+            product.title,
+            product.uid,
+            product.category.name if product.category else '',
+            product.price,
+            product.stock,
+            get_stock_status(product.stock)
+        ])
+    
+    return response
+    
+    
+    
+    
+def get_stock_status(stock):
+    if stock == 0:
+        return "Out of Stock"
+    elif stock <= 5:
+        return "Low Stock"
+    else:
+        return "In Stock"
