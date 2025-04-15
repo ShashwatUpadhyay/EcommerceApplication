@@ -230,3 +230,6 @@ def remove_wishlist(request, uid):
         print("Wishlist item does not exist")
         messages.error(request , "Product not found in wishlist")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    
+
+    
