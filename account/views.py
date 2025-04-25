@@ -16,7 +16,6 @@ def register(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
-        print(email, username, password, password2)
         if User.objects.filter(username = username).exists():
             messages.error(request , "Username Already Exists")
             return redirect('register')

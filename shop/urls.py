@@ -12,4 +12,5 @@ urlpatterns = [
     path('a/warehouse/', views.stockManage , name='stockManage'),
     path('a/warehouse/<uid>/', views.productEdit , name='productEdit'),
     
+    
 ]

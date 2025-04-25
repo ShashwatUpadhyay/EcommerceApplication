@@ -25,6 +25,7 @@ from account.helper import send_order_confirmation_email
 import uuid
 from django.shortcuts import get_object_or_404
 import random
+import csv
 
 time_zone = pytz.timezone('Asia/Kolkata')
 
@@ -787,3 +788,98 @@ def low_stock(request):
     print(products)
     return render(request , 'admin/low_stock.html',{'low_stock':products, 'low_stocks':True})
    
+@login_required(login_url='login')
+@csrf_exempt  
+def bulk_action(request):
+    if request.method == 'POST':
+        uids = request.POST.getlist('uids')
+        action = request.POST.get('action_status')  
+        # stocks = request.POST.getlist('stock')
+        products = Product.objects.filter(uid__in=uids)
+
+        print("Action:", action)
+        print("UIDs:", uids)
+        # print("Stocks:", stocks)
+
+        
+        if action == 'update-stock':
+            stocks = request.POST.get('stock')  
+            stocks_dict = request.POST.dict()
+            updated_stocks = {}
+
+            
+            for key, value in stocks_dict.items():
+                if key.startswith('stocks[') and key.endswith(']'):
+                    uid = key[7:-1]  
+                    updated_stocks[uid] = value
+            print(updated_stocks)
+            for uid in uids:
+                stock_val = updated_stocks.get(uid)
+                if stock_val is not None:
+                    try:
+                        product = Product.objects.get(uid=uid)
+                        product.stock = int(stock_val)
+                        product.save()
+                    except Product.DoesNotExist:
+                        continue
+                    
+            messages.success(request, "Stock updated for selected products.")
+
+       
+        elif action == 'change-status':
+            new_status = request.POST.get("new_status")
+            if new_status:
+                for product in products:
+                    if new_status == 'out_of_stock':
+                        product.stock = 0
+                    elif new_status == 'in_stock':
+                        product.stock = 15
+                    elif new_status == 'low_stock':
+                        product.stock = 5
+                    product.save()
+                messages.success(request, "Status changed for selected products.")
+            else:
+                messages.error(request, "No status selected.")
+
+       
+        elif action == 'delete':
+            products.delete()
+            messages.success(request, "Selected products deleted.")
+
+        else:
+            messages.error(request, "Invalid action selected.")
+
+    return redirect('stockManage')
+
+
+
+def export_products_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="products.csv"'
+    
+    writer = csv.writer(response)
+    
+    writer.writerow(['Product Name', 'UID', 'Category', 'Price', 'Stock', 'Status'])
+    products = Product.objects.all()
+    for product in products:
+        writer.writerow([
+            product.title,
+            product.uid,
+            product.category.name if product.category else '',
+            product.price,
+            product.stock,
+            get_stock_status(product.stock)
+        ])
+    
+    return response
+    
+    
+    
+    
+def get_stock_status(stock):
+    if stock == 0:
+        return "Out of Stock"
+    elif stock <= 5:
+        return "Low Stock"
+    else:
+        return "In Stock"
