@@ -4,13 +4,13 @@ from account.models import UserExtra
 from django.contrib.auth.decorators import login_required
 from account.models import Address
 from orders.models import Order
-# from .rabbitmq import publish_message
+
 # Create your views here.
 def is_staff(request):
     return request.user.is_staff
 
 def home(request):
-    #publish_message("hellow")
+
     categories = ProductCategory.objects.all()
     products = [category.products.first() for category in categories if category.products.exists()]
     
