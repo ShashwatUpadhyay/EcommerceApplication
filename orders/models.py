@@ -6,6 +6,7 @@ from shop.models import Product
 from account.models import Address
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+import random
 
 # Create your models here.
 class Cart(BaseModel):
@@ -19,8 +20,8 @@ class Cart(BaseModel):
     
     @property
     def total_old_price(self):
-        items = sum(item.product.old_price * item.quantity for item in self.cartitems.all())
-        return items
+        items = sum((item.product.old_price or 0) * item.quantity for item in self.cartitems.all())
+        return items if items else 0
     
     
     @property
@@ -28,10 +29,10 @@ class Cart(BaseModel):
         items = sum(item.product.price * item.quantity for item in self.cartitems.all())
         return items if items else 0
     
-    @property
-    def total_old_price(self):
-        items = sum(item.product.old_price * item.quantity for item in self.cartitems.all())
-        return items if items else 0
+    # @property
+    # def total_old_price(self):
+    #     items = sum(item.product.old_price * item.quantity for item in self.cartitems.all())
+    #     return items if items else 0
     
     @property
     def money_saved(self):
@@ -173,5 +174,11 @@ class Order(BaseModel):
 def resultAnounced(sender, instance, created, **kwargs):
     if created:
         instance.quantity = instance.product.min_order_quanitity-1
+        instance.save()
+        
+@receiver(post_save, sender=Order)
+def order_number_save(sender, instance, created, **kwargs):
+    if created and not instance.order_number:
+        instance.order_number = random.randint(100000, 999999)
         instance.save()
         

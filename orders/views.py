@@ -469,7 +469,7 @@ def paymenthandler(request, uid):
             cart.save()
 
             messages.success(request, "Payment successful!")
-            return redirect('order_place')  # Ensure this URL name exists
+            return redirect('order_place')  
 
         except razorpay.errors.BadRequestError as e:
             if 'already captured' in str(e):
@@ -490,14 +490,18 @@ def order_place(request):
     print(customer)
     try:
 
-        address = Address.objects.get(user = customer, selected = True)
-        print(address)
+        address = Address.objects.filter(user = customer, selected = True).first()
+        # print(address.)
         cart = models.Cart.objects.get(customer = customer.extra,order_taken=False)
-        order,_ = models.Order.objects.get_or_create(user = customer, cart = cart)
-        order.address = address
-        if _ :
+        order = models.Order.objects.filter(user=customer, cart=cart).first()
+        if not order:
+            order = models.Order.objects.create(user=customer, cart=cart)
             order.is_paid = False
+        
+        order.order_number = generate_unique_order_id()
+        order.address = address
         order.save()
+        
         
         cart.order_taken = True
         cart.save()
@@ -872,8 +876,6 @@ def export_products_csv(request):
         ])
     
     return response
-    
-    
     
     
 def get_stock_status(stock):

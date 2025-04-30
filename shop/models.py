@@ -37,7 +37,7 @@ class Product(BaseModel):
     description = models.TextField()
     price = models.FloatField()
     tax = models.FloatField(default=0.0, verbose_name='Tax %')
-    old_price = models.FloatField(null=True, blank=True)
+    old_price = models.FloatField(null=True, blank=True, default=0)
     min_order_quanitity = models.PositiveIntegerField(default=1, verbose_name='Minimum order quantity')
     stock = models.PositiveIntegerField(default=0)
     
