@@ -4,7 +4,7 @@ from account.models import UserExtra
 from django.contrib.auth.decorators import login_required
 from account.models import Address
 from orders.models import Order
-
+from django.contrib import messages
 # Create your views here.
 def is_staff(request):
     return request.user.is_staff
@@ -36,13 +36,16 @@ def profile(request):
     }
     return render(request,'profile.html',context)
 
+def track_order(request, number):
+    try:
+        order = Order.objects.get(order_number=number)
+        return render(request, 'track.html', {'order': order})
+    except Order.DoesNotExist:
+        messages.error(request, 'Order not found')
+        return redirect('track')  
+    
 def track(request):
     if request.method == 'POST':
         order_number = request.POST.get('order_number')
-        return redirect('track_order' , number = order_number)
+        return redirect('track_order', number=order_number)
     return render(request, 'track_order.html')
-
-def track_order(request,number):
-    order = get_object_or_404(Order, order_number = number)
-    return render(request, 'track.html', {'order':order})
-
