@@ -467,7 +467,6 @@ def paymenthandler(request, uid):
             # Update cart
             cart.is_paid = True
             cart.save()
-
             messages.success(request, "Payment successful!")
             return redirect('order_place')  
 

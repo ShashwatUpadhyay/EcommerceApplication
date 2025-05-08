@@ -9,7 +9,7 @@
       <h1 class="text-3xl font-bold text-gray-900">Track Your Order</h1>
       <p class="mt-2 text-sm text-gray-600">Enter your order number to view real-time updates</p>
     </div>
-
+    
     <!-- Tracking Form -->
     <div class="bg-white shadow overflow-hidden sm:rounded-lg">
       <div class="px-4 py-5 sm:p-6">
@@ -19,6 +19,13 @@
           <!-- Order Number Input -->
           <div>
             <label for="order_number" class="block text-sm font-medium text-gray-700">Order Number</label>
+            {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }} text-red-500 "  {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
             <div class="mt-1 relative rounded-md shadow-sm">
               <input 
                 type="text" 
