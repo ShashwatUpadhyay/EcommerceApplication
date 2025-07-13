@@ -26,10 +26,10 @@ import uuid
 from django.shortcuts import get_object_or_404
 import random
 import csv
+from base.views import is_staff
+from utils.utility import generate_unique_order_id , get_stock_status
 
 time_zone = pytz.timezone('Asia/Kolkata')
-
-
 
 razorpay_client = razorpay.Client(
     auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
@@ -163,11 +163,6 @@ def removeFromCartAPI(request,customer_uid, product_uid):
         messages.error(request, "Invalid Product ID")
         return JsonResponse({'success': False, 'quantity': cart_item.quantity if cart_item else 0})
     
-def generate_unique_order_id():
-    while True:
-        order_id = random.randint(100000, 9999999)
-        if not models.Order.objects.filter(order_number=order_id).exists():
-            return order_id
 
 def add_to_cart_of_unauthenticated(request, product_uid):
     key = request.session.get('eci',None)
@@ -768,7 +763,6 @@ def markAsDelivered(request, order_uid):
         print(e)
         return JsonResponse({'success': False, 'msg' : "Invalid Order ID"})
     
-from base.views import is_staff
 def markAsProcessing(request, order_uid):
     if not is_staff(request):
         return redirect('home')
@@ -854,8 +848,6 @@ def bulk_action(request):
 
     return redirect('stockManage')
 
-
-
 def export_products_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="products.csv"'
@@ -876,11 +868,3 @@ def export_products_csv(request):
     
     return response
     
-    
-def get_stock_status(stock):
-    if stock == 0:
-        return "Out of Stock"
-    elif stock <= 5:
-        return "Low Stock"
-    else:
-        return "In Stock"

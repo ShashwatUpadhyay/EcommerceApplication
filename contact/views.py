@@ -4,6 +4,8 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from .models import ContactSubmission
 import os
+
+
 def ContactUs(request):
     try:
         if request.method == 'POST':
