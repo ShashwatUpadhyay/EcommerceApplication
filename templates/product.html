@@ -263,16 +263,16 @@
         // Update active thumbnail styling
         const thumbnails = document.querySelectorAll('[onclick^="changeImage"]');
         thumbnails.forEach(thumb => {
-            const img = thumb.querySelector('img');
-            if (img && img.src === src) {
-                thumb.classList.add('border-blue-500');
-                thumb.classList.remove('border-transparent');
-            } else {
-                thumb.classList.add('border-transparent');
-                thumb.classList.remove('border-blue-500');
-            }
-        });
-    }
+                const img = thumb.querySelector('img');
+                if (img && img.src === src) {
+                    thumb.classList.add('border-blue-500');
+                    thumb.classList.remove('border-transparent');
+                } else {
+                    thumb.classList.add('border-transparent');
+                    thumb.classList.remove('border-blue-500');
+                }
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             addToCartButton = document.getElementById('add-to-cart');
@@ -286,12 +286,13 @@
             const productId = "{{ product.uid }}"; // Get the product ID from the template context
             const customerId = "{{ user.extra.uid }}"; // Get the product ID from the template context
 
-
             cartBtn.addEventListener('click', function(event) {
                 event.preventDefault(); 
                 console.log("Add to cart button clicked");
                 {% if request.user.is_authenticated %}
-                 const url = `{% url "addToCartAPI" user.extra.uid product.uid %}`; // Construct the URL
+                const customer_uid = "{{ user.extra.uid }}"
+                console.log(customer_uid)
+                const url = `/order/add_to_cart/${customerId}/${productId}/`; // Construct the URL
                 {% endif %}
                 fetch(url,{
                     method: 'GET',
@@ -323,7 +324,7 @@
             addToCartButton.addEventListener('click', function(event) {
                 event.preventDefault(); // Prevent default action
                 {% if request.user.is_authenticated %}
-                const url = `{% url "addToCartAPI" user.extra.uid product.uid %}`; // Construct the URL
+                const url = `/order/add_to_cart/${customerId}/${productId}/`; // Construct the URL
                 {% endif %}
                 fetch(url,{
                     method: 'GET',
@@ -357,7 +358,7 @@
                 const productId = "{{ product.uid }}"; // Get the product ID from the template context
                 const customerId = "{{ user.extra.uid }}"; // Get the product ID from the template context
                 {% if request.user.is_authenticated %}
-                const url = `{% url "removeFromCartAPI" user.extra.uid product.uid %}`; // Construct the URL
+                const url = `/order/remove_from_cart/${customerId}/${productId}/`; // Construct the URL
                 {% endif %}
                 fetch(url,{
                     method: 'GET',
