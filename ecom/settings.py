@@ -17,22 +17,21 @@ from .ckeditorconfig import *
 
 
 load_dotenv()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-# DOMAIN_NAME = 'https://9319j0b7-8000.inc1.devtunnels.ms/'
-DOMAIN_NAME = 'http://127.0.0.1:8000/'
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DOMAIN_NAME = os.getenv('DOMAIN_NAME')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&hnolzt56b3gx*h666u8tg_$3v)s_#0vjf79fjitortjlesc*b'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 
@@ -154,7 +153,7 @@ EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('email') 
-EMAIL_HOST_PASSWORD = 'cehw lkgf jjuw leqp'
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') 
 
-RAZOR_KEY_ID = 'rzp_test_fFBpYlGzvN55lA'
-RAZOR_KEY_SECRET = 'BtXZLUJmvHcGU9ZyMWllSgJv'
+RAZOR_KEY_ID = os.getenv('RAZOR_KEY_ID')
+RAZOR_KEY_SECRET = os.getenv('RAZOR_KEY_SECRET')

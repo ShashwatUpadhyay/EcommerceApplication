@@ -14,7 +14,6 @@ from django.shortcuts import render, get_object_or_404
 import razorpay
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest
 from ecom.settings import DOMAIN_NAME
 from datetime import datetime
 import pytz
@@ -24,7 +23,6 @@ from io import BytesIO
 from account.helper import send_order_confirmation_email
 import uuid
 from django.shortcuts import get_object_or_404
-import random
 import csv
 from base.views import is_staff
 from utils.utility import generate_unique_order_id , get_stock_status
@@ -267,6 +265,8 @@ def cart(request):
     return render(request , 'cart.html',{'cart_items':cart_item,'total_price':total_price,'tax':tax,'final_price':final_price})
 
 def cart_(request):
+    print(DOMAIN_NAME)
+    
     key = request.session.get('eci',None)
     cart=None
     cart_item=None
